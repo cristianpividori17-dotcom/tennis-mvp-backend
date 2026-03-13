@@ -116,33 +116,41 @@
       "Court 5": "Synthetic Grass",
       "Court 6": "Synthetic Grass"
     }
+  },
+  {
+    "key": "Bondi",
+    "slug": "bondi-tc",
+    "name": "Bondi Beach Tennis",
+    "location": "Bondi",
+    "surface": null,
+    "booking_url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+    "url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+    "source": "discovered",
+    "active": true,
+    "court_surfaces": {}
+  },
+  {
+    "key": "Cammeray",
+    "slug": "cammeray-tc",
+    "name": "Cammeray Tennis Club",
+    "location": "Cammeray",
+    "surface": null,
+    "booking_url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
+    "url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
+    "source": "discovered",
+    "active": true,
+    "court_surfaces": {}
+  },
+  {
+    "key": "Cooper Park",
+    "slug": "cooper-park-tc",
+    "name": "Cooper Park Tennis",
+    "location": "Woollahra",
+    "surface": null,
+    "booking_url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
+    "url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
+    "source": "discovered",
+    "active": true,
+    "court_surfaces": {}
   }
 ]
-
-{
-  "slug": "bondi-tc",
-  "name": "Bondi Beach Tennis",
-  "location": "Bondi",
-  "booking_url": "https://www.tennisvenues.com.au/booking/bondi-tc",
-  "venue_url": "",
-  "source": "discovered",
-  "active": true
-},
-{
-  "slug": "cammeray-tc",
-  "name": "Cammeray Tennis Club",
-  "location": "Cammeray",
-  "booking_url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
-  "venue_url": "",
-  "source": "discovered",
-  "active": true
-},
-{
-  "slug": "cooper-park-tc",
-  "name": "Cooper Park Tennis",
-  "location": "Woollahra",
-  "booking_url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
-  "venue_url": "",
-  "source": "discovered",
-  "active": true
-}
