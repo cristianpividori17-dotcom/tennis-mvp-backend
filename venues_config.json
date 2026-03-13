@@ -118,3 +118,31 @@
     }
   }
 ]
+
+{
+  "slug": "bondi-tc",
+  "name": "Bondi Beach Tennis",
+  "location": "Bondi",
+  "booking_url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+  "venue_url": "",
+  "source": "discovered",
+  "active": true
+},
+{
+  "slug": "cammeray-tc",
+  "name": "Cammeray Tennis Club",
+  "location": "Cammeray",
+  "booking_url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
+  "venue_url": "",
+  "source": "discovered",
+  "active": true
+},
+{
+  "slug": "cooper-park-tc",
+  "name": "Cooper Park Tennis",
+  "location": "Woollahra",
+  "booking_url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
+  "venue_url": "",
+  "source": "discovered",
+  "active": true
+}
