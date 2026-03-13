@@ -10,8 +10,85 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Call preload endpoint
+      - name: Preload tennis availability
         run: |
-          curl -X GET "https://tennis-availability-api.onrender.com/refresh?date=$(date +%Y%m%d)&time=7pm"
-          curl -X GET "https://tennis-availability-api.onrender.com/refresh?date=$(date +%Y%m%d)&time=7:30pm"
-          curl -X GET "https://tennis-availability-api.onrender.com/refresh?date=$(date +%Y%m%d)&time=8pm"
+          python - <<'PY'
+          import time
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timedelta, timezone
+
+          BASE_URL = "https://tennis-availability-api.onrender.com"
+          DAYS_AHEAD = 3
+          PAUSE_SECONDS = 2
+
+          def build_time_slots():
+              slots = []
+              hour = 7
+              minute = 0
+
+              while True:
+                  display_hour = hour
+                  suffix = "am"
+
+                  if hour == 0:
+                      display_hour = 12
+                      suffix = "am"
+                  elif hour < 12:
+                      display_hour = hour
+                      suffix = "am"
+                  elif hour == 12:
+                      display_hour = 12
+                      suffix = "pm"
+                  else:
+                      display_hour = hour - 12
+                      suffix = "pm"
+
+                  if minute == 0:
+                      slot = f"{display_hour}{suffix}"
+                  else:
+                      slot = f"{display_hour}:30{suffix}"
+
+                  slots.append(slot)
+
+                  if hour == 23 and minute == 0:
+                      break
+
+                  minute += 30
+                  if minute == 60:
+                      minute = 0
+                      hour += 1
+
+              return slots
+
+          today = datetime.now(timezone.utc).date()
+          dates = [
+              (today + timedelta(days=i)).strftime("%Y%m%d")
+              for i in range(DAYS_AHEAD)
+          ]
+
+          time_slots = build_time_slots()
+
+          print("Starting preload")
+          print("Dates:", dates)
+          print("Total slots:", len(time_slots))
+
+          for date in dates:
+              for t in time_slots:
+                  query = urllib.parse.urlencode({
+                      "date": date,
+                      "time": t,
+                  })
+
+                  url = f"{BASE_URL}/refresh?{query}"
+
+                  try:
+                      with urllib.request.urlopen(url, timeout=120) as r:
+                          print(date, t, r.status)
+                  except Exception as e:
+                      print("ERROR:", date, t, e)
+
+                  time.sleep(PAUSE_SECONDS)
+
+          print("Finished preload")
+          PY
