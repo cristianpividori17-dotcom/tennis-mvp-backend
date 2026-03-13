@@ -1,6 +1,8 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from tennisvenues_scraper import get_available_courts_from_url
+
+from collector import get_store_slot, collect_and_store_slot
+from db_store import init_db, use_db_storage
 
 app = FastAPI()
 
@@ -12,132 +14,170 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-venues = {
-    "Mowbray": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
-    "Sydney Boys": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
-    "Artarmon": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
-    "Ryde": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
-    "Gosford": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
-    "Snape Park": "https://www.tennisvenues.com.au/booking/snape-park-tc",
-}
 
-VENUE_INFO = {
-    "Mowbray": {
-        "name": "Mowbray Public School Tennis Courts",
-        "surface": "Hard Court",
-        "location": "Lane Cove",
-        "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
-    },
-    "Sydney Boys": {
-        "name": "Sydney Boys High School Tennis Courts",
-        "surface": "Hard Court",
-        "location": "Moore Park",
-        "url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
-    },
-    "Artarmon": {
-        "name": "Artarmon Tennis Centre",
-        "surface": "Synthetic Grass",
-        "location": "Artarmon",
-        "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
-    },
-    "Ryde": {
-        "name": "Ryde Tennis Centre",
-        "surface": "Synthetic Grass",
-        "location": "Ryde",
-        "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
-    },
-    "Gosford": {
-        "name": "Gosford Tennis Club",
-        "surface": "Synthetic",
-        "location": "Gosford",
-        "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
-    },
-    "Snape Park": {
-        "name": "Snape Park Tennis Centre",
-        "surface": "Hard Court / Synthetic",
-        "location": "Maroubra",
-        "url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
-    },
-}
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    print(f"REQUEST -> method={request.method} path={request.url.path} query={request.url.query}")
+    response = await call_next(request)
+    print(f"RESPONSE -> status_code={response.status_code} path={request.url.path}")
+    return response
+
+
+@app.on_event("startup")
+def startup():
+    init_db()
+
+    print("\n=== STORAGE MODE ===")
+    if use_db_storage():
+        print("Using Postgres storage")
+    else:
+        print("Using JSON file storage")
+    print("=== END STORAGE MODE ===\n")
+
+    print("\n=== REGISTERED ROUTES ===")
+    for route in app.routes:
+        methods = getattr(route, "methods", None)
+        path = getattr(route, "path", None)
+        print(f"{methods} -> {path}")
+    print("=== END ROUTES ===\n")
+
+
+@app.options("/{path:path}")
+async def options_handler(path: str):
+    return Response(status_code=200)
+
+
+@app.get("/favicon.ico")
+def favicon():
+    return Response(status_code=204)
 
 
 @app.get("/")
 def root():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "service": "tennis availability api",
+    }
 
 
-@app.options("/{full_path:path}")
-def options_handler(full_path: str):
-    return Response(status_code=204)
-
-
-def check_all_venues(date, time):
-    results = {}
-
-    for name, url in venues.items():
-        try:
-            courts = get_available_courts_from_url(
-                booking_url=url,
-                date_yyyymmdd=date,
-                selected_time=time,
-            )
-            results[name] = courts
-        except Exception:
-            results[name] = []
-
-    return results
-
-
-def filter_only_available(results):
-    available = {}
-
-    for venue, courts in results.items():
-        if isinstance(courts, list) and len(courts) > 0:
-            available[venue] = courts
-
-    return available
-
-
-def format_results_for_frontend(results):
-    formatted = []
-
-    for venue, courts in results.items():
-        formatted.append(
-            {
-                "venue": venue,
-                "available_courts": len(courts),
-                "courts": courts,
-            }
-        )
-
-    return formatted
-
-
-def build_frontend_cards(results):
-    cards = []
-
-    for item in results:
-        venue_key = item["venue"]
-        info = VENUE_INFO.get(venue_key, {})
-
-        cards.append(
-            {
-                "name": info.get("name"),
-                "location": info.get("location"),
-                "surface": info.get("surface"),
-                "url": info.get("url"),
-                "available_courts": item["available_courts"],
-                "courts": item["courts"],
-            }
-        )
-
-    return cards
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy",
+        "storage": "postgres" if use_db_storage() else "json",
+    }
 
 
 @app.get("/availability")
 def availability(date: str, time: str):
-    results = check_all_venues(date=date, time=time)
-    available = filter_only_available(results)
-    formatted = format_results_for_frontend(available)
-    cards = build_frontend_cards(formatted)
-    return cards
+    slot = get_store_slot(date, time)
+
+    if not slot:
+        return {
+            "date": date,
+            "time": time,
+            "exists": False,
+            "results_count": 0,
+            "results": [],
+            "message": "Slot not collected yet",
+        }
+
+    return {
+        "date": date,
+        "time": time,
+        "exists": True,
+        "results_count": len(slot.get("results", [])),
+        "results": slot.get("results", []),
+    }
+
+
+@app.get("/availability-status")
+def availability_status(date: str, time: str):
+    slot = get_store_slot(date, time)
+
+    if not slot:
+        return {
+            "date": date,
+            "time": time,
+            "exists": False,
+            "collected_at": None,
+            "source": None,
+            "total_duration_ms": None,
+            "total_venues": 0,
+            "success_count": 0,
+            "error_count": 0,
+            "available_venue_count": 0,
+            "results_count": 0,
+        }
+
+    return {
+        "date": date,
+        "time": time,
+        "exists": True,
+        "collected_at": slot.get("collected_at"),
+        "source": slot.get("source"),
+        "total_duration_ms": slot.get("total_duration_ms"),
+        "total_venues": slot.get("total_venues"),
+        "success_count": slot.get("success_count"),
+        "error_count": slot.get("error_count"),
+        "available_venue_count": slot.get("available_venue_count"),
+        "results_count": len(slot.get("results", [])),
+    }
+
+
+@app.get("/refresh")
+def refresh(date: str, time: str):
+    slot = collect_and_store_slot(date, time, source="manual-refresh")
+
+    return {
+        "date": date,
+        "time": time,
+        "collected_at": slot.get("collected_at"),
+        "source": slot.get("source"),
+        "total_duration_ms": slot.get("total_duration_ms"),
+        "total_venues": slot.get("total_venues"),
+        "success_count": slot.get("success_count"),
+        "error_count": slot.get("error_count"),
+        "available_venue_count": slot.get("available_venue_count"),
+        "results_count": len(slot.get("results", [])),
+    }
+
+
+@app.get("/store-debug")
+def store_debug(date: str, time: str):
+    slot = get_store_slot(date, time)
+
+    if not slot:
+        return {
+            "date": date,
+            "time": time,
+            "exists": False,
+            "collected_at": None,
+            "source": None,
+            "total_duration_ms": None,
+            "total_venues": 0,
+            "success_count": 0,
+            "error_count": 0,
+            "available_venue_count": 0,
+            "venue_checks": [],
+            "errors": [],
+            "results_count": 0,
+            "results": [],
+        }
+
+    return {
+        "date": date,
+        "time": time,
+        "exists": True,
+        "collected_at": slot.get("collected_at"),
+        "source": slot.get("source"),
+        "total_duration_ms": slot.get("total_duration_ms"),
+        "total_venues": slot.get("total_venues"),
+        "success_count": slot.get("success_count"),
+        "error_count": slot.get("error_count"),
+        "available_venue_count": slot.get("available_venue_count"),
+        "venue_checks": slot.get("venue_checks", []),
+        "errors": slot.get("errors", []),
+        "results_count": len(slot.get("results", [])),
+        "results": slot.get("results", []),
+    }

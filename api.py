@@ -1,11 +1,8 @@
-import json
-import re
-import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from tennisvenues_scraper import get_available_courts_from_url
+
+from collector import get_store_slot, collect_and_store_slot
+from db_store import init_db, use_db_storage
 
 app = FastAPI()
 
@@ -17,305 +14,170 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-CONFIG_FILE = "venues_config.json"
-MAX_WORKERS = 8
-CACHE_TTL_SECONDS = 300  # 5 minutos
 
-availability_cache = {}
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    print(f"REQUEST -> method={request.method} path={request.url.path} query={request.url.query}")
+    response = await call_next(request)
+    print(f"RESPONSE -> status_code={response.status_code} path={request.url.path}")
+    return response
+
+
+@app.on_event("startup")
+def startup():
+    init_db()
+
+    print("\n=== STORAGE MODE ===")
+    if use_db_storage():
+        print("Using Postgres storage")
+    else:
+        print("Using JSON file storage")
+    print("=== END STORAGE MODE ===\n")
+
+    print("\n=== REGISTERED ROUTES ===")
+    for route in app.routes:
+        methods = getattr(route, "methods", None)
+        path = getattr(route, "path", None)
+        print(f"{methods} -> {path}")
+    print("=== END ROUTES ===\n")
+
+
+@app.options("/{path:path}")
+async def options_handler(path: str):
+    return Response(status_code=200)
+
+
+@app.get("/favicon.ico")
+def favicon():
+    return Response(status_code=204)
 
 
 @app.get("/")
 def root():
-    return {"status": "ok"}
-
-
-@app.options("/{full_path:path}")
-def options_handler(full_path: str):
-    return Response(status_code=204)
-
-
-def load_active_venues():
-    with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    active_venues = [venue for venue in data if venue.get("active") is True]
-
-    venues_by_key = {}
-    venue_info = {}
-    venue_court_surfaces = {}
-
-    for venue in active_venues:
-        key = venue["key"]
-
-        venues_by_key[key] = venue["booking_url"]
-
-        venue_info[key] = {
-            "name": venue.get("name"),
-            "surface": venue.get("surface"),
-            "location": venue.get("location"),
-            "url": venue.get("url") or venue.get("booking_url"),
-        }
-
-        venue_court_surfaces[key] = venue.get("court_surfaces", {})
-
-    return venues_by_key, venue_info, venue_court_surfaces
-
-
-def check_one_venue(name, url, date, time_str):
-    try:
-        courts = get_available_courts_from_url(
-            booking_url=url,
-            date_yyyymmdd=date,
-            selected_time=time_str,
-        )
-        return name, courts
-    except Exception as e:
-        return name, {"error": str(e), "courts": []}
-
-
-def check_all_venues_raw(date, time_str):
-    venues, _, _ = load_active_venues()
-    results = {}
-
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = {
-            executor.submit(check_one_venue, name, url, date, time_str): name
-            for name, url in venues.items()
-        }
-
-        for future in as_completed(futures):
-            name, result = future.result()
-            results[name] = result
-
-    return results
-
-
-def normalize_check_results(raw_results):
-    normalized = {}
-
-    for venue, result in raw_results.items():
-        if isinstance(result, dict) and "courts" in result:
-            normalized[venue] = result["courts"]
-        else:
-            normalized[venue] = result if isinstance(result, list) else []
-
-    return normalized
-
-
-def filter_only_available(results):
-    available = {}
-
-    for venue, courts in results.items():
-        if isinstance(courts, list) and len(courts) > 0:
-            available[venue] = courts
-
-    return available
-
-
-def format_results_for_frontend(results):
-    formatted = []
-
-    for venue, courts in results.items():
-        formatted.append(
-            {
-                "venue": venue,
-                "available_courts": len(courts),
-                "courts": courts,
-            }
-        )
-
-    return formatted
-
-
-def normalize_court_name(court_name):
-    if not court_name:
-        return ""
-
-    name = court_name.strip()
-
-    name = re.sub(r"\bCourt\s*N(\d+)\b", r"Court \1", name, flags=re.IGNORECASE)
-
-    name = re.sub(
-        r"\s*\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass)\)\s*",
-        "",
-        name,
-        flags=re.IGNORECASE,
-    )
-
-    name = re.sub(r"\s+", " ", name).strip()
-    return name
-
-
-def extract_surface_from_court_name(court_name):
-    if not court_name:
-        return None
-
-    match = re.search(
-        r"\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass)\)",
-        court_name,
-        flags=re.IGNORECASE,
-    )
-
-    if not match:
-        return None
-
-    surface = match.group(1).strip()
-
-    if surface.lower() == "synthetic":
-        return "Synthetic Grass"
-
-    return surface
-
-
-def get_surface_for_court(venue_key, court_name, venue_court_surfaces):
-    cleaned_name = normalize_court_name(court_name)
-
-    inline_surface = extract_surface_from_court_name(court_name)
-    if inline_surface:
-        return inline_surface
-
-    venue_surfaces = venue_court_surfaces.get(venue_key, {})
-    return venue_surfaces.get(cleaned_name)
-
-
-def build_court_objects(venue_key, courts, venue_court_surfaces):
-    court_objects = []
-
-    for court_name in courts:
-        cleaned_name = normalize_court_name(court_name)
-        surface = get_surface_for_court(venue_key, court_name, venue_court_surfaces)
-
-        court_objects.append(
-            {
-                "name": cleaned_name,
-                "surface": surface,
-            }
-        )
-
-    return court_objects
-
-
-def get_general_surface_label(court_objects, fallback_surface=None):
-    surfaces = [court["surface"] for court in court_objects if court.get("surface")]
-    unique_surfaces = sorted(set(surfaces))
-
-    if len(unique_surfaces) == 0:
-        return fallback_surface
-
-    if len(unique_surfaces) == 1:
-        return unique_surfaces[0]
-
-    return "Mixed Surfaces"
-
-
-def build_frontend_cards(results):
-    _, venue_info, venue_court_surfaces = load_active_venues()
-    cards = []
-
-    for item in results:
-        venue_key = item["venue"]
-        info = venue_info.get(venue_key, {})
-
-        court_objects = build_court_objects(
-            venue_key,
-            item["courts"],
-            venue_court_surfaces,
-        )
-
-        general_surface = get_general_surface_label(
-            court_objects,
-            fallback_surface=info.get("surface"),
-        )
-
-        cards.append(
-            {
-                "name": info.get("name"),
-                "location": info.get("location"),
-                "surface": general_surface,
-                "url": info.get("url"),
-                "available_courts": item["available_courts"],
-                "courts": court_objects,
-            }
-        )
-
-    cards.sort(key=lambda x: x["available_courts"], reverse=True)
-    return cards
-
-
-def make_cache_key(date, time_str):
-    return f"{date}_{time_str}".lower().strip()
-
-
-def get_cached_response(cache_key):
-    cached = availability_cache.get(cache_key)
-
-    if not cached:
-        return None
-
-    age = time.time() - cached["timestamp"]
-
-    if age > CACHE_TTL_SECONDS:
-        del availability_cache[cache_key]
-        return None
-
-    return cached["data"]
-
-
-def set_cached_response(cache_key, data):
-    availability_cache[cache_key] = {
-        "timestamp": time.time(),
-        "data": data,
+    return {
+        "status": "ok",
+        "service": "tennis availability api",
+    }
+
+
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy",
+        "storage": "postgres" if use_db_storage() else "json",
     }
 
 
 @app.get("/availability")
 def availability(date: str, time: str):
-    cache_key = make_cache_key(date, time)
-    cached_data = get_cached_response(cache_key)
+    slot = get_store_slot(date, time)
 
-    if cached_data is not None:
-        return cached_data
+    if not slot:
+        return {
+            "date": date,
+            "time": time,
+            "exists": False,
+            "results_count": 0,
+            "results": [],
+            "message": "Slot not collected yet",
+        }
 
-    raw_results = check_all_venues_raw(date=date, time_str=time)
-    normalized_results = normalize_check_results(raw_results)
-    available = filter_only_available(normalized_results)
-    formatted = format_results_for_frontend(available)
-    cards = build_frontend_cards(formatted)
-
-    set_cached_response(cache_key, cards)
-
-    return cards
+    return {
+        "date": date,
+        "time": time,
+        "exists": True,
+        "results_count": len(slot.get("results", [])),
+        "results": slot.get("results", []),
+    }
 
 
-@app.get("/availability-debug")
-def availability_debug(date: str, time: str):
-    raw_results = check_all_venues_raw(date=date, time_str=time)
-    _, venue_info, _ = load_active_venues()
+@app.get("/availability-status")
+def availability_status(date: str, time: str):
+    slot = get_store_slot(date, time)
 
-    debug_output = []
+    if not slot:
+        return {
+            "date": date,
+            "time": time,
+            "exists": False,
+            "collected_at": None,
+            "source": None,
+            "total_duration_ms": None,
+            "total_venues": 0,
+            "success_count": 0,
+            "error_count": 0,
+            "available_venue_count": 0,
+            "results_count": 0,
+        }
 
-    for venue_key, result in raw_results.items():
-        info = venue_info.get(venue_key, {})
+    return {
+        "date": date,
+        "time": time,
+        "exists": True,
+        "collected_at": slot.get("collected_at"),
+        "source": slot.get("source"),
+        "total_duration_ms": slot.get("total_duration_ms"),
+        "total_venues": slot.get("total_venues"),
+        "success_count": slot.get("success_count"),
+        "error_count": slot.get("error_count"),
+        "available_venue_count": slot.get("available_venue_count"),
+        "results_count": len(slot.get("results", [])),
+    }
 
-        if isinstance(result, dict) and "courts" in result:
-            courts = result.get("courts", [])
-            error = result.get("error")
-        else:
-            courts = result if isinstance(result, list) else []
-            error = None
 
-        debug_output.append(
-            {
-                "key": venue_key,
-                "name": info.get("name"),
-                "location": info.get("location"),
-                "url": info.get("url"),
-                "available_count": len(courts),
-                "courts": courts,
-                "error": error,
-            }
-        )
+@app.get("/refresh")
+def refresh(date: str, time: str):
+    slot = collect_and_store_slot(date, time, source="manual-refresh")
 
-    debug_output.sort(key=lambda x: x["available_count"], reverse=True)
-    return debug_output
-# debug change
+    return {
+        "date": date,
+        "time": time,
+        "collected_at": slot.get("collected_at"),
+        "source": slot.get("source"),
+        "total_duration_ms": slot.get("total_duration_ms"),
+        "total_venues": slot.get("total_venues"),
+        "success_count": slot.get("success_count"),
+        "error_count": slot.get("error_count"),
+        "available_venue_count": slot.get("available_venue_count"),
+        "results_count": len(slot.get("results", [])),
+    }
+
+
+@app.get("/store-debug")
+def store_debug(date: str, time: str):
+    slot = get_store_slot(date, time)
+
+    if not slot:
+        return {
+            "date": date,
+            "time": time,
+            "exists": False,
+            "collected_at": None,
+            "source": None,
+            "total_duration_ms": None,
+            "total_venues": 0,
+            "success_count": 0,
+            "error_count": 0,
+            "available_venue_count": 0,
+            "venue_checks": [],
+            "errors": [],
+            "results_count": 0,
+            "results": [],
+        }
+
+    return {
+        "date": date,
+        "time": time,
+        "exists": True,
+        "collected_at": slot.get("collected_at"),
+        "source": slot.get("source"),
+        "total_duration_ms": slot.get("total_duration_ms"),
+        "total_venues": slot.get("total_venues"),
+        "success_count": slot.get("success_count"),
+        "error_count": slot.get("error_count"),
+        "available_venue_count": slot.get("available_venue_count"),
+        "venue_checks": slot.get("venue_checks", []),
+        "errors": slot.get("errors", []),
+        "results_count": len(slot.get("results", [])),
+        "results": slot.get("results", []),
+    }

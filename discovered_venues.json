@@ -1,0 +1,47 @@
+[
+  {
+    "slug": "artarmon-tennis",
+    "name": "Artarmon Tennis in Artarmon NSW",
+    "location": "",
+    "booking_url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+    "venue_url": "",
+    "source": "auto-discovered",
+    "active": false
+  },
+  {
+    "slug": "bondi-tc",
+    "name": "Bondi Beach Tennis in Bondi NSW",
+    "location": "",
+    "booking_url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+    "venue_url": "",
+    "source": "auto-discovered",
+    "active": false
+  },
+  {
+    "slug": "cammeray-tc",
+    "name": "Cammeray Tennis Club in Cammeray NSW",
+    "location": "",
+    "booking_url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
+    "venue_url": "",
+    "source": "auto-discovered",
+    "active": false
+  },
+  {
+    "slug": "cooper-park-tc",
+    "name": "Cooper Park Tennis in Woollahra NSW",
+    "location": "",
+    "booking_url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
+    "venue_url": "",
+    "source": "auto-discovered",
+    "active": false
+  },
+  {
+    "slug": "gosford-tennis-club",
+    "name": "Gosford Tennis Club (Tennis) in Gosford NSW",
+    "location": "",
+    "booking_url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+    "venue_url": "",
+    "source": "auto-discovered",
+    "active": false
+  }
+]

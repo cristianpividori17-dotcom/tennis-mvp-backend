@@ -1,0 +1,3874 @@
+{
+  "20260325": {
+    "9am": {
+      "collected_at": "2026-03-13T10:50:52.426076+00:00",
+      "source": "manual-cli",
+      "total_duration_ms": 1441.57,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 8,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": true,
+          "available_courts": 5,
+          "duration_ms": 1005.82
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 945.17
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 904.85
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 679.53
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 1411.83
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 756.6
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 8,
+          "duration_ms": 1341.0
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": true,
+          "available_courts": 6,
+          "duration_ms": 930.98
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 869.45
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 8,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": null
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            },
+            {
+              "name": "Court 8",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Snape Park Tennis Centre",
+          "location": "Maroubra",
+          "surface": "Mixed Surfaces",
+          "url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
+          "available_courts": 6,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Artarmon Tennis Centre",
+          "location": "Artarmon",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+          "available_courts": 5,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Cammeray Tennis Club",
+          "location": "Cammeray",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": null
+            },
+            {
+              "name": "Court 3",
+              "surface": null
+            },
+            {
+              "name": "Court 4",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Sydney Boys High School Tennis Courts",
+          "location": "Moore Park",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Bondi Beach Tennis",
+          "location": "Bondi",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 2 (Singles Court)",
+              "surface": null
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "20260313": {
+    "7am": {
+      "collected_at": "2026-03-13T11:00:16.879364+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1256.2,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 0,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 789.48
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 867.26
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 999.49
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 459.12
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 984.34
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 964.54
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 940.45
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 816.99
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 990.68
+        }
+      ],
+      "errors": [],
+      "results": []
+    },
+    "8am": {
+      "collected_at": "2026-03-13T11:00:38.209069+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1309.44,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 0,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1023.5
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 849.98
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 876.43
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 655.32
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 979.22
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 649.2
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 937.41
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 905.92
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 760.3
+        }
+      ],
+      "errors": [],
+      "results": []
+    },
+    "9am": {
+      "collected_at": "2026-03-13T11:00:59.254417+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1026.55,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 0,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 473.36
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 774.74
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 658.53
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 541.7
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 595.55
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 740.89
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 692.47
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 626.73
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 715.17
+        }
+      ],
+      "errors": [],
+      "results": []
+    },
+    "10am": {
+      "collected_at": "2026-03-13T11:01:20.415467+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1145.54,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 0,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 690.73
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 764.02
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 781.34
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 526.98
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 889.63
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 703.49
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 603.99
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 745.66
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 748.07
+        }
+      ],
+      "errors": [],
+      "results": []
+    },
+    "5pm": {
+      "collected_at": "2026-03-13T11:01:41.782727+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1351.55,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 0,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 724.42
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 873.57
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 924.72
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 620.2
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 916.69
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 829.04
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 874.37
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 786.97
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 782.61
+        }
+      ],
+      "errors": [],
+      "results": []
+    },
+    "6pm": {
+      "collected_at": "2026-03-13T11:02:03.256114+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1457.91,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 0,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1163.82
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 785.8
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 766.16
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 713.74
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 734.8
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 762.53
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1218.91
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 874.53
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 736.18
+        }
+      ],
+      "errors": [],
+      "results": []
+    },
+    "7pm": {
+      "collected_at": "2026-03-13T11:02:24.521311+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1246.54,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 0,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 904.2
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1050.88
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1142.21
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 641.8
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1006.55
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 637.35
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 915.68
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 590.51
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1110.54
+        }
+      ],
+      "errors": [],
+      "results": []
+    },
+    "8pm": {
+      "collected_at": "2026-03-13T11:02:45.669275+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1129.88,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 0,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 738.9
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 870.92
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 847.98
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 534.7
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 827.75
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 827.32
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 824.22
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 580.89
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 657.08
+        }
+      ],
+      "errors": [],
+      "results": []
+    }
+  },
+  "20260314": {
+    "7am": {
+      "collected_at": "2026-03-13T11:03:06.877262+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1191.66,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 5,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 793.37
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 880.97
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 732.6
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 538.47
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 8,
+          "duration_ms": 865.03
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 726.02
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 4,
+          "duration_ms": 640.95
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 658.71
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 689.34
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 8,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 4,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Artarmon Tennis Centre",
+          "location": "Artarmon",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Cooper Park Tennis",
+          "location": "Woollahra",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 6",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            }
+          ]
+        }
+      ]
+    },
+    "8am": {
+      "collected_at": "2026-03-13T11:03:28.038397+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1144.68,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 3,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 805.3
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 828.29
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 737.42
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 550.94
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 8,
+          "duration_ms": 1003.07
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 588.93
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 710.78
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 649.37
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 669.89
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 8,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Artarmon Tennis Centre",
+          "location": "Artarmon",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 7",
+              "surface": null
+            }
+          ]
+        }
+      ]
+    },
+    "9am": {
+      "collected_at": "2026-03-13T11:03:49.249522+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1197.47,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 2,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 814.21
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 851.13
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 890.0
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 579.07
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 5,
+          "duration_ms": 770.44
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 688.4
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 830.58
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 726.05
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 612.88
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 5,
+          "courts": [
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            }
+          ]
+        }
+      ]
+    },
+    "10am": {
+      "collected_at": "2026-03-13T11:04:10.754327+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1486.71,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 1,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 794.63
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1003.61
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 694.43
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 639.91
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 5,
+          "duration_ms": 1474.46
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 616.81
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 916.03
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 515.2
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 748.14
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 5,
+          "courts": [
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        }
+      ]
+    },
+    "5pm": {
+      "collected_at": "2026-03-13T11:04:32.308970+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1539.0,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 2,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1107.33
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1109.24
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1047.1
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 667.19
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 8,
+          "duration_ms": 1382.67
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 865.73
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1203.44
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 989.87
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1044.47
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 8,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            }
+          ]
+        }
+      ]
+    },
+    "6pm": {
+      "collected_at": "2026-03-13T11:04:53.963680+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1632.98,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 5,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1049.29
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1198.4
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 998.34
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 731.93
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 9,
+          "duration_ms": 1345.8
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 934.98
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 1219.47
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": true,
+          "available_courts": 5,
+          "duration_ms": 1166.03
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 893.02
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 9,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Snape Park Tennis Centre",
+          "location": "Maroubra",
+          "surface": "Mixed Surfaces",
+          "url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
+          "available_courts": 5,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Cooper Park Tennis",
+          "location": "Woollahra",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 6",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        }
+      ]
+    },
+    "7pm": {
+      "collected_at": "2026-03-13T11:05:15.672115+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1683.57,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 4,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 884.17
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 991.94
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 813.23
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 844.87
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 9,
+          "duration_ms": 1110.7
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 940.88
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 4,
+          "duration_ms": 1114.98
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 945.24
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 893.03
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 9,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 4,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Bondi Beach Tennis",
+          "location": "Bondi",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 2 (Singles Court)",
+              "surface": null
+            }
+          ]
+        }
+      ]
+    },
+    "8pm": {
+      "collected_at": "2026-03-13T11:05:37.219443+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1523.45,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 5,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 986.21
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 917.19
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 911.77
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 697.28
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 9,
+          "duration_ms": 1125.21
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 865.35
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 7,
+          "duration_ms": 1084.77
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 956.63
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 819.25
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 9,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 7,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": null
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            },
+            {
+              "name": "Court 8",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Bondi Beach Tennis",
+          "location": "Bondi",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 1 (Doubles Court)",
+              "surface": null
+            },
+            {
+              "name": "Court 2 (Singles Court)",
+              "surface": null
+            },
+            {
+              "name": "Court 3 (Doubles Court)",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Cooper Park Tennis",
+          "location": "Woollahra",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 6",
+              "surface": null
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            },
+            {
+              "name": "Court 8",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "20260315": {
+    "7am": {
+      "collected_at": "2026-03-13T11:05:58.882246+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1641.32,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 7,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 1191.32
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 1190.57
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 1086.23
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 745.32
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 9,
+          "duration_ms": 1404.61
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 889.5
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 5,
+          "duration_ms": 1432.29
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 931.42
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": true,
+          "available_courts": 4,
+          "duration_ms": 1059.84
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 9,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 5,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            },
+            {
+              "name": "Court 8",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Sydney Boys High School Tennis Courts",
+          "location": "Moore Park",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
+          "available_courts": 4,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Artarmon Tennis Centre",
+          "location": "Artarmon",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Cammeray Tennis Club",
+          "location": "Cammeray",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": null
+            },
+            {
+              "name": "Court 4",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Bondi Beach Tennis",
+          "location": "Bondi",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 1 (Doubles Court)",
+              "surface": null
+            }
+          ]
+        }
+      ]
+    },
+    "8am": {
+      "collected_at": "2026-03-13T11:06:20.436429+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1527.1,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 2,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1066.68
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1013.68
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 935.0
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 734.73
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 5,
+          "duration_ms": 1178.67
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 909.66
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 6,
+          "duration_ms": 1138.97
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 862.7
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 784.86
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 6,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": null
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            },
+            {
+              "name": "Court 8",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 5,
+          "courts": [
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        }
+      ]
+    },
+    "9am": {
+      "collected_at": "2026-03-13T11:06:42.077255+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1618.31,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 2,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 1104.93
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1022.32
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1048.75
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 675.14
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 4,
+          "duration_ms": 1285.82
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 936.25
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1221.68
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1125.39
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 971.77
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 4,
+          "courts": [
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Artarmon Tennis Centre",
+          "location": "Artarmon",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        }
+      ]
+    },
+    "10am": {
+      "collected_at": "2026-03-13T11:07:03.329097+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1224.59,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 1,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 841.14
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 805.48
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 708.08
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 607.09
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 954.3
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 796.31
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 881.21
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 762.77
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 610.73
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 7",
+              "surface": null
+            }
+          ]
+        }
+      ]
+    },
+    "5pm": {
+      "collected_at": "2026-03-13T11:07:24.610414+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1263.52,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 6,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 867.18
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 712.72
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 792.6
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 552.96
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 8,
+          "duration_ms": 963.23
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 787.53
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 7,
+          "duration_ms": 942.71
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 691.92
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 702.37
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 8,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 7,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            },
+            {
+              "name": "Court 8",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Snape Park Tennis Centre",
+          "location": "Maroubra",
+          "surface": "Mixed Surfaces",
+          "url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Artarmon Tennis Centre",
+          "location": "Artarmon",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Bondi Beach Tennis",
+          "location": "Bondi",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 3 (Doubles Court)",
+              "surface": null
+            }
+          ]
+        }
+      ]
+    },
+    "6pm": {
+      "collected_at": "2026-03-13T11:07:45.978575+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1350.3,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 8,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 865.11
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 928.86
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 750.18
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": true,
+          "available_courts": 1,
+          "duration_ms": 631.13
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 9,
+          "duration_ms": 991.63
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 798.68
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 6,
+          "duration_ms": 1049.66
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": true,
+          "available_courts": 5,
+          "duration_ms": 832.16
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": true,
+          "available_courts": 4,
+          "duration_ms": 710.05
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 9,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 6,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            },
+            {
+              "name": "Court 8",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Snape Park Tennis Centre",
+          "location": "Maroubra",
+          "surface": "Mixed Surfaces",
+          "url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
+          "available_courts": 5,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Sydney Boys High School Tennis Courts",
+          "location": "Moore Park",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
+          "available_courts": 4,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Artarmon Tennis Centre",
+          "location": "Artarmon",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Cammeray Tennis Club",
+          "location": "Cammeray",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": null
+            },
+            {
+              "name": "Court 4",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Cooper Park Tennis",
+          "location": "Woollahra",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
+          "available_courts": 1,
+          "courts": [
+            {
+              "name": "Court 6",
+              "surface": null
+            }
+          ]
+        }
+      ]
+    },
+    "7pm": {
+      "collected_at": "2026-03-13T11:08:07.258473+00:00",
+      "source": "scheduler",
+      "total_duration_ms": 1259.96,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 6,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": true,
+          "available_courts": 5,
+          "duration_ms": 927.36
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 841.99
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 788.22
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 558.39
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 9,
+          "duration_ms": 688.97
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 767.11
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 6,
+          "duration_ms": 895.0
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 721.31
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": true,
+          "available_courts": 4,
+          "duration_ms": 824.73
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 9,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 6,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            },
+            {
+              "name": "Court 8",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Artarmon Tennis Centre",
+          "location": "Artarmon",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+          "available_courts": 5,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Sydney Boys High School Tennis Courts",
+          "location": "Moore Park",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
+          "available_courts": 4,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Cammeray Tennis Club",
+          "location": "Cammeray",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": null
+            },
+            {
+              "name": "Court 3",
+              "surface": null
+            },
+            {
+              "name": "Court 4",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            }
+          ]
+        }
+      ]
+    },
+    "8pm": {
+      "collected_at": "2026-03-13T13:14:38.562288+00:00",
+      "source": "manual-refresh",
+      "total_duration_ms": 2380.84,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 8,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": true,
+          "available_courts": 6,
+          "duration_ms": 1761.42
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": true,
+          "available_courts": 2,
+          "duration_ms": 1876.62
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 1957.45
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 750.98
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": true,
+          "available_courts": 9,
+          "duration_ms": 1841.62
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": true,
+          "available_courts": 3,
+          "duration_ms": 1661.15
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": true,
+          "available_courts": 6,
+          "duration_ms": 1958.02
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1612.24
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": true,
+          "available_courts": 4,
+          "duration_ms": 1761.07
+        }
+      ],
+      "errors": [],
+      "results": [
+        {
+          "name": "Gosford Tennis Club",
+          "location": "Gosford",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+          "available_courts": 9,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 12",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 13",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Artarmon Tennis Centre",
+          "location": "Artarmon",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+          "available_courts": 6,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 6",
+              "surface": "Synthetic Grass"
+            }
+          ]
+        },
+        {
+          "name": "Ryde Tennis Centre",
+          "location": "Ryde",
+          "surface": "Synthetic Grass",
+          "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+          "available_courts": 6,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 5",
+              "surface": "Synthetic Grass"
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            },
+            {
+              "name": "Court 8",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Sydney Boys High School Tennis Courts",
+          "location": "Moore Park",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
+          "available_courts": 4,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 4",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Cammeray Tennis Club",
+          "location": "Cammeray",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 2",
+              "surface": null
+            },
+            {
+              "name": "Court 3",
+              "surface": null
+            },
+            {
+              "name": "Court 4",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Cooper Park Tennis",
+          "location": "Woollahra",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 6",
+              "surface": null
+            },
+            {
+              "name": "Court 7",
+              "surface": null
+            },
+            {
+              "name": "Court 8",
+              "surface": null
+            }
+          ]
+        },
+        {
+          "name": "Mowbray Public School Tennis Courts",
+          "location": "Lane Cove",
+          "surface": "Hard Court",
+          "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+          "available_courts": 3,
+          "courts": [
+            {
+              "name": "Court 1",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 2",
+              "surface": "Hard Court"
+            },
+            {
+              "name": "Court 3",
+              "surface": "Hard Court"
+            }
+          ]
+        },
+        {
+          "name": "Bondi Beach Tennis",
+          "location": "Bondi",
+          "surface": "Surface not available",
+          "url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+          "available_courts": 2,
+          "courts": [
+            {
+              "name": "Court 2 (Singles Court)",
+              "surface": null
+            },
+            {
+              "name": "Court 3 (Doubles Court)",
+              "surface": null
+            }
+          ]
+        }
+      ]
+    },
+    "7:30pm": {
+      "collected_at": "2026-03-13T14:15:46.979612+00:00",
+      "source": "manual-cli",
+      "total_duration_ms": 1402.42,
+      "total_venues": 9,
+      "success_count": 9,
+      "error_count": 0,
+      "available_venue_count": 0,
+      "venue_checks": [
+        {
+          "venue_key": "Artarmon",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1122.63
+        },
+        {
+          "venue_key": "Bondi",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1077.32
+        },
+        {
+          "venue_key": "Cammeray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 773.66
+        },
+        {
+          "venue_key": "Cooper Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 671.05
+        },
+        {
+          "venue_key": "Gosford",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 904.51
+        },
+        {
+          "venue_key": "Mowbray",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 722.31
+        },
+        {
+          "venue_key": "Ryde",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1166.67
+        },
+        {
+          "venue_key": "Snape Park",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 986.63
+        },
+        {
+          "venue_key": "Sydney Boys",
+          "status": "success",
+          "available": false,
+          "available_courts": 0,
+          "duration_ms": 1049.0
+        }
+      ],
+      "errors": [],
+      "results": []
+    }
+  }
+}
