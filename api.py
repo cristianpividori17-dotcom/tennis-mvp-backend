@@ -1,3 +1,5 @@
+import re
+
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from tennisvenues_scraper import get_available_courts_from_url
@@ -61,7 +63,6 @@ VENUE_INFO = {
 }
 
 # Superficie REAL por cancha
-# Acá puedes seguir agregando venues más adelante.
 VENUE_COURT_SURFACES = {
     "Mowbray": {
         "Court 1": "Hard Court",
@@ -170,20 +171,71 @@ def format_results_for_frontend(results):
     return formatted
 
 
+def normalize_court_name(court_name):
+    if not court_name:
+        return ""
+
+    name = court_name.strip()
+
+    # Court N1 -> Court 1
+    name = re.sub(r"\bCourt\s*N(\d+)\b", r"Court \1", name, flags=re.IGNORECASE)
+
+    # quitar superficie dentro del nombre
+    name = re.sub(
+        r"\s*\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass)\)\s*",
+        "",
+        name,
+        flags=re.IGNORECASE,
+    )
+
+    name = re.sub(r"\s+", " ", name).strip()
+    return name
+
+
+def extract_surface_from_court_name(court_name):
+    if not court_name:
+        return None
+
+    match = re.search(
+        r"\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass)\)",
+        court_name,
+        flags=re.IGNORECASE,
+    )
+
+    if not match:
+        return None
+
+    surface = match.group(1).strip()
+
+    if surface.lower() == "synthetic":
+        return "Synthetic Grass"
+
+    return surface
+
+
 def get_surface_for_court(venue_key, court_name):
+    cleaned_name = normalize_court_name(court_name)
+
+    # primero intento sacar la superficie desde el propio nombre
+    inline_surface = extract_surface_from_court_name(court_name)
+    if inline_surface:
+        return inline_surface
+
+    # si no existe en el nombre, uso el mapa manual del venue
     venue_surfaces = VENUE_COURT_SURFACES.get(venue_key, {})
-    return venue_surfaces.get(court_name)
+    return venue_surfaces.get(cleaned_name)
 
 
 def build_court_objects(venue_key, courts):
     court_objects = []
 
     for court_name in courts:
+        cleaned_name = normalize_court_name(court_name)
         surface = get_surface_for_court(venue_key, court_name)
 
         court_objects.append(
             {
-                "name": court_name,
+                "name": cleaned_name,
                 "surface": surface,
             }
         )
