@@ -21,7 +21,6 @@ CONFIG_FILE = "venues_config.json"
 MAX_WORKERS = 8
 CACHE_TTL_SECONDS = 300  # 5 minutos
 
-# cache simple en memoria
 availability_cache = {}
 
 
@@ -70,11 +69,11 @@ def check_one_venue(name, url, date, time_str):
             selected_time=time_str,
         )
         return name, courts
-    except Exception:
-        return name, []
+    except Exception as e:
+        return name, {"error": str(e), "courts": []}
 
 
-def check_all_venues(date, time_str):
+def check_all_venues_raw(date, time_str):
     venues, _, _ = load_active_venues()
     results = {}
 
@@ -85,10 +84,22 @@ def check_all_venues(date, time_str):
         }
 
         for future in as_completed(futures):
-            name, courts = future.result()
-            results[name] = courts
+            name, result = future.result()
+            results[name] = result
 
     return results
+
+
+def normalize_check_results(raw_results):
+    normalized = {}
+
+    for venue, result in raw_results.items():
+        if isinstance(result, dict) and "courts" in result:
+            normalized[venue] = result["courts"]
+        else:
+            normalized[venue] = result if isinstance(result, list) else []
+
+    return normalized
 
 
 def filter_only_available(results):
@@ -265,11 +276,45 @@ def availability(date: str, time: str):
     if cached_data is not None:
         return cached_data
 
-    results = check_all_venues(date=date, time_str=time)
-    available = filter_only_available(results)
+    raw_results = check_all_venues_raw(date=date, time_str=time)
+    normalized_results = normalize_check_results(raw_results)
+    available = filter_only_available(normalized_results)
     formatted = format_results_for_frontend(available)
     cards = build_frontend_cards(formatted)
 
     set_cached_response(cache_key, cards)
 
     return cards
+
+
+@app.get("/availability-debug")
+def availability_debug(date: str, time: str):
+    raw_results = check_all_venues_raw(date=date, time_str=time)
+    _, venue_info, _ = load_active_venues()
+
+    debug_output = []
+
+    for venue_key, result in raw_results.items():
+        info = venue_info.get(venue_key, {})
+
+        if isinstance(result, dict) and "courts" in result:
+            courts = result.get("courts", [])
+            error = result.get("error")
+        else:
+            courts = result if isinstance(result, list) else []
+            error = None
+
+        debug_output.append(
+            {
+                "key": venue_key,
+                "name": info.get("name"),
+                "location": info.get("location"),
+                "url": info.get("url"),
+                "available_count": len(courts),
+                "courts": courts,
+                "error": error,
+            }
+        )
+
+    debug_output.sort(key=lambda x: x["available_count"], reverse=True)
+    return debug_output
