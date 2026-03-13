@@ -318,3 +318,4 @@ def availability_debug(date: str, time: str):
 
     debug_output.sort(key=lambda x: x["available_count"], reverse=True)
     return debug_output
+# debug change
