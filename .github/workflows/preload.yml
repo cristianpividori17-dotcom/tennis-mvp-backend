@@ -1,0 +1,17 @@
+name: preload-availability
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  preload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call preload endpoint
+        run: |
+          curl -X GET "https://tennis-availability-api.onrender.com/refresh?date=$(date +%Y%m%d)&time=7pm"
+          curl -X GET "https://tennis-availability-api.onrender.com/refresh?date=$(date +%Y%m%d)&time=7:30pm"
+          curl -X GET "https://tennis-availability-api.onrender.com/refresh?date=$(date +%Y%m%d)&time=8pm"
