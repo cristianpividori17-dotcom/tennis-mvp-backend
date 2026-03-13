@@ -1,0 +1,120 @@
+[
+  {
+    "key": "Mowbray",
+    "slug": "mowbray-public-school",
+    "name": "Mowbray Public School Tennis Courts",
+    "location": "Lane Cove",
+    "surface": "Hard Court",
+    "booking_url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+    "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+    "source": "manual",
+    "active": true,
+    "court_surfaces": {
+      "Court 1": "Hard Court",
+      "Court 2": "Hard Court",
+      "Court 3": "Hard Court",
+      "Court 4": "Hard Court"
+    }
+  },
+  {
+    "key": "Sydney Boys",
+    "slug": "sydney-boys-high-school",
+    "name": "Sydney Boys High School Tennis Courts",
+    "location": "Moore Park",
+    "surface": "Hard Court",
+    "booking_url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
+    "url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
+    "source": "manual",
+    "active": true,
+    "court_surfaces": {
+      "Court 1": "Hard Court",
+      "Court 2": "Hard Court",
+      "Court 3": "Hard Court",
+      "Court 4": "Hard Court",
+      "Court 5": "Hard Court",
+      "Court 6": "Hard Court"
+    }
+  },
+  {
+    "key": "Artarmon",
+    "slug": "artarmon-tennis",
+    "name": "Artarmon Tennis Centre",
+    "location": "Artarmon",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+    "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+    "source": "manual",
+    "active": true,
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "Ryde",
+    "slug": "ryde-tennis-centre",
+    "name": "Ryde Tennis Centre",
+    "location": "Ryde",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+    "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+    "source": "manual",
+    "active": true,
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "Gosford",
+    "slug": "gosford-tennis-club",
+    "name": "Gosford Tennis Club",
+    "location": "Gosford",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+    "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+    "source": "manual",
+    "active": true,
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 7": "Synthetic Grass",
+      "Court 8": "Synthetic Grass",
+      "Court 9": "Synthetic Grass",
+      "Court 10": "Synthetic Grass",
+      "Court 11": "Synthetic Grass",
+      "Court 12": "Synthetic Grass",
+      "Court 13": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "Snape Park",
+    "slug": "snape-park-tc",
+    "name": "Snape Park Tennis Centre",
+    "location": "Maroubra",
+    "surface": "Mixed Surfaces",
+    "booking_url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
+    "url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
+    "source": "manual",
+    "active": true,
+    "court_surfaces": {
+      "Court 1": "Hard Court",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass"
+    }
+  }
+]
