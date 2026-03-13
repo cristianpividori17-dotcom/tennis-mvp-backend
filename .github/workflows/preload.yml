@@ -19,7 +19,7 @@ jobs:
           from datetime import datetime, timedelta, timezone
 
           BASE_URL = "https://tennis-availability-api.onrender.com"
-          DAYS_AHEAD = 3
+          DAYS_AHEAD = 7
           PAUSE_SECONDS = 2
 
           def build_time_slots():
