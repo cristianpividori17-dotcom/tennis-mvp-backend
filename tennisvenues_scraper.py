@@ -2,7 +2,42 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 import urllib3
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+def normalize_time_string(value):
+    if value is None:
+        return ""
+
+    text = str(value)
+
+    text = text.replace("\xa0", " ")
+    text = text.strip().lower()
+    text = text.replace(" ", "")
+    text = text.replace(".", ":")
+
+    if text.endswith("am") or text.endswith("pm"):
+        suffix = text[-2:]
+        time_part = text[:-2]
+    else:
+        suffix = ""
+        time_part = text
+
+    if ":" in time_part:
+        hour_str, minute_str = time_part.split(":", 1)
+    else:
+        hour_str = time_part
+        minute_str = "00"
+
+    try:
+        hour_int = int(hour_str)
+        minute_int = int(minute_str)
+    except ValueError:
+        return text
+
+    normalized = f"{hour_int}:{minute_int:02d}{suffix}"
+    return normalized
 
 
 def fetch_booking_html(client_id, venue_id, date_yyyymmdd, page=0):
@@ -13,7 +48,7 @@ def fetch_booking_html(client_id, venue_id, date_yyyymmdd, page=0):
         "venue_id": venue_id,
         "resource_id": "",
         "date": date_yyyymmdd,
-        "page": page
+        "page": page,
     }
 
     response = requests.get(url, params=payload, verify=False)
@@ -64,13 +99,16 @@ def parse_booking_table(ajax_html):
             else:
                 status = "unknown"
 
-            data.append({
-                "time": time_text,
-                "court": court_name,
-                "status": status,
-                "text": cell_text,
-                "classes": ", ".join(cell_classes)
-            })
+            data.append(
+                {
+                    "time": time_text,
+                    "time_norm": normalize_time_string(time_text),
+                    "court": court_name,
+                    "status": status,
+                    "text": cell_text,
+                    "classes": ", ".join(cell_classes),
+                }
+            )
 
     return pd.DataFrame(data)
 
@@ -80,7 +118,7 @@ def get_booking_dataframe(client_id, venue_id, date_yyyymmdd, page=0):
         client_id=client_id,
         venue_id=venue_id,
         date_yyyymmdd=date_yyyymmdd,
-        page=page
+        page=page,
     )
     return parse_booking_table(ajax_html)
 
@@ -90,10 +128,12 @@ def get_available_courts_for_time(client_id, venue_id, date_yyyymmdd, selected_t
         client_id=client_id,
         venue_id=venue_id,
         date_yyyymmdd=date_yyyymmdd,
-        page=page
+        page=page,
     )
 
-    df_time = df[df["time"] == selected_time].copy()
+    selected_time_norm = normalize_time_string(selected_time)
+
+    df_time = df[df["time_norm"] == selected_time_norm].copy()
     df_available = df_time[df_time["status"] == "available"].copy()
 
     return df_available
@@ -105,18 +145,10 @@ def get_available_court_names(client_id, venue_id, date_yyyymmdd, selected_time,
         venue_id=venue_id,
         date_yyyymmdd=date_yyyymmdd,
         selected_time=selected_time,
-        page=page
+        page=page,
     )
 
     return df_available["court"].tolist()
-
-
-
-
-
-
-
-
 
 
 def extract_venue_info_from_booking_page(booking_url):
@@ -154,17 +186,10 @@ def extract_venue_info_from_booking_page(booking_url):
                 return {
                     "booking_url": booking_url,
                     "client_id": found_client_id,
-                    "venue_id": found_venue_id
+                    "venue_id": found_venue_id,
                 }
 
     raise Exception(f"No se pudo encontrar client_id y venue_id en {booking_url}")
-
-
-
-
-
-
-
 
 
 def get_available_courts_from_url(booking_url, date_yyyymmdd, selected_time, page=0):
@@ -175,5 +200,5 @@ def get_available_courts_from_url(booking_url, date_yyyymmdd, selected_time, pag
         venue_id=venue_info["venue_id"],
         date_yyyymmdd=date_yyyymmdd,
         selected_time=selected_time,
-        page=page
+        page=page,
     )
