@@ -64,7 +64,6 @@ def normalize_time_string(value):
         return ""
 
     text = str(value)
-
     text = text.replace("\xa0", " ")
     text = text.strip().lower()
     text = text.replace(" ", "")
@@ -126,55 +125,78 @@ def fetch_booking_html(client_id, venue_id, date_yyyymmdd, booking_url, page=0):
 
 def parse_booking_table(ajax_html):
     soup = BeautifulSoup(ajax_html, "html.parser")
-    booking_tables = soup.find_all("table", class_="BookingSheet")
+    booking_table = soup.find("table", class_="BookingSheet")
 
-    if not booking_tables:
+    if not booking_table:
         snippet = ajax_html[:500].replace("\n", " ").replace("\r", " ")
         raise Exception(f"No encontré la tabla BookingSheet. Snippet: {snippet}")
 
-    booking_table = booking_tables[0]
     rows = booking_table.find_all("tr")
+    if not rows:
+        return pd.DataFrame(columns=["time", "time_norm", "court", "status", "text", "classes"])
+
+    header_row = rows[0]
+    header_cells = header_row.find_all(["th", "td"])
 
     courts = []
+    for cell in header_cells[1:]:
+        label = cell.get_text(" ", strip=True)
+        if label:
+            courts.append(label)
+
     data = []
 
-    header_cells = rows[0].find_all(["th", "td"])
-    for cell in header_cells[1:]:
-        courts.append(cell.get_text(" ", strip=True))
-
     for row in rows[1:]:
-        cells = row.find_all(["th", "td"])
-
-        if len(cells) < 2:
+        cells = row.find_all("td")
+        if not cells:
             continue
 
-        time_text = cells[0].get_text(" ", strip=True)
-
-        if not time_text:
+        if len(cells) >= len(courts) + 1:
+            court_cells = cells[-len(courts):]
+        elif len(cells) == len(courts):
+            court_cells = cells
+        else:
             continue
 
-        for i, cell in enumerate(cells[1:]):
-            court_name = courts[i] if i < len(courts) else f"Court_{i+1}"
-            cell_text = cell.get_text(" ", strip=True)
+        for i, cell in enumerate(court_cells):
+            if i >= len(courts):
+                continue
+
+            court_name = courts[i]
             cell_classes = cell.get("class", [])
+            links = cell.find_all("a")
 
-            if "NotAvailable" in cell_classes:
-                status = "not_available"
-            elif "Available" in cell_classes:
-                status = "available"
+            if links:
+                for link in links:
+                    time_text = link.get_text(" ", strip=True)
+
+                    if not time_text:
+                        continue
+
+                    data.append(
+                        {
+                            "time": time_text,
+                            "time_norm": normalize_time_string(time_text),
+                            "court": court_name,
+                            "status": "available",
+                            "text": time_text,
+                            "classes": ", ".join(cell_classes),
+                        }
+                    )
             else:
-                status = "unknown"
+                cell_text = cell.get_text(" ", strip=True)
 
-            data.append(
-                {
-                    "time": time_text,
-                    "time_norm": normalize_time_string(time_text),
-                    "court": court_name,
-                    "status": status,
-                    "text": cell_text,
-                    "classes": ", ".join(cell_classes),
-                }
-            )
+                if cell_text:
+                    data.append(
+                        {
+                            "time": cell_text,
+                            "time_norm": normalize_time_string(cell_text),
+                            "court": court_name,
+                            "status": "not_available",
+                            "text": cell_text,
+                            "classes": ", ".join(cell_classes),
+                        }
+                    )
 
     return pd.DataFrame(data)
 
@@ -206,10 +228,14 @@ def get_available_courts_for_time(
         page=page,
     )
 
+    if df.empty:
+        return df
+
     selected_time_norm = normalize_time_string(selected_time)
 
-    df_time = df[df["time_norm"] == selected_time_norm].copy()
-    df_available = df_time[df_time["status"] == "available"].copy()
+    df_available = df[
+        (df["time_norm"] == selected_time_norm) & (df["status"] == "available")
+    ].copy()
 
     return df_available
 
@@ -230,6 +256,9 @@ def get_available_court_names(
         booking_url=booking_url,
         page=page,
     )
+
+    if df_available.empty:
+        return []
 
     return df_available["court"].tolist()
 
@@ -262,19 +291,21 @@ def extract_venue_info_from_booking_page(booking_url):
         content = script.get_text(" ", strip=True)
 
         if "fetch-booking-data" in content and "venue_id" in content:
-            if "/booking/" in content and "/fetch-booking-data" in content:
-                start = content.find("/booking/") + len("/booking/")
-                end = content.find("/fetch-booking-data", start)
-                found_client_id = content[start:end].strip("/")
+            booking_match = re.search(
+                r"/booking/([^\"'/]+)/fetch-booking-data",
+                content,
+                flags=re.IGNORECASE,
+            )
+            if booking_match:
+                found_client_id = booking_match.group(1).strip()
 
-            marker = "venue_id:"
-            pos = content.find(marker)
-
-            if pos != -1:
-                partial = content[pos + len(marker):pos + len(marker) + 80]
-                digits = "".join(ch for ch in partial if ch.isdigit())
-                if digits:
-                    found_venue_id = digits
+            venue_match = re.search(
+                r"venue_id\s*:\s*['\"]?(\d+)['\"]?",
+                content,
+                flags=re.IGNORECASE,
+            )
+            if venue_match:
+                found_venue_id = venue_match.group(1).strip()
 
             if found_client_id and found_venue_id:
                 result = {
