@@ -2,11 +2,12 @@ import argparse
 import json
 import re
 import time
-from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
 
+from db_store import get_slot as get_db_slot
+from db_store import upsert_slot, use_db_storage
 from tennisvenues_scraper import get_available_courts_from_url
-from db_store import use_db_storage, upsert_slot, get_slot as get_db_slot
 
 CONFIG_FILE = "venues_config.json"
 STORE_FILE = "availability_store.json"
@@ -136,6 +137,28 @@ def load_store():
 def save_store(store):
     with open(STORE_FILE, "w", encoding="utf-8") as f:
         json.dump(store, f, indent=2, ensure_ascii=False)
+
+
+def get_existing_slot(date, time_str):
+    if use_db_storage():
+        return get_db_slot(date, time_str)
+
+    store = load_store()
+    return store.get(date, {}).get(time_str)
+
+
+def should_preserve_existing_slot(metadata):
+    success_count = metadata.get("success_count", 0)
+    error_count = metadata.get("error_count", 0)
+    total_venues = metadata.get("total_venues", 0)
+
+    if total_venues == 0:
+        return False
+
+    if success_count == 0 and error_count > 0:
+        return True
+
+    return False
 
 
 def check_one_venue(venue_key, url, date, time_str):
@@ -348,6 +371,18 @@ def collect_and_store_slot(date, time_str, source="collector"):
         "results": cards,
     }
 
+    if should_preserve_existing_slot(metadata):
+        existing = get_existing_slot(date, time_str)
+
+        if existing:
+            preserved = dict(existing)
+            preserved["preserved_due_to_scrape_errors"] = True
+            preserved["last_attempt"] = payload
+            return preserved
+
+        payload["verification_failed"] = True
+        return payload
+
     if use_db_storage():
         upsert_slot(date, time_str, payload)
         return get_db_slot(date, time_str)
@@ -387,13 +422,15 @@ def main():
 
     print("")
     print(f"Stored slot: {args.date} {args.time}")
-    print(f"Collected at: {payload['collected_at']}")
-    print(f"Total venues: {payload['total_venues']}")
-    print(f"Success count: {payload['success_count']}")
-    print(f"Error count: {payload['error_count']}")
-    print(f"Available venue count: {payload['available_venue_count']}")
-    print(f"Results count: {len(payload['results'])}")
-    print(f"Total duration ms: {payload['total_duration_ms']}")
+    print(f"Collected at: {payload.get('collected_at')}")
+    print(f"Total venues: {payload.get('total_venues')}")
+    print(f"Success count: {payload.get('success_count')}")
+    print(f"Error count: {payload.get('error_count')}")
+    print(f"Available venue count: {payload.get('available_venue_count')}")
+    print(f"Results count: {len(payload.get('results', []))}")
+    print(f"Total duration ms: {payload.get('total_duration_ms')}")
+    print(f"Verification failed: {payload.get('verification_failed', False)}")
+    print(f"Preserved due to scrape errors: {payload.get('preserved_due_to_scrape_errors', False)}")
 
 
 if __name__ == "__main__":
