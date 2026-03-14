@@ -291,12 +291,22 @@ def extract_venue_info_from_booking_page(booking_url):
     raise Exception(f"No se pudo encontrar client_id y venue_id en {booking_url}")
 
 
-def get_available_courts_from_url(booking_url, date_yyyymmdd, selected_time, page=0):
-    venue_info = extract_venue_info_from_booking_page(booking_url)
+def get_available_courts_from_url(
+    booking_url,
+    date_yyyymmdd,
+    selected_time,
+    page=0,
+    client_id=None,
+    venue_id=None,
+):
+    if not client_id or not venue_id:
+        venue_info = extract_venue_info_from_booking_page(booking_url)
+        client_id = venue_info["client_id"]
+        venue_id = venue_info["venue_id"]
 
     return get_available_court_names(
-        client_id=venue_info["client_id"],
-        venue_id=venue_info["venue_id"],
+        client_id=client_id,
+        venue_id=venue_id,
         date_yyyymmdd=date_yyyymmdd,
         selected_time=selected_time,
         booking_url=booking_url,

@@ -27,7 +27,11 @@ def load_active_venues():
     for venue in active_venues:
         key = venue["key"]
 
-        venues_by_key[key] = venue["booking_url"]
+        venues_by_key[key] = {
+            "booking_url": venue["booking_url"],
+            "client_id": venue.get("client_id"),
+            "venue_id": venue.get("venue_id"),
+        }
 
         venue_info[key] = {
             "name": venue.get("name"),
@@ -161,14 +165,16 @@ def should_preserve_existing_slot(metadata):
     return False
 
 
-def check_one_venue(venue_key, url, date, time_str):
+def check_one_venue(venue_key, target, date, time_str):
     started_at = time.perf_counter()
 
     try:
         courts = get_available_courts_from_url(
-            booking_url=url,
+            booking_url=target["booking_url"],
             date_yyyymmdd=date,
             selected_time=time_str,
+            client_id=target.get("client_id"),
+            venue_id=target.get("venue_id"),
         )
 
         duration_ms = round((time.perf_counter() - started_at) * 1000, 2)
@@ -212,8 +218,8 @@ def check_all_venues(date, time_str):
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = {
-            executor.submit(check_one_venue, venue_key, url, date, time_str): venue_key
-            for venue_key, url in venues.items()
+            executor.submit(check_one_venue, venue_key, target, date, time_str): venue_key
+            for venue_key, target in venues.items()
         }
 
         for future in as_completed(futures):

@@ -14,7 +14,9 @@
       "Court 2": "Hard Court",
       "Court 3": "Hard Court",
       "Court 4": "Hard Court"
-    }
+    },
+    "client_id": "mowbray-public-school",
+    "venue_id": "2398"
   },
   {
     "key": "Sydney Boys",
@@ -33,7 +35,9 @@
       "Court 4": "Hard Court",
       "Court 5": "Hard Court",
       "Court 6": "Hard Court"
-    }
+    },
+    "client_id": "sydney-boys-high-school",
+    "venue_id": "2409"
   },
   {
     "key": "Artarmon",
@@ -52,7 +56,9 @@
       "Court 4": "Synthetic Grass",
       "Court 5": "Synthetic Grass",
       "Court 6": "Synthetic Grass"
-    }
+    },
+    "client_id": "artarmon-tennis",
+    "venue_id": "3472"
   },
   {
     "key": "Ryde",
@@ -70,7 +76,9 @@
       "Court 3": "Synthetic Grass",
       "Court 4": "Synthetic Grass",
       "Court 5": "Synthetic Grass"
-    }
+    },
+    "client_id": "ryde-tennis-centre",
+    "venue_id": "2494"
   },
   {
     "key": "Gosford",
@@ -96,7 +104,9 @@
       "Court 11": "Synthetic Grass",
       "Court 12": "Synthetic Grass",
       "Court 13": "Synthetic Grass"
-    }
+    },
+    "client_id": "gosford-tennis-club",
+    "venue_id": "3528"
   },
   {
     "key": "Snape Park",
@@ -115,7 +125,9 @@
       "Court 4": "Synthetic Grass",
       "Court 5": "Synthetic Grass",
       "Court 6": "Synthetic Grass"
-    }
+    },
+    "client_id": "snape-park-tc",
+    "venue_id": "2271"
   },
   {
     "key": "Bondi",
@@ -127,7 +139,9 @@
     "url": "https://www.tennisvenues.com.au/booking/bondi-tc",
     "source": "discovered",
     "active": true,
-    "court_surfaces": {}
+    "court_surfaces": {},
+    "client_id": "bondi-tc",
+    "venue_id": "1928"
   },
   {
     "key": "Cammeray",
@@ -139,7 +153,9 @@
     "url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
     "source": "discovered",
     "active": true,
-    "court_surfaces": {}
+    "court_surfaces": {},
+    "client_id": "cammeray-tc",
+    "venue_id": "1673"
   },
   {
     "key": "Cooper Park",
@@ -151,6 +167,8 @@
     "url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
     "source": "discovered",
     "active": true,
-    "court_surfaces": {}
+    "court_surfaces": {},
+    "client_id": "cooper-park-tc",
+    "venue_id": "1939"
   }
 ]
