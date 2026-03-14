@@ -10,7 +10,7 @@ from db_store import use_db_storage, upsert_slot, get_slot as get_db_slot
 
 CONFIG_FILE = "venues_config.json"
 STORE_FILE = "availability_store.json"
-MAX_WORKERS = 8
+MAX_WORKERS = 3
 
 
 def load_active_venues():
