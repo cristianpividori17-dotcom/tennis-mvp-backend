@@ -4,13 +4,14 @@ import time
 from pathlib import Path
 
 import requests
+from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 
 CONFIG_FILE = "venues_config.json"
 REQUEST_TIMEOUT = 20
-SLEEP_BETWEEN_VENUES_SECONDS = 2.5
+SLEEP_BETWEEN_VENUES_SECONDS = 2.0
 
 HEADERS = {
     "User-Agent": (
@@ -63,6 +64,20 @@ def save_config(data):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 
+def dedupe_preserve_order(items):
+    seen = set()
+    output = []
+
+    for item in items:
+        key = str(item)
+        if key in seen:
+            continue
+        seen.add(key)
+        output.append(item)
+
+    return output
+
+
 def extract_client_id_and_venue_id(html, booking_url):
     found_client_id = None
     found_venue_id = None
@@ -100,16 +115,62 @@ def extract_client_id_and_venue_id(html, booking_url):
     raise Exception(f"No pude extraer client_id y venue_id de {booking_url}")
 
 
+def extract_resource_ids_from_html(html):
+    soup = BeautifulSoup(html, "html.parser")
+    resource_ids = []
+
+    select_candidates = soup.find_all("select")
+    for select in select_candidates:
+        select_id = (select.get("id") or "").lower()
+        select_name = (select.get("name") or "").lower()
+
+        if "resource" in select_id or "resource" in select_name:
+            for option in select.find_all("option"):
+                value = (option.get("value") or "").strip()
+                if value:
+                    resource_ids.append(value)
+
+    hidden_inputs = soup.find_all("input")
+    for inp in hidden_inputs:
+        input_id = (inp.get("id") or "").lower()
+        input_name = (inp.get("name") or "").lower()
+        value = (inp.get("value") or "").strip()
+
+        if ("resource" in input_id or "resource" in input_name) and value:
+            resource_ids.append(value)
+
+    regex_patterns = [
+        r"resource_id\s*:\s*['\"]?(\d+)['\"]?",
+        r"resource_id\s*=\s*['\"]?(\d+)['\"]?",
+        r"['\"]resource_id['\"]\s*:\s*['\"]?(\d+)['\"]?",
+    ]
+
+    for pattern in regex_patterns:
+        for match in re.findall(pattern, html, flags=re.IGNORECASE):
+            resource_ids.append(str(match).strip())
+
+    array_patterns = [
+        r"resource_ids\s*:\s*\[([^\]]+)\]",
+        r"['\"]resource_ids['\"]\s*:\s*\[([^\]]+)\]",
+    ]
+
+    for pattern in array_patterns:
+        for block in re.findall(pattern, html, flags=re.IGNORECASE):
+            for digits in re.findall(r"\d+", block):
+                resource_ids.append(digits.strip())
+
+    resource_ids = [x for x in resource_ids if x]
+    resource_ids = dedupe_preserve_order(resource_ids)
+
+    return resource_ids
+
+
 def enrich_one_venue(session, venue):
     booking_url = venue.get("booking_url")
     name = venue.get("name") or venue.get("key") or booking_url
 
     if not booking_url:
         print(f"[SKIP] {name} -> sin booking_url")
-        return venue
-
-    if venue.get("client_id") and venue.get("venue_id"):
-        print(f"[OK] {name} -> ya tiene client_id y venue_id")
         return venue
 
     print(f"[FETCH] {name} -> {booking_url}")
@@ -124,12 +185,17 @@ def enrich_one_venue(session, venue):
         raise Exception(f"HTTP {response.status_code} al abrir {booking_url}")
 
     ids = extract_client_id_and_venue_id(response.text, booking_url)
+    resource_ids = extract_resource_ids_from_html(response.text)
 
     venue["client_id"] = ids["client_id"]
     venue["venue_id"] = ids["venue_id"]
+    venue["resource_ids"] = resource_ids
 
     print(
-        f"[ENRICHED] {name} -> client_id={venue['client_id']} venue_id={venue['venue_id']}"
+        f"[ENRICHED] {name} -> "
+        f"client_id={venue['client_id']} "
+        f"venue_id={venue['venue_id']} "
+        f"resource_ids={venue['resource_ids']}"
     )
 
     return venue

@@ -16,7 +16,12 @@
       "Court 4": "Hard Court"
     },
     "client_id": "mowbray-public-school",
-    "venue_id": "2398"
+    "venue_id": "2398",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3"
+    ]
   },
   {
     "key": "Sydney Boys",
@@ -37,7 +42,13 @@
       "Court 6": "Hard Court"
     },
     "client_id": "sydney-boys-high-school",
-    "venue_id": "2409"
+    "venue_id": "2409",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ]
   },
   {
     "key": "Artarmon",
@@ -58,7 +69,15 @@
       "Court 6": "Synthetic Grass"
     },
     "client_id": "artarmon-tennis",
-    "venue_id": "3472"
+    "venue_id": "3472",
+    "resource_ids": [
+      "2c90815a7bbcd518017bd7e5adc60043",
+      "2c90815a7bbcd518017bd7e6cff20044",
+      "2c90815a7bbcd518017bd7e6cff20045",
+      "2c90815a7bbcd518017bd7e6cff20046",
+      "2c90815a7bbcd518017bd7e6cff20047",
+      "2c90815a7bbcd518017bd7e6cff20048"
+    ]
   },
   {
     "key": "Ryde",
@@ -78,7 +97,17 @@
       "Court 5": "Synthetic Grass"
     },
     "client_id": "ryde-tennis-centre",
-    "venue_id": "2494"
+    "venue_id": "2494",
+    "resource_ids": [
+      "2c90815a7600d990017641ca1ba30014",
+      "2c90815a7600d990017641ce1fb20015",
+      "2c90815a7600d990017641ce1fb20016",
+      "2c90815a7600d990017641ce1fb20017",
+      "2c90815a7600d990017641ce1fb20018",
+      "2c90815a7600d990017641ce1fb20019",
+      "2c90815a7600d990017641ce1fb2001a",
+      "2c90815a7600d990017641ce1fb2001b"
+    ]
   },
   {
     "key": "Gosford",
@@ -106,7 +135,18 @@
       "Court 13": "Synthetic Grass"
     },
     "client_id": "gosford-tennis-club",
-    "venue_id": "3528"
+    "venue_id": "3528",
+    "resource_ids": [
+      "2c90817c9b0961f2019b112c4a470037",
+      "2c90817c9b0961f2019b113e7c3f0038",
+      "2c90817c9b0961f2019b113e7c3f0039",
+      "2c90817c9b0961f2019b113e7c3f003a",
+      "2c90817c9b0961f2019b113e7c3f003b",
+      "2c90817c9b0961f2019b113e7c3f003c",
+      "2c90817c9b0961f2019b113e7c3f003d",
+      "2c90817c9b0961f2019b113e7c3f003e",
+      "2c90817c9b0961f2019b113e7c3f003f"
+    ]
   },
   {
     "key": "Snape Park",
@@ -127,7 +167,15 @@
       "Court 6": "Synthetic Grass"
     },
     "client_id": "snape-park-tc",
-    "venue_id": "2271"
+    "venue_id": "2271",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ]
   },
   {
     "key": "Bondi",
@@ -141,7 +189,12 @@
     "active": true,
     "court_surfaces": {},
     "client_id": "bondi-tc",
-    "venue_id": "1928"
+    "venue_id": "1928",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3"
+    ]
   },
   {
     "key": "Cammeray",
@@ -155,7 +208,13 @@
     "active": true,
     "court_surfaces": {},
     "client_id": "cammeray-tc",
-    "venue_id": "1673"
+    "venue_id": "1673",
+    "resource_ids": [
+      "efc38fdc3907ea4601393219c7410005",
+      "efc38fdc3907ea460139321a3c800006",
+      "efc38fdc3907ea460139321ac7a90007",
+      "efc38fdc3907ea460139321b491e0008"
+    ]
   },
   {
     "key": "Cooper Park",
@@ -169,6 +228,16 @@
     "active": true,
     "court_surfaces": {},
     "client_id": "cooper-park-tc",
-    "venue_id": "1939"
+    "venue_id": "1939",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "2c9080af95cc2eee0195e99eb00d0002",
+      "2c9080af95cc2eee0195e99eb00e0003"
+    ]
   }
 ]

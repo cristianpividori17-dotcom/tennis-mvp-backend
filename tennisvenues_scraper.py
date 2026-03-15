@@ -1,4 +1,3 @@
-import re
 import threading
 
 import pandas as pd
@@ -34,8 +33,7 @@ AJAX_HEADERS = {
     "Pragma": "no-cache",
 }
 
-_runtime_cache = {}
-_runtime_cache_lock = threading.Lock()
+_thread_local = threading.local()
 
 
 def build_session():
@@ -45,7 +43,7 @@ def build_session():
         total=3,
         connect=3,
         read=3,
-        backoff_factor=1.2,
+        backoff_factor=1.0,
         status_forcelist=[429, 500, 502, 503, 504],
         allowed_methods=["GET"],
         raise_on_status=False,
@@ -57,6 +55,12 @@ def build_session():
     session.headers.update(DEFAULT_HEADERS)
 
     return session
+
+
+def get_thread_session():
+    if not hasattr(_thread_local, "session"):
+        _thread_local.session = build_session()
+    return _thread_local.session
 
 
 def normalize_time_string(value):
@@ -105,152 +109,6 @@ def dedupe_preserve_order(items):
     return output
 
 
-def fetch_booking_page_html(booking_url):
-    session = build_session()
-
-    response = session.get(
-        booking_url,
-        timeout=REQUEST_TIMEOUT,
-        allow_redirects=True,
-    )
-
-    if response.status_code != 200:
-        raise Exception(f"Error HTTP {response.status_code} al abrir {booking_url}")
-
-    return response.text
-
-
-def extract_client_id_from_scripts(script_text):
-    match = re.search(
-        r"/booking/([^\"'/]+)/fetch-booking-data",
-        script_text,
-        flags=re.IGNORECASE,
-    )
-    if match:
-        return match.group(1).strip()
-
-    return None
-
-
-def extract_venue_id_from_scripts(script_text):
-    patterns = [
-        r"venue_id\s*:\s*['\"]?(\d+)['\"]?",
-        r"venue_id\s*=\s*['\"]?(\d+)['\"]?",
-        r"['\"]venue_id['\"]\s*:\s*['\"]?(\d+)['\"]?",
-    ]
-
-    for pattern in patterns:
-        match = re.search(pattern, script_text, flags=re.IGNORECASE)
-        if match:
-            return match.group(1).strip()
-
-    return None
-
-
-def extract_resource_ids_from_html(soup, html):
-    resource_ids = []
-
-    select_candidates = soup.find_all("select")
-    for select in select_candidates:
-        select_id = (select.get("id") or "").lower()
-        select_name = (select.get("name") or "").lower()
-
-        if "resource" in select_id or "resource" in select_name:
-            for option in select.find_all("option"):
-                value = (option.get("value") or "").strip()
-                if value:
-                    resource_ids.append(value)
-
-    hidden_inputs = soup.find_all("input")
-    for inp in hidden_inputs:
-        input_id = (inp.get("id") or "").lower()
-        input_name = (inp.get("name") or "").lower()
-        value = (inp.get("value") or "").strip()
-
-        if ("resource" in input_id or "resource" in input_name) and value:
-            resource_ids.append(value)
-
-    regex_patterns = [
-        r"resource_id\s*:\s*['\"]?(\d+)['\"]?",
-        r"resource_id\s*=\s*['\"]?(\d+)['\"]?",
-        r"['\"]resource_id['\"]\s*:\s*['\"]?(\d+)['\"]?",
-    ]
-
-    for pattern in regex_patterns:
-        for match in re.findall(pattern, html, flags=re.IGNORECASE):
-            resource_ids.append(str(match).strip())
-
-    array_patterns = [
-        r"resource_ids\s*:\s*\[([^\]]+)\]",
-        r"['\"]resource_ids['\"]\s*:\s*\[([^\]]+)\]",
-    ]
-
-    for pattern in array_patterns:
-        for block in re.findall(pattern, html, flags=re.IGNORECASE):
-            for digits in re.findall(r"\d+", block):
-                resource_ids.append(digits.strip())
-
-    resource_ids = [x for x in resource_ids if x]
-    resource_ids = dedupe_preserve_order(resource_ids)
-
-    if not resource_ids:
-        resource_ids = [""]
-
-    return resource_ids
-
-
-def extract_runtime_info_from_booking_page(booking_url):
-    with _runtime_cache_lock:
-        cached = _runtime_cache.get(booking_url)
-        if cached:
-            return cached
-
-    html = fetch_booking_page_html(booking_url)
-    soup = BeautifulSoup(html, "html.parser")
-
-    client_id = None
-    venue_id = None
-
-    scripts = soup.find_all("script")
-    for script in scripts:
-        content = script.get_text(" ", strip=True)
-
-        if not client_id:
-            client_id = extract_client_id_from_scripts(content)
-
-        if not venue_id:
-            venue_id = extract_venue_id_from_scripts(content)
-
-        if client_id and venue_id:
-            break
-
-    if not client_id:
-        slug_match = re.search(
-            r"https://www\.tennisvenues\.com\.au/booking/([^/?#]+)",
-            booking_url,
-            flags=re.IGNORECASE,
-        )
-        if slug_match:
-            client_id = slug_match.group(1).strip()
-
-    if not client_id or not venue_id:
-        raise Exception(f"No se pudo encontrar client_id y venue_id en {booking_url}")
-
-    resource_ids = extract_resource_ids_from_html(soup, html)
-
-    result = {
-        "booking_url": booking_url,
-        "client_id": client_id,
-        "venue_id": venue_id,
-        "resource_ids": resource_ids,
-    }
-
-    with _runtime_cache_lock:
-        _runtime_cache[booking_url] = result
-
-    return result
-
-
 def fetch_booking_html(
     client_id,
     venue_id,
@@ -269,7 +127,7 @@ def fetch_booking_html(
         "page": page,
     }
 
-    session = build_session()
+    session = get_thread_session()
 
     headers = dict(AJAX_HEADERS)
     headers["Referer"] = booking_url
@@ -483,18 +341,13 @@ def get_available_courts_from_url(
     page=0,
     client_id=None,
     venue_id=None,
+    resource_ids=None,
 ):
-    runtime_info = None
-
     if not client_id or not venue_id:
-        runtime_info = extract_runtime_info_from_booking_page(booking_url)
-        client_id = runtime_info["client_id"]
-        venue_id = runtime_info["venue_id"]
-
-    if runtime_info is None:
-        runtime_info = extract_runtime_info_from_booking_page(booking_url)
-
-    resource_ids = runtime_info.get("resource_ids") or [""]
+        raise Exception(
+            f"Faltan client_id o venue_id para {booking_url}. "
+            f"Primero corré enrich_venues_config.py y subí venues_config.json."
+        )
 
     return get_available_court_names(
         client_id=client_id,

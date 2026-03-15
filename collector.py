@@ -11,7 +11,7 @@ from tennisvenues_scraper import get_available_courts_from_url
 
 CONFIG_FILE = "venues_config.json"
 STORE_FILE = "availability_store.json"
-MAX_WORKERS = 3
+MAX_WORKERS = 5
 
 
 def load_active_venues():
@@ -31,6 +31,7 @@ def load_active_venues():
             "booking_url": venue["booking_url"],
             "client_id": venue.get("client_id"),
             "venue_id": venue.get("venue_id"),
+            "resource_ids": venue.get("resource_ids", []),
         }
 
         venue_info[key] = {
@@ -175,6 +176,7 @@ def check_one_venue(venue_key, target, date, time_str):
             selected_time=time_str,
             client_id=target.get("client_id"),
             venue_id=target.get("venue_id"),
+            resource_ids=target.get("resource_ids"),
         )
 
         duration_ms = round((time.perf_counter() - started_at) * 1000, 2)
