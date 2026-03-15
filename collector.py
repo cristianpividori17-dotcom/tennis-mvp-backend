@@ -38,6 +38,8 @@ def load_active_venues():
             "name": venue.get("name"),
             "surface": venue.get("surface"),
             "location": venue.get("location"),
+            "region": venue.get("region"),
+            "is_sydney": venue.get("is_sydney", False),
             "url": venue.get("url") or venue.get("booking_url"),
         }
 
@@ -294,6 +296,8 @@ def build_frontend_cards(results):
             {
                 "name": info.get("name"),
                 "location": info.get("location"),
+                "region": info.get("region"),
+                "is_sydney": info.get("is_sydney", False),
                 "surface": general_surface,
                 "url": info.get("url"),
                 "available_courts": item["available_courts"],

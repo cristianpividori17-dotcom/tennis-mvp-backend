@@ -4,35 +4,38 @@
     "slug": "mowbray-public-school",
     "name": "Mowbray Public School Tennis Courts",
     "location": "Lane Cove",
+    "region": "Lower North Shore",
+    "is_sydney": true,
     "surface": "Hard Court",
     "booking_url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
     "url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
     "source": "manual",
     "active": true,
+    "client_id": "mowbray-public-school",
+    "venue_id": "2398",
+    "resource_ids": [],
     "court_surfaces": {
       "Court 1": "Hard Court",
       "Court 2": "Hard Court",
       "Court 3": "Hard Court",
       "Court 4": "Hard Court"
-    },
-    "client_id": "mowbray-public-school",
-    "venue_id": "2398",
-    "resource_ids": [
-      "C1",
-      "C2",
-      "C3"
-    ]
+    }
   },
   {
     "key": "Sydney Boys",
     "slug": "sydney-boys-high-school",
     "name": "Sydney Boys High School Tennis Courts",
     "location": "Moore Park",
+    "region": "CBD / Inner City",
+    "is_sydney": true,
     "surface": "Hard Court",
     "booking_url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
     "url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
     "source": "manual",
     "active": true,
+    "client_id": "sydney-boys-high-school",
+    "venue_id": "2409",
+    "resource_ids": [],
     "court_surfaces": {
       "Court 1": "Hard Court",
       "Court 2": "Hard Court",
@@ -40,26 +43,23 @@
       "Court 4": "Hard Court",
       "Court 5": "Hard Court",
       "Court 6": "Hard Court"
-    },
-    "client_id": "sydney-boys-high-school",
-    "venue_id": "2409",
-    "resource_ids": [
-      "C1",
-      "C2",
-      "C3",
-      "C4"
-    ]
+    }
   },
   {
     "key": "Artarmon",
     "slug": "artarmon-tennis",
     "name": "Artarmon Tennis Centre",
     "location": "Artarmon",
+    "region": "Lower North Shore",
+    "is_sydney": true,
     "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
     "url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
     "source": "manual",
     "active": true,
+    "client_id": "artarmon-tennis",
+    "venue_id": "3472",
+    "resource_ids": [],
     "court_surfaces": {
       "Court 1": "Synthetic Grass",
       "Court 2": "Synthetic Grass",
@@ -67,58 +67,46 @@
       "Court 4": "Synthetic Grass",
       "Court 5": "Synthetic Grass",
       "Court 6": "Synthetic Grass"
-    },
-    "client_id": "artarmon-tennis",
-    "venue_id": "3472",
-    "resource_ids": [
-      "2c90815a7bbcd518017bd7e5adc60043",
-      "2c90815a7bbcd518017bd7e6cff20044",
-      "2c90815a7bbcd518017bd7e6cff20045",
-      "2c90815a7bbcd518017bd7e6cff20046",
-      "2c90815a7bbcd518017bd7e6cff20047",
-      "2c90815a7bbcd518017bd7e6cff20048"
-    ]
+    }
   },
   {
     "key": "Ryde",
     "slug": "ryde-tennis-centre",
     "name": "Ryde Tennis Centre",
     "location": "Ryde",
+    "region": "Ryde Area",
+    "is_sydney": true,
     "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
     "url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
     "source": "manual",
     "active": true,
+    "client_id": "ryde-tennis-centre",
+    "venue_id": "2494",
+    "resource_ids": [],
     "court_surfaces": {
       "Court 1": "Synthetic Grass",
       "Court 2": "Synthetic Grass",
       "Court 3": "Synthetic Grass",
       "Court 4": "Synthetic Grass",
       "Court 5": "Synthetic Grass"
-    },
-    "client_id": "ryde-tennis-centre",
-    "venue_id": "2494",
-    "resource_ids": [
-      "2c90815a7600d990017641ca1ba30014",
-      "2c90815a7600d990017641ce1fb20015",
-      "2c90815a7600d990017641ce1fb20016",
-      "2c90815a7600d990017641ce1fb20017",
-      "2c90815a7600d990017641ce1fb20018",
-      "2c90815a7600d990017641ce1fb20019",
-      "2c90815a7600d990017641ce1fb2001a",
-      "2c90815a7600d990017641ce1fb2001b"
-    ]
+    }
   },
   {
     "key": "Gosford",
     "slug": "gosford-tennis-club",
     "name": "Gosford Tennis Club",
     "location": "Gosford",
+    "region": "Outside Sydney",
+    "is_sydney": false,
     "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
     "url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
     "source": "manual",
     "active": true,
+    "client_id": "gosford-tennis-club",
+    "venue_id": "3528",
+    "resource_ids": [],
     "court_surfaces": {
       "Court 1": "Synthetic Grass",
       "Court 2": "Synthetic Grass",
@@ -133,31 +121,23 @@
       "Court 11": "Synthetic Grass",
       "Court 12": "Synthetic Grass",
       "Court 13": "Synthetic Grass"
-    },
-    "client_id": "gosford-tennis-club",
-    "venue_id": "3528",
-    "resource_ids": [
-      "2c90817c9b0961f2019b112c4a470037",
-      "2c90817c9b0961f2019b113e7c3f0038",
-      "2c90817c9b0961f2019b113e7c3f0039",
-      "2c90817c9b0961f2019b113e7c3f003a",
-      "2c90817c9b0961f2019b113e7c3f003b",
-      "2c90817c9b0961f2019b113e7c3f003c",
-      "2c90817c9b0961f2019b113e7c3f003d",
-      "2c90817c9b0961f2019b113e7c3f003e",
-      "2c90817c9b0961f2019b113e7c3f003f"
-    ]
+    }
   },
   {
     "key": "Snape Park",
     "slug": "snape-park-tc",
     "name": "Snape Park Tennis Centre",
     "location": "Maroubra",
+    "region": "Eastern Suburbs / South East",
+    "is_sydney": true,
     "surface": "Mixed Surfaces",
     "booking_url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
     "url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
     "source": "manual",
     "active": true,
+    "client_id": "snape-park-tc",
+    "venue_id": "2271",
+    "resource_ids": [],
     "court_surfaces": {
       "Court 1": "Hard Court",
       "Court 2": "Synthetic Grass",
@@ -165,79 +145,57 @@
       "Court 4": "Synthetic Grass",
       "Court 5": "Synthetic Grass",
       "Court 6": "Synthetic Grass"
-    },
-    "client_id": "snape-park-tc",
-    "venue_id": "2271",
-    "resource_ids": [
-      "C1",
-      "C2",
-      "C3",
-      "C4",
-      "C5",
-      "C6"
-    ]
+    }
   },
   {
     "key": "Bondi",
     "slug": "bondi-tc",
     "name": "Bondi Beach Tennis",
     "location": "Bondi",
+    "region": "Eastern Suburbs / South East",
+    "is_sydney": true,
     "surface": null,
     "booking_url": "https://www.tennisvenues.com.au/booking/bondi-tc",
     "url": "https://www.tennisvenues.com.au/booking/bondi-tc",
     "source": "discovered",
     "active": true,
-    "court_surfaces": {},
     "client_id": "bondi-tc",
     "venue_id": "1928",
-    "resource_ids": [
-      "C1",
-      "C2",
-      "C3"
-    ]
+    "resource_ids": [],
+    "court_surfaces": {}
   },
   {
     "key": "Cammeray",
     "slug": "cammeray-tc",
     "name": "Cammeray Tennis Club",
     "location": "Cammeray",
+    "region": "Lower North Shore",
+    "is_sydney": true,
     "surface": null,
     "booking_url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
     "url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
     "source": "discovered",
     "active": true,
-    "court_surfaces": {},
     "client_id": "cammeray-tc",
     "venue_id": "1673",
-    "resource_ids": [
-      "efc38fdc3907ea4601393219c7410005",
-      "efc38fdc3907ea460139321a3c800006",
-      "efc38fdc3907ea460139321ac7a90007",
-      "efc38fdc3907ea460139321b491e0008"
-    ]
+    "resource_ids": [],
+    "court_surfaces": {}
   },
   {
     "key": "Cooper Park",
     "slug": "cooper-park-tc",
     "name": "Cooper Park Tennis",
     "location": "Woollahra",
+    "region": "Eastern Suburbs / South East",
+    "is_sydney": true,
     "surface": null,
     "booking_url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
     "url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
     "source": "discovered",
     "active": true,
-    "court_surfaces": {},
     "client_id": "cooper-park-tc",
     "venue_id": "1939",
-    "resource_ids": [
-      "C1",
-      "C2",
-      "C3",
-      "C4",
-      "C5",
-      "C6",
-      "2c9080af95cc2eee0195e99eb00d0002",
-      "2c9080af95cc2eee0195e99eb00e0003"
-    ]
+    "resource_ids": [],
+    "court_surfaces": {}
   }
 ]
