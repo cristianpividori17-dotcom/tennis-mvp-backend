@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, timezone
 
-from fastapi import FastAPI, Request, Response
+from fastapi import BackgroundTasks, FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from collector import get_store_slot, collect_and_store_slot
+from collector import collect_and_store_slot, get_store_slot
 from db_store import init_db, use_db_storage
 
 app = FastAPI()
@@ -55,8 +55,10 @@ def get_freshness_window_minutes(date_str: str):
     if delta_days == 0:
         return 10
     if delta_days == 1:
-        return 30
-    return 120
+        return 20
+    if delta_days <= 3:
+        return 60
+    return 180
 
 
 def slot_is_fresh(slot: dict, date_str: str):
@@ -73,6 +75,15 @@ def slot_is_fresh(slot: dict, date_str: str):
     age = datetime.now(timezone.utc) - collected_at
 
     return age <= timedelta(minutes=freshness_minutes)
+
+
+def run_background_refresh(date: str, time: str, source: str):
+    try:
+        print(f"BACKGROUND REFRESH START -> {date} {time} source={source}")
+        collect_and_store_slot(date, time, source=source)
+        print(f"BACKGROUND REFRESH DONE -> {date} {time} source={source}")
+    except Exception as e:
+        print(f"BACKGROUND REFRESH ERROR -> {date} {time} error={e}")
 
 
 @app.on_event("startup")
@@ -121,34 +132,54 @@ def health():
 
 
 @app.get("/availability")
-def availability(date: str, time: str):
+def availability(date: str, time: str, background_tasks: BackgroundTasks):
     slot = get_store_slot(date, time)
 
-    refresh_reason = None
-
     if not slot:
-        refresh_reason = "missing"
-    elif not slot_is_fresh(slot, date):
-        refresh_reason = "stale"
+        slot = collect_and_store_slot(date, time, source="availability-missing-sync")
 
-    if refresh_reason:
-        slot = collect_and_store_slot(date, time, source=f"availability-{refresh_reason}")
+        if slot.get("verification_failed"):
+            return {
+                "date": date,
+                "time": time,
+                "exists": False,
+                "fresh": False,
+                "refresh_triggered": False,
+                "results_count": 0,
+                "results": [],
+                "message": "Availability could not be verified right now",
+            }
 
-    if not slot:
         return {
             "date": date,
             "time": time,
-            "exists": False,
-            "results_count": 0,
-            "results": [],
-            "message": "Slot not collected yet",
+            "exists": True,
+            "fresh": True,
+            "stale": False,
+            "refresh_triggered": False,
+            "collected_at": slot.get("collected_at"),
+            "source": slot.get("source"),
+            "results_count": len(slot.get("results", [])),
+            "results": slot.get("results", []),
         }
+
+    fresh = slot_is_fresh(slot, date)
+
+    if not fresh:
+        background_tasks.add_task(
+            run_background_refresh,
+            date,
+            time,
+            "availability-stale-background",
+        )
 
     return {
         "date": date,
         "time": time,
         "exists": True,
-        "fresh": slot_is_fresh(slot, date),
+        "fresh": fresh,
+        "stale": not fresh,
+        "refresh_triggered": not fresh,
         "collected_at": slot.get("collected_at"),
         "source": slot.get("source"),
         "results_count": len(slot.get("results", [])),
@@ -207,6 +238,8 @@ def refresh(date: str, time: str):
         "error_count": slot.get("error_count"),
         "available_venue_count": slot.get("available_venue_count"),
         "results_count": len(slot.get("results", [])),
+        "verification_failed": slot.get("verification_failed", False),
+        "preserved_due_to_scrape_errors": slot.get("preserved_due_to_scrape_errors", False),
     }
 
 
@@ -249,4 +282,7 @@ def store_debug(date: str, time: str):
         "errors": slot.get("errors", []),
         "results_count": len(slot.get("results", [])),
         "results": slot.get("results", []),
+        "verification_failed": slot.get("verification_failed", False),
+        "preserved_due_to_scrape_errors": slot.get("preserved_due_to_scrape_errors", False),
+        "last_attempt": slot.get("last_attempt"),
     }
