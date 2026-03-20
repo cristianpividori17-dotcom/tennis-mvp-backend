@@ -186,7 +186,7 @@
     "court_surfaces": {}
   },
   {
-    "key": "Mosman Lawn in Mosman NSW",
+    "key": "Mosman Lawn",
     "slug": "mosman-lawn-tc",
     "name": "Mosman Lawn Tennis Club",
     "location": "Mosman",
@@ -200,7 +200,7 @@
     "court_surfaces": {}
   },
   {
-    "key": "Primrose Park in Cremorne NSW",
+    "key": "Primrose Park",
     "slug": "primrose-park-tc",
     "name": "Primrose Park Tennis",
     "location": "Cremorne",
@@ -214,7 +214,7 @@
     "court_surfaces": {}
   },
   {
-    "key": "Rawson in Mosman NSW",
+    "key": "Rawson Park",
     "slug": "rawson-park-tc",
     "name": "Rawson Tennis",
     "location": "Mosman",
@@ -228,7 +228,7 @@
     "court_surfaces": {}
   },
   {
-    "key": "Latham Park in South Coogee NSW",
+    "key": "Latham Park",
     "slug": "latham-park-tc",
     "name": "Latham Park Tennis Club",
     "location": "South Coogee",
@@ -242,7 +242,7 @@
     "court_surfaces": {}
   },
   {
-    "key": "Coogee Beach in Coogee NSW",
+    "key": "Coogee Beach",
     "slug": "eastern-suburbs-tennis-club",
     "name": "Coogee Beach Tennis",
     "location": "Coogee",
