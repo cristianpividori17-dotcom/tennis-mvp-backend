@@ -1,0 +1,77 @@
+[
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
+    "region": "Eastern Suburbs / South East",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/bondi-tc",
+    "region": "Eastern Suburbs / South East",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
+    "region": "Eastern Suburbs / South East",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
+    "region": "Lower North Shore",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
+    "region": "Lower North Shore",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
+    "region": "Lower North Shore",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
+    "region": "Ryde Area",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
+    "region": "CBD / Inner City",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
+    "region": "Outside Sydney",
+    "is_sydney": false
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/caringbah-tennis",
+    "region": "Outside Sydney",
+    "is_sydney": false
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/mosman-lawn-tc",
+    "region": "Lower North Shore",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/primrose-park-tc",
+    "region": "Lower North Shore",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/rawson-park-tc",
+    "region": "Lower North Shore",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/latham-park-tc",
+    "region": "Eastern Suburbs / South East",
+    "is_sydney": true
+  },
+  {
+    "booking_url": "https://www.tennisvenues.com.au/booking/eastern-suburbs-tennis-club",
+    "region": "Eastern Suburbs / South East",
+    "is_sydney": true
+  }
+]

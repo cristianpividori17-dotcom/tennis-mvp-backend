@@ -77,13 +77,36 @@ def slot_is_fresh(slot: dict, date_str: str):
     return age <= timedelta(minutes=freshness_minutes)
 
 
-def run_background_refresh(date: str, time: str, source: str):
+def normalize_duration_minutes(duration_minutes: int):
     try:
-        print(f"BACKGROUND REFRESH START -> {date} {time} source={source}")
-        collect_and_store_slot(date, time, source=source)
-        print(f"BACKGROUND REFRESH DONE -> {date} {time} source={source}")
+        value = int(duration_minutes)
+    except Exception:
+        value = 30
+
+    if value <= 0:
+        return 30
+
+    return value
+
+
+def run_background_refresh(date: str, time: str, duration_minutes: int, source: str):
+    try:
+        print(
+            f"BACKGROUND REFRESH START -> {date} {time} duration={duration_minutes} source={source}"
+        )
+        collect_and_store_slot(
+            date,
+            time,
+            duration_minutes=duration_minutes,
+            source=source,
+        )
+        print(
+            f"BACKGROUND REFRESH DONE -> {date} {time} duration={duration_minutes} source={source}"
+        )
     except Exception as e:
-        print(f"BACKGROUND REFRESH ERROR -> {date} {time} error={e}")
+        print(
+            f"BACKGROUND REFRESH ERROR -> {date} {time} duration={duration_minutes} error={e}"
+        )
 
 
 @app.on_event("startup")
@@ -132,16 +155,23 @@ def health():
 
 
 @app.get("/availability")
-def availability(date: str, time: str, background_tasks: BackgroundTasks):
-    slot = get_store_slot(date, time)
+def availability(date: str, time: str, background_tasks: BackgroundTasks, duration_minutes: int = 30):
+    duration_minutes = normalize_duration_minutes(duration_minutes)
+    slot = get_store_slot(date, time, duration_minutes=duration_minutes)
 
     if not slot:
-        slot = collect_and_store_slot(date, time, source="availability-missing-sync")
+        slot = collect_and_store_slot(
+            date,
+            time,
+            duration_minutes=duration_minutes,
+            source="availability-missing-sync",
+        )
 
         if slot.get("verification_failed"):
             return {
                 "date": date,
                 "time": time,
+                "duration_minutes": duration_minutes,
                 "exists": False,
                 "fresh": False,
                 "refresh_triggered": False,
@@ -153,6 +183,7 @@ def availability(date: str, time: str, background_tasks: BackgroundTasks):
         return {
             "date": date,
             "time": time,
+            "duration_minutes": duration_minutes,
             "exists": True,
             "fresh": True,
             "stale": False,
@@ -170,12 +201,14 @@ def availability(date: str, time: str, background_tasks: BackgroundTasks):
             run_background_refresh,
             date,
             time,
+            duration_minutes,
             "availability-stale-background",
         )
 
     return {
         "date": date,
         "time": time,
+        "duration_minutes": duration_minutes,
         "exists": True,
         "fresh": fresh,
         "stale": not fresh,
@@ -188,13 +221,15 @@ def availability(date: str, time: str, background_tasks: BackgroundTasks):
 
 
 @app.get("/availability-status")
-def availability_status(date: str, time: str):
-    slot = get_store_slot(date, time)
+def availability_status(date: str, time: str, duration_minutes: int = 30):
+    duration_minutes = normalize_duration_minutes(duration_minutes)
+    slot = get_store_slot(date, time, duration_minutes=duration_minutes)
 
     if not slot:
         return {
             "date": date,
             "time": time,
+            "duration_minutes": duration_minutes,
             "exists": False,
             "fresh": False,
             "collected_at": None,
@@ -210,6 +245,7 @@ def availability_status(date: str, time: str):
     return {
         "date": date,
         "time": time,
+        "duration_minutes": duration_minutes,
         "exists": True,
         "fresh": slot_is_fresh(slot, date),
         "collected_at": slot.get("collected_at"),
@@ -224,12 +260,20 @@ def availability_status(date: str, time: str):
 
 
 @app.get("/refresh")
-def refresh(date: str, time: str):
-    slot = collect_and_store_slot(date, time, source="manual-refresh")
+def refresh(date: str, time: str, duration_minutes: int = 30):
+    duration_minutes = normalize_duration_minutes(duration_minutes)
+
+    slot = collect_and_store_slot(
+        date,
+        time,
+        duration_minutes=duration_minutes,
+        source="manual-refresh",
+    )
 
     return {
         "date": date,
         "time": time,
+        "duration_minutes": duration_minutes,
         "collected_at": slot.get("collected_at"),
         "source": slot.get("source"),
         "total_duration_ms": slot.get("total_duration_ms"),
@@ -244,13 +288,15 @@ def refresh(date: str, time: str):
 
 
 @app.get("/store-debug")
-def store_debug(date: str, time: str):
-    slot = get_store_slot(date, time)
+def store_debug(date: str, time: str, duration_minutes: int = 30):
+    duration_minutes = normalize_duration_minutes(duration_minutes)
+    slot = get_store_slot(date, time, duration_minutes=duration_minutes)
 
     if not slot:
         return {
             "date": date,
             "time": time,
+            "duration_minutes": duration_minutes,
             "exists": False,
             "fresh": False,
             "collected_at": None,
@@ -269,6 +315,7 @@ def store_debug(date: str, time: str):
     return {
         "date": date,
         "time": time,
+        "duration_minutes": duration_minutes,
         "exists": True,
         "fresh": slot_is_fresh(slot, date),
         "collected_at": slot.get("collected_at"),

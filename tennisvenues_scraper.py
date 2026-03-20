@@ -1,3 +1,4 @@
+import math
 import threading
 
 import pandas as pd
@@ -93,6 +94,54 @@ def normalize_time_string(value):
         return text
 
     return f"{hour_int}:{minute_int:02d}{suffix}"
+
+
+def time_string_to_minutes(value):
+    normalized = normalize_time_string(value)
+
+    if not normalized:
+        return None
+
+    suffix = ""
+    core = normalized
+
+    if normalized.endswith("am") or normalized.endswith("pm"):
+        suffix = normalized[-2:]
+        core = normalized[:-2]
+
+    if ":" not in core:
+        return None
+
+    hour_str, minute_str = core.split(":", 1)
+
+    try:
+        hour = int(hour_str)
+        minute = int(minute_str)
+    except ValueError:
+        return None
+
+    if suffix == "am":
+        if hour == 12:
+            hour = 0
+    elif suffix == "pm":
+        if hour != 12:
+            hour += 12
+
+    return hour * 60 + minute
+
+
+def minutes_to_time_string(total_minutes):
+    total_minutes = int(total_minutes)
+    hour_24 = total_minutes // 60
+    minute = total_minutes % 60
+
+    suffix = "am" if hour_24 < 12 else "pm"
+
+    hour_12 = hour_24 % 12
+    if hour_12 == 0:
+        hour_12 = 12
+
+    return f"{hour_12}:{minute:02d}{suffix}"
 
 
 def dedupe_preserve_order(items):
@@ -279,6 +328,53 @@ def get_booking_dataframe(
     return combined
 
 
+def infer_slot_minutes(df):
+    if df.empty or "time_norm" not in df.columns:
+        return 30
+
+    unique_times = dedupe_preserve_order(df["time_norm"].dropna().tolist())
+    minute_values = []
+
+    for time_value in unique_times:
+        minutes = time_string_to_minutes(time_value)
+        if minutes is not None:
+            minute_values.append(minutes)
+
+    minute_values = sorted(set(minute_values))
+
+    if len(minute_values) < 2:
+        return 30
+
+    diffs = []
+    for i in range(1, len(minute_values)):
+        diff = minute_values[i] - minute_values[i - 1]
+        if diff > 0:
+            diffs.append(diff)
+
+    if not diffs:
+        return 30
+
+    return min(diffs)
+
+
+def build_required_time_sequence(selected_time, duration_minutes, slot_minutes):
+    start_minutes = time_string_to_minutes(selected_time)
+    if start_minutes is None:
+        return []
+
+    if slot_minutes <= 0:
+        slot_minutes = 30
+
+    duration_minutes = max(int(duration_minutes), slot_minutes)
+    required_slots = max(1, math.ceil(duration_minutes / slot_minutes))
+
+    sequence = []
+    for i in range(required_slots):
+        sequence.append(minutes_to_time_string(start_minutes + i * slot_minutes))
+
+    return sequence
+
+
 def get_available_courts_for_time(
     client_id,
     venue_id,
@@ -309,6 +405,59 @@ def get_available_courts_for_time(
     return df_available
 
 
+def get_available_courts_for_duration(
+    client_id,
+    venue_id,
+    date_yyyymmdd,
+    selected_time,
+    duration_minutes,
+    booking_url,
+    resource_ids=None,
+    page=0,
+):
+    df = get_booking_dataframe(
+        client_id=client_id,
+        venue_id=venue_id,
+        date_yyyymmdd=date_yyyymmdd,
+        booking_url=booking_url,
+        resource_ids=resource_ids,
+        page=page,
+    )
+
+    if df.empty:
+        return df
+
+    slot_minutes = infer_slot_minutes(df)
+    required_times = build_required_time_sequence(
+        selected_time=selected_time,
+        duration_minutes=duration_minutes,
+        slot_minutes=slot_minutes,
+    )
+
+    if not required_times:
+        return pd.DataFrame(columns=df.columns)
+
+    df_available = df[df["status"] == "available"].copy()
+    if df_available.empty:
+        return pd.DataFrame(columns=df.columns)
+
+    df_required = df_available[df_available["time_norm"].isin(required_times)].copy()
+    if df_required.empty:
+        return pd.DataFrame(columns=df.columns)
+
+    qualifying_courts = []
+    for court_name, group in df_required.groupby("court"):
+        court_times = set(group["time_norm"].tolist())
+        if all(required_time in court_times for required_time in required_times):
+            qualifying_courts.append(court_name)
+
+    if not qualifying_courts:
+        return pd.DataFrame(columns=df.columns)
+
+    result = df_required[df_required["court"].isin(qualifying_courts)].copy()
+    return result
+
+
 def get_available_court_names(
     client_id,
     venue_id,
@@ -334,6 +483,46 @@ def get_available_court_names(
     return dedupe_preserve_order(df_available["court"].tolist())
 
 
+def get_available_court_names_for_duration(
+    client_id,
+    venue_id,
+    date_yyyymmdd,
+    selected_time,
+    duration_minutes,
+    booking_url,
+    resource_ids=None,
+    page=0,
+):
+    df_available = get_available_courts_for_duration(
+        client_id=client_id,
+        venue_id=venue_id,
+        date_yyyymmdd=date_yyyymmdd,
+        selected_time=selected_time,
+        duration_minutes=duration_minutes,
+        booking_url=booking_url,
+        resource_ids=resource_ids,
+        page=page,
+    )
+
+    if df_available.empty:
+        return []
+
+    qualifying_rows = []
+
+    slot_minutes = infer_slot_minutes(df_available)
+    required_times = build_required_time_sequence(
+        selected_time=selected_time,
+        duration_minutes=duration_minutes,
+        slot_minutes=slot_minutes,
+    )
+
+    for court_name in dedupe_preserve_order(df_available["court"].tolist()):
+        for time_value in required_times:
+            qualifying_rows.append(f"{court_name} | {time_value}")
+
+    return dedupe_preserve_order(qualifying_rows)
+
+
 def get_available_courts_from_url(
     booking_url,
     date_yyyymmdd,
@@ -342,6 +531,7 @@ def get_available_courts_from_url(
     client_id=None,
     venue_id=None,
     resource_ids=None,
+    duration_minutes=30,
 ):
     if not client_id or not venue_id:
         raise Exception(
@@ -349,12 +539,32 @@ def get_available_courts_from_url(
             f"Primero corré enrich_venues_config.py y subí venues_config.json."
         )
 
-    return get_available_court_names(
+    duration_minutes = int(duration_minutes)
+
+    if duration_minutes <= 30:
+        return get_available_court_names(
+            client_id=client_id,
+            venue_id=venue_id,
+            date_yyyymmdd=date_yyyymmdd,
+            selected_time=selected_time,
+            booking_url=booking_url,
+            resource_ids=resource_ids,
+            page=page,
+        )
+
+    df_available = get_available_courts_for_duration(
         client_id=client_id,
         venue_id=venue_id,
         date_yyyymmdd=date_yyyymmdd,
         selected_time=selected_time,
+        duration_minutes=duration_minutes,
         booking_url=booking_url,
         resource_ids=resource_ids,
         page=page,
     )
+
+    if df_available.empty:
+        return []
+
+    qualifying_courts = dedupe_preserve_order(df_available["court"].tolist())
+    return qualifying_courts
