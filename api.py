@@ -293,24 +293,12 @@ def store_debug(date: str, time: str, duration_minutes: int = 30):
     slot = get_store_slot(date, time, duration_minutes=duration_minutes)
 
     if not slot:
-        return {
-            "date": date,
-            "time": time,
-            "duration_minutes": duration_minutes,
-            "exists": False,
-            "fresh": False,
-            "collected_at": None,
-            "source": None,
-            "total_duration_ms": None,
-            "total_venues": 0,
-            "success_count": 0,
-            "error_count": 0,
-            "available_venue_count": 0,
-            "venue_checks": [],
-            "errors": [],
-            "results_count": 0,
-            "results": [],
-        }
+        slot = collect_and_store_slot(
+            date,
+            time,
+            duration_minutes=duration_minutes,
+            source="debug-endpoint",
+        )
 
     return {
         "date": date,
