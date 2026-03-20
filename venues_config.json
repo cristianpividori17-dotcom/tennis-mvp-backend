@@ -197,7 +197,14 @@
     "client_id": "mosman-lawn-tc",
     "venue_id": "1674",
     "resource_ids": [],
-    "court_surfaces": {}
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass"
+    }
   },
   {
     "key": "Primrose Park",
@@ -239,7 +246,14 @@
     "client_id": "latham-park-tc",
     "venue_id": "1849",
     "resource_ids": [],
-    "court_surfaces": {}
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass"
+    }
   },
   {
     "key": "Coogee Beach",
