@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -9,12 +10,16 @@ from db_store import get_slot as get_db_slot
 from db_store import upsert_slot, use_db_storage
 from tennisvenues_scraper import get_available_courts_from_url
 
-CONFIG_FILE = "venues_config.json"
-STORE_FILE = "availability_store.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CONFIG_FILE = os.path.join(BASE_DIR, "venues_config.json")
+STORE_FILE = os.path.join(BASE_DIR, "availability_store.json")
 MAX_WORKERS = 5
 
 
 def load_active_venues():
+    print(f"Loading venues config from: {CONFIG_FILE}")
+    print(f"Config file exists: {os.path.exists(CONFIG_FILE)}")
+
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
 
@@ -26,7 +31,6 @@ def load_active_venues():
         if not isinstance(venue, dict):
             continue
 
-        # Si no existe "active", asumimos True por defecto.
         is_active = venue.get("active", True) is True
 
         if not is_active:
