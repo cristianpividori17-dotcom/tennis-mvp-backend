@@ -4,13 +4,17 @@
     "slug": "mowbray-public-school",
     "name": "Mowbray Public School Tennis Courts",
     "location": "Lane Cove",
-    "region": "Lower North Shore",
+    "region": "North Sydney",
     "is_sydney": true,
     "surface": "Hard Court",
     "booking_url": "https://www.tennisvenues.com.au/booking/mowbray-public-school",
     "client_id": "mowbray-public-school",
     "venue_id": "2398",
-    "resource_ids": [],
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3"
+    ],
     "court_surfaces": {
       "Court 1": "Hard Court",
       "Court 2": "Hard Court",
@@ -29,7 +33,12 @@
     "booking_url": "https://www.tennisvenues.com.au/booking/sydney-boys-high-school",
     "client_id": "sydney-boys-high-school",
     "venue_id": "2409",
-    "resource_ids": [],
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ],
     "court_surfaces": {
       "Court 1": "Hard Court",
       "Court 2": "Hard Court",
@@ -44,13 +53,20 @@
     "slug": "artarmon-tennis",
     "name": "Artarmon Tennis Centre",
     "location": "Artarmon",
-    "region": "Lower North Shore",
+    "region": "North Sydney",
     "is_sydney": true,
     "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/artarmon-tennis",
     "client_id": "artarmon-tennis",
     "venue_id": "3472",
-    "resource_ids": [],
+    "resource_ids": [
+      "2c90815a7bbcd518017bd7e5adc60043",
+      "2c90815a7bbcd518017bd7e6cff20044",
+      "2c90815a7bbcd518017bd7e6cff20045",
+      "2c90815a7bbcd518017bd7e6cff20046",
+      "2c90815a7bbcd518017bd7e6cff20047",
+      "2c90815a7bbcd518017bd7e6cff20048"
+    ],
     "court_surfaces": {
       "Court 1": "Synthetic Grass",
       "Court 2": "Synthetic Grass",
@@ -65,13 +81,22 @@
     "slug": "ryde-tennis-centre",
     "name": "Ryde Tennis Centre",
     "location": "Ryde",
-    "region": "Ryde Area",
+    "region": "North Sydney",
     "is_sydney": true,
     "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/ryde-tennis-centre",
     "client_id": "ryde-tennis-centre",
     "venue_id": "2494",
-    "resource_ids": [],
+    "resource_ids": [
+      "2c90815a7600d990017641ca1ba30014",
+      "2c90815a7600d990017641ce1fb20015",
+      "2c90815a7600d990017641ce1fb20016",
+      "2c90815a7600d990017641ce1fb20017",
+      "2c90815a7600d990017641ce1fb20018",
+      "2c90815a7600d990017641ce1fb20019",
+      "2c90815a7600d990017641ce1fb2001a",
+      "2c90815a7600d990017641ce1fb2001b"
+    ],
     "court_surfaces": {
       "Court 1": "Synthetic Grass",
       "Court 2": "Synthetic Grass",
@@ -91,7 +116,17 @@
     "booking_url": "https://www.tennisvenues.com.au/booking/gosford-tennis-club",
     "client_id": "gosford-tennis-club",
     "venue_id": "3528",
-    "resource_ids": [],
+    "resource_ids": [
+      "2c90817c9b0961f2019b112c4a470037",
+      "2c90817c9b0961f2019b113e7c3f0038",
+      "2c90817c9b0961f2019b113e7c3f0039",
+      "2c90817c9b0961f2019b113e7c3f003a",
+      "2c90817c9b0961f2019b113e7c3f003b",
+      "2c90817c9b0961f2019b113e7c3f003c",
+      "2c90817c9b0961f2019b113e7c3f003d",
+      "2c90817c9b0961f2019b113e7c3f003e",
+      "2c90817c9b0961f2019b113e7c3f003f"
+    ],
     "court_surfaces": {
       "Court 1": "Synthetic Grass",
       "Court 2": "Synthetic Grass",
@@ -113,13 +148,20 @@
     "slug": "snape-park-tc",
     "name": "Snape Park Tennis Centre",
     "location": "Maroubra",
-    "region": "Eastern Suburbs / South East",
+    "region": "East Sydney",
     "is_sydney": true,
     "surface": "Mixed Surfaces",
     "booking_url": "https://www.tennisvenues.com.au/booking/snape-park-tc",
     "client_id": "snape-park-tc",
     "venue_id": "2271",
-    "resource_ids": [],
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ],
     "court_surfaces": {
       "Court 1": "Hard Court",
       "Court 2": "Synthetic Grass",
@@ -134,13 +176,17 @@
     "slug": "bondi-tc",
     "name": "Bondi Beach Tennis",
     "location": "Bondi",
-    "region": "Eastern Suburbs / South East",
+    "region": "East Sydney",
     "is_sydney": true,
     "surface": null,
     "booking_url": "https://www.tennisvenues.com.au/booking/bondi-tc",
     "client_id": "bondi-tc",
     "venue_id": "1928",
-    "resource_ids": [],
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3"
+    ],
     "court_surfaces": {}
   },
   {
@@ -148,27 +194,46 @@
     "slug": "cammeray-tc",
     "name": "Cammeray Tennis Club",
     "location": "Cammeray",
-    "region": "Lower North Shore",
+    "region": "North Sydney",
     "is_sydney": true,
-    "surface": null,
+    "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/cammeray-tc",
     "client_id": "cammeray-tc",
     "venue_id": "1673",
-    "resource_ids": [],
-    "court_surfaces": {}
+    "resource_ids": [
+      "efc38fdc3907ea4601393219c7410005",
+      "efc38fdc3907ea460139321a3c800006",
+      "efc38fdc3907ea460139321ac7a90007",
+      "efc38fdc3907ea460139321b491e0008"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass"
+    }
   },
   {
     "key": "Cooper Park",
     "slug": "cooper-park-tc",
     "name": "Cooper Park Tennis",
     "location": "Woollahra",
-    "region": "Eastern Suburbs / South East",
+    "region": "East Sydney",
     "is_sydney": true,
     "surface": null,
     "booking_url": "https://www.tennisvenues.com.au/booking/cooper-park-tc",
     "client_id": "cooper-park-tc",
     "venue_id": "1939",
-    "resource_ids": [],
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "2c9080af95cc2eee0195e99eb00d0002",
+      "2c9080af95cc2eee0195e99eb00e0003"
+    ],
     "court_surfaces": {}
   },
   {
@@ -176,13 +241,17 @@
     "slug": "caringbah-tennis",
     "name": "Caringbah Tennis",
     "location": "Caringbah NSW",
-    "region": "Outside Sydney",
+    "region": "South Sydney",
     "is_sydney": false,
     "surface": null,
     "booking_url": "https://www.tennisvenues.com.au/booking/caringbah-tennis",
     "client_id": "caringbah-tennis",
     "venue_id": "3506",
-    "resource_ids": [],
+    "resource_ids": [
+      "C2",
+      "C3",
+      "C4"
+    ],
     "court_surfaces": {}
   },
   {
@@ -190,13 +259,20 @@
     "slug": "mosman-lawn-tc",
     "name": "Mosman Lawn Tennis Club",
     "location": "Mosman",
-    "region": "Lower North Shore",
+    "region": "North Sydney",
     "is_sydney": true,
     "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/mosman-lawn-tc",
     "client_id": "mosman-lawn-tc",
     "venue_id": "1674",
-    "resource_ids": [],
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ],
     "court_surfaces": {
       "Court 1": "Synthetic Grass",
       "Court 2": "Synthetic Grass",
@@ -211,41 +287,70 @@
     "slug": "primrose-park-tc",
     "name": "Primrose Park Tennis",
     "location": "Cremorne",
-    "region": "Lower North Shore",
+    "region": "North Sydney",
     "is_sydney": true,
-    "surface": null,
+    "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/primrose-park-tc",
     "client_id": "primrose-park-tc",
     "venue_id": "1632",
-    "resource_ids": [],
-    "court_surfaces": {}
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass"
+    }
   },
   {
     "key": "Rawson Park",
     "slug": "rawson-park-tc",
     "name": "Rawson Tennis",
     "location": "Mosman",
-    "region": "Lower North Shore",
+    "region": "North Sydney",
     "is_sydney": true,
-    "surface": null,
+    "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/rawson-park-tc",
     "client_id": "rawson-park-tc",
     "venue_id": "2372",
-    "resource_ids": [],
-    "court_surfaces": {}
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass"
+    }
   },
   {
     "key": "Latham Park",
     "slug": "latham-park-tc",
     "name": "Latham Park Tennis Club",
     "location": "South Coogee",
-    "region": "Eastern Suburbs / South East",
+    "region": "East Sydney",
     "is_sydney": true,
     "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/latham-park-tc",
     "client_id": "latham-park-tc",
     "venue_id": "1849",
-    "resource_ids": [],
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ],
     "court_surfaces": {
       "Court 1": "Synthetic Grass",
       "Court 2": "Synthetic Grass",
@@ -260,13 +365,681 @@
     "slug": "eastern-suburbs-tennis-club",
     "name": "Coogee Beach Tennis",
     "location": "Coogee",
-    "region": "Eastern Suburbs / South East",
+    "region": "East Sydney",
     "is_sydney": true,
     "surface": "Synthetic Grass",
     "booking_url": "https://www.tennisvenues.com.au/booking/eastern-suburbs-tennis-club",
     "client_id": "eastern-suburbs-tennis-club",
     "venue_id": "2076",
-    "resource_ids": [],
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5"
+    ],
     "court_surfaces": {}
+  },
+  {
+    "key": "haberfield_tc",
+    "name": "Haberfield TC",
+    "region": "West Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/haberfield-tc",
+    "client_id": "haberfield-tc",
+    "venue_id": "1671",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C6",
+      "2c9081e6909b107901909f38dfc00003"
+    ]
+  },
+  {
+    "key": "croker_park_tc",
+    "name": "Croker Park TC",
+    "region": "West Sydney",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/Croker-park-tc",
+    "client_id": "Croker-park-tc",
+    "venue_id": "2014",
+    "resource_ids": [
+      "C1",
+      "C2"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "five_dock_tc",
+    "name": "Five Dock TC",
+    "region": "West Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/five-dock-tc",
+    "client_id": "five-dock-tc",
+    "venue_id": "2011",
+    "resource_ids": [
+      "C1",
+      "C2"
+    ]
+  },
+  {
+    "key": "rockdale_tc",
+    "name": "Rockdale TC",
+    "region": "South Sydney",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/rockdale-tc",
+    "client_id": "rockdale-tc",
+    "venue_id": "2137",
+    "resource_ids": [
+      "2c90817c850295860185050f3a3f002e",
+      "2c90817c850295860185050f3a3f002f",
+      "2c90817c850295860185050f3a3f0030",
+      "2c90817c850295860185050f3a3f0031",
+      "2c90817c850295860185050f3a3f0032",
+      "2c90817c850295860185050f3a3f0033",
+      "2c90817c850295860185050f3a3f0034",
+      "2c90817c850295860185050f3a3f0035",
+      "2c90817c850295860185050f3a3f0036",
+      "2c90817c8502958601850507eba80025",
+      "2c90817c850295860185050f3a3e0026",
+      "2c90817c850295860185050f3a3e0027",
+      "2c90817c850295860185050f3a3e0028",
+      "2c90817c850295860185050f3a3e0029",
+      "2c90817c850295860185050f3a3f002a",
+      "2c90817c850295860185050f3a3f002b",
+      "2c90817c850295860185050f3a3f002c",
+      "2c90817c850295860185050f3a3f002d"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 7": "Synthetic Grass",
+      "Court 8": "Synthetic Grass",
+      "Court 9": "Synthetic Grass",
+      "Court 10": "Synthetic Grass",
+      "Court 11": "Synthetic Grass",
+      "Court 12": "Synthetic Grass",
+      "Court 13": "Synthetic Grass",
+      "Court 14": "Synthetic Grass",
+      "Court 15": "Synthetic Grass",
+      "Court 16": "Synthetic Grass",
+      "Court 17": "Synthetic Grass",
+      "Court 18": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "bexley_tennis_courts",
+    "name": "Bexley Tennis Courts",
+    "region": "South Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/bexley-tennis-courts",
+    "client_id": "bexley-tennis-courts",
+    "venue_id": "3489",
+    "resource_ids": [
+      "2c90817c89f5a5dd0189f97b11f2001a",
+      "2c90817c89f5a5dd0189f97ca05c001b",
+      "2c90817c89f5a5dd0189f97ca05c001c",
+      "2c90817c89f5a5dd0189f97ca05c001d"
+    ]
+  },
+  {
+    "key": "moxon_sports_club",
+    "name": "Moxon Sports Club",
+    "region": "West Sydney",
+    "surface": "Mixed Surfaces",
+    "booking_url": "https://www.tennisvenues.com.au/booking/moxon-sports-club",
+    "client_id": "moxon-sports-club",
+    "venue_id": "3485",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ],
+    "court_surfaces": {
+      "Court 1": "Hard Court",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "panania_tennis_centre",
+    "name": "Panania Tennis Centre",
+    "region": "West Sydney",
+    "surface": "Mixed Surfaces",
+    "booking_url": "https://www.tennisvenues.com.au/booking/panania-tennis-centre",
+    "client_id": "panania-tennis-centre",
+    "venue_id": "3501",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "C7",
+      "C8",
+      "C9"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 7": "Synthetic Grass",
+      "Court 8": "Synthetic Grass",
+      "Court 9": "Hard Court"
+    }
+  },
+  {
+    "key": "ken_rosewall_tennis_centre",
+    "name": "Ken Rosewall Tennis Centre",
+    "region": "West Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/ken-rosewall-tennis-centre",
+    "client_id": "ken-rosewall-tennis-centre",
+    "venue_id": "2667",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "2c9081e67db5b8ef017db657d3430001",
+      "2c9081e67db5b8ef017db657d3460002"
+    ]
+  },
+  {
+    "key": "parkside_tennis_courts_kogarah",
+    "name": "Parkside Tennis Courts Kogarah",
+    "region": "South Sydney",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/parkside-tennis-courts-kogarah",
+    "client_id": "parkside-tennis-courts-kogarah",
+    "venue_id": "2638",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "sylvania_waters_tc",
+    "name": "Sylvania Waters TC",
+    "region": "South Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/sylvania-waters-tc",
+    "client_id": "sylvania-waters-tc",
+    "venue_id": "2268",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ]
+  },
+  {
+    "key": "mosman_pickleball",
+    "name": "Mosman Pickleball",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/mosman-pickleball",
+    "client_id": "mosman-pickleball",
+    "venue_id": "3529",
+    "resource_ids": [
+      "4028d0829a700bc3019c2642998e2026",
+      "4028d0829a700bc3019c2644215a2027",
+      "4028d0829a700bc3019c2644215a2028",
+      "4028d0829a700bc3019c2644215a2029",
+      "4028d0829a700bc3019c2644215a202a",
+      "4028d0829a700bc3019c2644215a202b",
+      "4028d0829a700bc3019c2644215a202c",
+      "4028d0829a700bc3019c2644215a202d",
+      "4028d0829a700bc3019c2644215a202e"
+    ]
+  },
+  {
+    "key": "meadowbank_park_tc",
+    "name": "Meadowbank Park TC",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/meadowbank-park-tc",
+    "client_id": "meadowbank-park-tc",
+    "venue_id": "1552",
+    "resource_ids": [
+      "2c90815a7bbcd518017bdc5f5aae0050",
+      "2c90815a7bbcd518017bdc5f5aae0052",
+      "2c90815a7bbcd518017bd844d13c004b",
+      "2c90815a7bbcd518017bdc5f5aae0051",
+      "2c90815a7bbcd518017bdc5f5aae0054",
+      "2c90815a7bbcd518017bdc5f5aae0056",
+      "2c90815a7bbcd518017bdc5f5aae0053",
+      "2c90815a7bbcd518017bdc5f5aae0055"
+    ]
+  },
+  {
+    "key": "etdta_abuklea_rd_marsfield",
+    "name": "ETDTA Abuklea Rd Marsfield",
+    "region": "North Sydney",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/etdta-abuklea-rd-marsfield",
+    "client_id": "etdta-abuklea-rd-marsfield",
+    "venue_id": "1545",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "2c90818c7b152361017b1535567d0002",
+      "2c90818c7b152361017b1535567d0003",
+      "2c90818c7c83ca1a017ead1639990002",
+      "2c90818c7c83ca1a017ead1639990003"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 7": "Synthetic Grass",
+      "Court 8": "Synthetic Grass",
+      "Mini Court 1": "Synthetic Grass",
+      "Mini Court 2": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "burwood_tennis_courts",
+    "name": "Burwood Tennis Courts",
+    "region": "West Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/burwood-tennis-courts",
+    "client_id": "burwood-tennis-courts",
+    "venue_id": "2415",
+    "resource_ids": [
+      "C1",
+      "C2"
+    ]
+  },
+  {
+    "key": "wheatleigh_st_tennis",
+    "name": "Wheatleigh St Tennis",
+    "region": "West Sydney",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/wheatleigh-st-tennis",
+    "client_id": "wheatleigh-st-tennis",
+    "venue_id": "2010",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "2c90810a99deae23019a5bfe738e0002",
+      "2c90810a99deae23019a5bfe738e0003",
+      "2c90810a99deae23019a5bfe738e0004",
+      "2c90810a99deae23019a5bfe738e0005",
+      "2c90810a99deae23019a5bfe738e0006",
+      "2c90810a99deae23019a5bfe738e0007"
+    ],
+    "court_surfaces": {
+      "Tennis Court 1": "Synthetic Grass",
+      "Tennis Court 2": "Synthetic Grass",
+      "Tennis Court 3": "Synthetic Grass",
+      "Tennis Court 4": "Synthetic Grass",
+      "Tennis Court 5": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "willis_park_tennis",
+    "name": "Willis Park Tennis",
+    "region": "North Sydney",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/willis-park-tennis",
+    "client_id": "willis-park-tennis",
+    "venue_id": "1573",
+    "resource_ids": [
+      "2c90815a7b5adeef017b66e0eaad0029",
+      "2c90815a7b5adeef017b66e0eaad001e",
+      "2c90815a7b5adeef017b66e0eaad001f",
+      "2c90815a7b5adeef017b66e0eaad0021",
+      "2c90815a7b5adeef017b66e0eaad0022",
+      "2c90815a7b5adeef017b66e0eaad0023",
+      "2c90815a7b5adeef017b66e0eaad0024",
+      "2c90815a7b5adeef017b66e0eaad0025",
+      "2c90815a7b5adeef017b66e0eaad0026",
+      "2c90815a7b5adeef017b66e0eaad0027",
+      "2c90815a7b5adeef017b66e0eaad0028"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "wakehurst_tc",
+    "name": "Wakehurst TC",
+    "region": "North Sydney",
+    "surface": "Mixed Surfaces",
+    "booking_url": "https://www.tennisvenues.com.au/booking/wakehurst-tc",
+    "client_id": "wakehurst-tc",
+    "venue_id": "1962",
+    "resource_ids": [
+      "2c90815a77da81a10178cdf4199a0457",
+      "2c90815a77da81a10178cdf6ca1b0458",
+      "2c90815a77da81a10178cdf6ca1b0459",
+      "2c90815a77da81a10178cdf6ca1b045a",
+      "2c90815a77da81a10178cdf6ca1b045b",
+      "2c90815a77da81a10178cdf6ca1b045c",
+      "2c90815a77da81a10178ce5412af0468",
+      "2c90817c88b640b10188d2faad7b00de"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 7": "Synthetic Grass",
+      "Court 8": "Hard Court",
+      "Court 7 (Hardcourt)": "Synthetic Grass",
+      "Court 8 (Hardcourt)": "Hard Court"
+    }
+  },
+  {
+    "key": "bareena_park_tc",
+    "name": "Bareena Park TC",
+    "region": "South Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/bareena-park-tc",
+    "client_id": "bareena-park-tc",
+    "venue_id": "2314",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5"
+    ]
+  },
+  {
+    "key": "vince_barclay_coaching_academy",
+    "name": "Vince Barclay Coaching Academy",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/vince-barclay-coaching-academy",
+    "client_id": "vince-barclay-coaching-academy",
+    "venue_id": "1539",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "2c9081e67abd67b9017ac1ef6673007f",
+      "2c9081e67abd67b9017ac1ef66730080",
+      "2c9081e67abd67b9017ac1ef66730081",
+      "2c9081e67abd67b9017ac1ef66730082",
+      "2c9081e67abd67b9017ac1ef66730083",
+      "2c9081e67abd67b9017ac1ef66730084"
+    ]
+  },
+  {
+    "key": "belrose_tc",
+    "name": "Belrose TC",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/belrose-tc",
+    "client_id": "belrose-tc",
+    "venue_id": "1543",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ]
+  },
+  {
+    "key": "collaroy_tc",
+    "name": "Collaroy TC",
+    "region": "North Sydney",
+    "surface": "Mixed Surfaces",
+    "booking_url": "https://www.tennisvenues.com.au/booking/collaroy-tc",
+    "client_id": "collaroy-tc",
+    "venue_id": "2135",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Hard Court",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 1 CTC": "Synthetic Grass",
+      "Court 2 CTC": "Synthetic Grass",
+      "Court 3 CTC": "Synthetic Grass",
+      "Court 4 CTC": "Hard Court",
+      "Court 5 CTC": "Synthetic Grass",
+      "Court 6 CTC": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "narraweena_tennis_club",
+    "name": "Narraweena Tennis Club",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/narraweena-tennis-club",
+    "client_id": "narraweena-tennis-club",
+    "venue_id": "2496",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ]
+  },
+  {
+    "key": "oxford_fall_racquet_club",
+    "name": "Oxford Fall Racquet Club",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/oxford-fall-racquet-club",
+    "client_id": "oxford-fall-racquet-club",
+    "venue_id": "3516",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "40287082955e346a01956891861e005e",
+      "40287082955e346a01956891861e005f",
+      "40287082955e346a01956891861e0060",
+      "40287082955e346a01956891861e0061",
+      "40287082955e346a01956891861e0062",
+      "40287082955e346a01956891861e0063",
+      "4028708296180d3001961d55907a0033",
+      "4028708296180d3001961d55907a0034",
+      "4028708296180d3001961d55907a0035",
+      "2c998082968a08e70196fbbe7b8e02ea"
+    ]
+  },
+  {
+    "key": "waitara_tc",
+    "name": "Waitara TC",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/waitara-tc",
+    "client_id": "waitara-tc",
+    "venue_id": "1533",
+    "resource_ids": [
+      "efc38fdc37cddd8701383163a4670043",
+      "efc38fdc37cddd870138316491570044",
+      "efc38fdc37cddd870138316491570045",
+      "efc38fdc37cddd870138316491570046",
+      "efc38fdc37cddd870138316491570047",
+      "efc38fdc37cddd870138316491570048"
+    ]
+  },
+  {
+    "key": "kwta",
+    "name": "KWTA",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/kwta",
+    "client_id": "kwta",
+    "venue_id": "1530",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ]
+  },
+  {
+    "key": "thornleigh_squash",
+    "name": "Thornleigh Squash",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/thornleigh-squash",
+    "client_id": "thornleigh-squash",
+    "venue_id": "2416",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "8a7407824b283376014b29358c3d0131",
+      "8a7407824b283376014b29358c3d0132",
+      "8a7407824b283376014b29358c3d0133"
+    ]
+  },
+  {
+    "key": "hdta_dural_tc",
+    "name": "HDTA Dural TC",
+    "region": "North Sydney",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/hdta-dural-tc",
+    "client_id": "hdta-dural-tc",
+    "venue_id": "1542",
+    "resource_ids": [
+      "2c9081b7903f113d0191022e04b10021",
+      "2c9081b7903f113d0191022f4b280022",
+      "2c9081b7903f113d0191022f4b280023",
+      "2c9081b7903f113d0191022f4b280024",
+      "2c9081b7903f113d0191022f4b280025",
+      "2c9081b7903f113d0191022f4b280026",
+      "2c9081b7903f113d0191022f4b280027"
+    ],
+    "court_surfaces": {
+      "DTC 1": "Synthetic Grass",
+      "DTC 2 Vincents": "Synthetic Grass",
+      "DTC 3 Orana": "Synthetic Grass",
+      "DTC 4": "Synthetic Grass",
+      "DTC 5 Blue Gum": "Synthetic Grass",
+      "DTC 6 Merinda": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "mills_park_tc",
+    "name": "Mills Park TC",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/mills-park-tc",
+    "client_id": "mills-park-tc",
+    "venue_id": "1532",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "2c9081e68f5536d9018f7a3da3e20007",
+      "2c9081e68f5536d9018f7a3da3e20008",
+      "2c9081e68f5536d9018f7a3da3e20009",
+      "2c9081e68f5536d9018f7a3da3e2000a"
+    ]
+  },
+  {
+    "key": "terry_hills_tc",
+    "name": "Terry Hills TC",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/terry-hills-tc",
+    "client_id": "terry-hills-tc",
+    "venue_id": "2266",
+    "resource_ids": [
+      "C2",
+      "C3",
+      "C4",
+      "C5"
+    ]
+  },
+  {
+    "key": "kenthurst_tc",
+    "name": "Kenthurst TC",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/kenthurst-tc",
+    "client_id": "kenthurst-tc",
+    "venue_id": "1531",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ]
+  },
+  {
+    "key": "southend_tc",
+    "name": "Southend TC",
+    "region": "Outside Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/southend-tc",
+    "client_id": "southend-tc",
+    "venue_id": "2322",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "000000004fb4fb4b014ff28e7b3d0007",
+      "0000000053dfdaa501540f7bcc61002a",
+      "0000000053dfdaa501540f7bcc61002b",
+      "0000000053dfdaa501540f7bcc61002c",
+      "000000004fb4fb4b014ff28e7b3d0004",
+      "000000004fb4fb4b014ff28e7b3d0005",
+      "000000004fb4fb4b014ff28e7b3d0006"
+    ]
   }
 ]
