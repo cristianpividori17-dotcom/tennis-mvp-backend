@@ -8,7 +8,10 @@ from datetime import datetime, timezone
 
 from db_store import get_slot as get_db_slot
 from db_store import upsert_slot, use_db_storage
-from tennisvenues_scraper import get_available_courts_from_url
+from tennisvenues_scraper import get_available_courts_from_url as get_available_courts_primary
+from tennisvenues_scraper_fallback import (
+    get_available_courts_from_url as get_available_courts_fallback,
+)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = os.path.join(BASE_DIR, "venues_config.json")
@@ -347,17 +350,41 @@ def build_failed_payload(attempted_payload):
     return failed
 
 
+def run_primary_scraper(target, date, time_str, duration_minutes):
+    return get_available_courts_primary(
+        booking_url=target["booking_url"],
+        date_yyyymmdd=date,
+        selected_time=time_str,
+        client_id=target.get("client_id"),
+        venue_id=target.get("venue_id"),
+        resource_ids=target.get("resource_ids"),
+        duration_minutes=duration_minutes,
+    )
+
+
+def run_fallback_scraper(target, date, time_str, duration_minutes):
+    return get_available_courts_fallback(
+        booking_url=target["booking_url"],
+        date_yyyymmdd=date,
+        selected_time=time_str,
+        client_id=target.get("client_id"),
+        venue_id=target.get("venue_id"),
+        resource_ids=target.get("resource_ids"),
+        duration_minutes=duration_minutes,
+    )
+
+
 def check_one_venue(venue_key, target, date, time_str, duration_minutes):
     started_at = time.perf_counter()
 
+    primary_error = None
+    fallback_error = None
+
     try:
-        courts = get_available_courts_from_url(
-            booking_url=target["booking_url"],
-            date_yyyymmdd=date,
-            selected_time=time_str,
-            client_id=target.get("client_id"),
-            venue_id=target.get("venue_id"),
-            resource_ids=target.get("resource_ids"),
+        courts = run_primary_scraper(
+            target=target,
+            date=date,
+            time_str=time_str,
             duration_minutes=duration_minutes,
         )
 
@@ -369,24 +396,63 @@ def check_one_venue(venue_key, target, date, time_str, duration_minutes):
         return {
             "venue_key": venue_key,
             "status": "success",
+            "strategy": "primary",
+            "fallback_used": False,
             "courts": courts,
             "available": len(courts) > 0,
             "available_courts": len(courts),
             "duration_ms": duration_ms,
             "error": None,
+            "primary_error": None,
+            "fallback_error": None,
         }
 
     except Exception as e:
+        primary_error = str(e)
+
+    try:
+        courts = run_fallback_scraper(
+            target=target,
+            date=date,
+            time_str=time_str,
+            duration_minutes=duration_minutes,
+        )
+
+        duration_ms = round((time.perf_counter() - started_at) * 1000, 2)
+
+        if not isinstance(courts, list):
+            courts = []
+
+        return {
+            "venue_key": venue_key,
+            "status": "success",
+            "strategy": "fallback",
+            "fallback_used": True,
+            "courts": courts,
+            "available": len(courts) > 0,
+            "available_courts": len(courts),
+            "duration_ms": duration_ms,
+            "error": None,
+            "primary_error": primary_error,
+            "fallback_error": None,
+        }
+
+    except Exception as e:
+        fallback_error = str(e)
         duration_ms = round((time.perf_counter() - started_at) * 1000, 2)
 
         return {
             "venue_key": venue_key,
             "status": "error",
+            "strategy": "failed_both",
+            "fallback_used": True,
             "courts": [],
             "available": False,
             "available_courts": 0,
             "duration_ms": duration_ms,
-            "error": str(e),
+            "error": fallback_error,
+            "primary_error": primary_error,
+            "fallback_error": fallback_error,
         }
 
 
@@ -421,16 +487,18 @@ def check_all_venues(date, time_str, duration_minutes, region="All Sydney"):
 
             venue_key = result["venue_key"]
             status = result["status"]
+            strategy = result.get("strategy")
             available_courts = result["available_courts"]
             duration_ms = result["duration_ms"]
 
             if status == "success":
                 print(
-                    f"[OK] {venue_key} | courts={available_courts} | duration_ms={duration_ms}"
+                    f"[OK] {venue_key} | strategy={strategy} | courts={available_courts} | duration_ms={duration_ms}"
                 )
             else:
                 print(
-                    f"[ERROR] {venue_key} | duration_ms={duration_ms} | error={result['error']}"
+                    f"[ERROR] {venue_key} | strategy={strategy} | duration_ms={duration_ms} | "
+                    f"primary_error={result.get('primary_error')} | fallback_error={result.get('fallback_error')}"
                 )
 
     venue_results.sort(key=lambda x: x["venue_key"].lower())
@@ -456,6 +524,8 @@ def format_results_for_frontend(available_results):
                 "venue": item["venue_key"],
                 "available_courts": item["available_courts"],
                 "courts": item["courts"],
+                "strategy": item.get("strategy"),
+                "fallback_used": item.get("fallback_used", False),
             }
         )
 
@@ -493,6 +563,8 @@ def build_frontend_cards(results, duration_minutes, region="All Sydney"):
                 "available_courts": item["available_courts"],
                 "courts": court_objects,
                 "requested_duration_minutes": int(duration_minutes),
+                "strategy": item.get("strategy"),
+                "fallback_used": item.get("fallback_used", False),
             }
         )
 
@@ -505,6 +577,12 @@ def build_slot_metadata(venue_results, started_at_utc, duration_minutes, region=
     success_count = sum(1 for item in venue_results if item["status"] == "success")
     error_count = sum(1 for item in venue_results if item["status"] == "error")
     available_venue_count = sum(1 for item in venue_results if item["available"] is True)
+    fallback_success_count = sum(
+        1 for item in venue_results if item["status"] == "success" and item.get("strategy") == "fallback"
+    )
+    primary_success_count = sum(
+        1 for item in venue_results if item["status"] == "success" and item.get("strategy") == "primary"
+    )
 
     completed_at_utc = datetime.now(timezone.utc)
     total_duration_ms = round(
@@ -519,6 +597,8 @@ def build_slot_metadata(venue_results, started_at_utc, duration_minutes, region=
             {
                 "venue_key": item["venue_key"],
                 "status": item["status"],
+                "strategy": item.get("strategy"),
+                "fallback_used": item.get("fallback_used", False),
                 "available": item["available"],
                 "available_courts": item["available_courts"],
                 "duration_ms": item["duration_ms"],
@@ -529,6 +609,9 @@ def build_slot_metadata(venue_results, started_at_utc, duration_minutes, region=
             errors.append(
                 {
                     "venue_key": item["venue_key"],
+                    "strategy": item.get("strategy"),
+                    "primary_error": item.get("primary_error"),
+                    "fallback_error": item.get("fallback_error"),
                     "error": item["error"],
                     "duration_ms": item["duration_ms"],
                 }
@@ -543,6 +626,8 @@ def build_slot_metadata(venue_results, started_at_utc, duration_minutes, region=
         "success_count": success_count,
         "error_count": error_count,
         "available_venue_count": available_venue_count,
+        "primary_success_count": primary_success_count,
+        "fallback_success_count": fallback_success_count,
         "venue_checks": venue_checks,
         "errors": errors,
     }
@@ -604,6 +689,8 @@ def collect_and_store_slot(
         "success_count": metadata["success_count"],
         "error_count": metadata["error_count"],
         "available_venue_count": metadata["available_venue_count"],
+        "primary_success_count": metadata.get("primary_success_count", 0),
+        "fallback_success_count": metadata.get("fallback_success_count", 0),
         "venue_checks": metadata["venue_checks"],
         "errors": metadata["errors"],
         "results": cards,
@@ -660,6 +747,8 @@ def main():
     print(f"Success count: {payload.get('success_count')}")
     print(f"Error count: {payload.get('error_count')}")
     print(f"Available venue count: {payload.get('available_venue_count')}")
+    print(f"Primary success count: {payload.get('primary_success_count', 0)}")
+    print(f"Fallback success count: {payload.get('fallback_success_count', 0)}")
     print(f"Results count: {len(payload.get('results', []))}")
     print(f"Total duration ms: {payload.get('total_duration_ms')}")
     print(f"Verification failed: {payload.get('verification_failed', False)}")
