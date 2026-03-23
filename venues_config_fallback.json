@@ -1,0 +1,435 @@
+[
+  {
+    "key": "ken_rosewall_tennis_centre",
+    "name": "Ken Rosewall Tennis Centre",
+    "booking_url": "https://www.tennisvenues.com.au/booking/ken-rosewall-tennis-centre",
+    "client_id": "ken-rosewall-tennis-centre",
+    "venue_id": "2667",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "2c9081e67db5b8ef017db657d3430001",
+      "2c9081e67db5b8ef017db657d3460002"
+    ]
+  },
+  {
+    "key": "parkside_tennis_courts_kogarah",
+    "name": "Parkside Tennis Courts Kogarah",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/parkside-tennis-courts-kogarah",
+    "client_id": "parkside-tennis-courts-kogarah",
+    "venue_id": "2638",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "sylvania_waters_tc",
+    "name": "Sylvania Waters TC",
+    "booking_url": "https://www.tennisvenues.com.au/booking/sylvania-waters-tc",
+    "client_id": "sylvania-waters-tc",
+    "venue_id": "2268",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ]
+  },
+  {
+    "key": "meadowbank_park_tc",
+    "name": "Meadowbank Park TC",
+    "booking_url": "https://www.tennisvenues.com.au/booking/meadowbank-park-tc",
+    "client_id": "meadowbank-park-tc",
+    "venue_id": "1552",
+    "resource_ids": [
+      "2c90815a7bbcd518017bdc5f5aae0050",
+      "2c90815a7bbcd518017bdc5f5aae0052",
+      "2c90815a7bbcd518017bd844d13c004b",
+      "2c90815a7bbcd518017bdc5f5aae0051",
+      "2c90815a7bbcd518017bdc5f5aae0054",
+      "2c90815a7bbcd518017bdc5f5aae0056",
+      "2c90815a7bbcd518017bdc5f5aae0053",
+      "2c90815a7bbcd518017bdc5f5aae0055"
+    ]
+  },
+  {
+    "key": "etdta_abuklea_rd_marsfield",
+    "name": "ETDTA Abuklea Rd Marsfield",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/etdta-abuklea-rd-marsfield",
+    "client_id": "etdta-abuklea-rd-marsfield",
+    "venue_id": "1545",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "2c90818c7b152361017b1535567d0002",
+      "2c90818c7b152361017b1535567d0003",
+      "2c90818c7c83ca1a017ead1639990002",
+      "2c90818c7c83ca1a017ead1639990003"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 7": "Synthetic Grass",
+      "Court 8": "Synthetic Grass",
+      "Mini Court 1": "Synthetic Grass",
+      "Mini Court 2": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "burwood_tennis_courts",
+    "name": "Burwood Tennis Courts",
+    "booking_url": "https://www.tennisvenues.com.au/booking/burwood-tennis-courts",
+    "client_id": "burwood-tennis-courts",
+    "venue_id": "2415",
+    "resource_ids": [
+      "C1",
+      "C2"
+    ]
+  },
+  {
+    "key": "wheatleigh_st_tennis",
+    "name": "Wheatleigh St Tennis",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/wheatleigh-st-tennis",
+    "client_id": "wheatleigh-st-tennis",
+    "venue_id": "2010",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "2c90810a99deae23019a5bfe738e0002",
+      "2c90810a99deae23019a5bfe738e0003",
+      "2c90810a99deae23019a5bfe738e0004",
+      "2c90810a99deae23019a5bfe738e0005",
+      "2c90810a99deae23019a5bfe738e0006",
+      "2c90810a99deae23019a5bfe738e0007"
+    ],
+    "court_surfaces": {
+      "Tennis Court 1": "Synthetic Grass",
+      "Tennis Court 2": "Synthetic Grass",
+      "Tennis Court 3": "Synthetic Grass",
+      "Tennis Court 4": "Synthetic Grass",
+      "Tennis Court 5": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "willis_park_tennis",
+    "name": "Willis Park Tennis",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/willis-park-tennis",
+    "client_id": "willis-park-tennis",
+    "venue_id": "1573",
+    "resource_ids": [
+      "2c90815a7b5adeef017b66e0eaad0029",
+      "2c90815a7b5adeef017b66e0eaad001e",
+      "2c90815a7b5adeef017b66e0eaad001f",
+      "2c90815a7b5adeef017b66e0eaad0021",
+      "2c90815a7b5adeef017b66e0eaad0022",
+      "2c90815a7b5adeef017b66e0eaad0023",
+      "2c90815a7b5adeef017b66e0eaad0024",
+      "2c90815a7b5adeef017b66e0eaad0025",
+      "2c90815a7b5adeef017b66e0eaad0026",
+      "2c90815a7b5adeef017b66e0eaad0027",
+      "2c90815a7b5adeef017b66e0eaad0028"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "wakehurst_tc",
+    "name": "Wakehurst TC",
+    "surface": "Mixed Surfaces",
+    "booking_url": "https://www.tennisvenues.com.au/booking/wakehurst-tc",
+    "client_id": "wakehurst-tc",
+    "venue_id": "1962",
+    "resource_ids": [
+      "2c90815a77da81a10178cdf4199a0457",
+      "2c90815a77da81a10178cdf6ca1b0458",
+      "2c90815a77da81a10178cdf6ca1b0459",
+      "2c90815a77da81a10178cdf6ca1b045a",
+      "2c90815a77da81a10178cdf6ca1b045b",
+      "2c90815a77da81a10178cdf6ca1b045c",
+      "2c90815a77da81a10178ce5412af0468",
+      "2c90817c88b640b10188d2faad7b00de"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 7": "Synthetic Grass",
+      "Court 8": "Hard Court",
+      "Court 7 (Hardcourt)": "Synthetic Grass",
+      "Court 8 (Hardcourt)": "Hard Court"
+    }
+  },
+  {
+    "key": "bareena_park_tc",
+    "name": "Bareena Park TC",
+    "booking_url": "https://www.tennisvenues.com.au/booking/bareena-park-tc",
+    "client_id": "bareena-park-tc",
+    "venue_id": "2314",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5"
+    ]
+  },
+  {
+    "key": "vince_barclay_coaching_academy",
+    "name": "Vince Barclay Coaching Academy",
+    "booking_url": "https://www.tennisvenues.com.au/booking/vince-barclay-coaching-academy",
+    "client_id": "vince-barclay-coaching-academy",
+    "venue_id": "1539",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "2c9081e67abd67b9017ac1ef6673007f",
+      "2c9081e67abd67b9017ac1ef66730080",
+      "2c9081e67abd67b9017ac1ef66730081",
+      "2c9081e67abd67b9017ac1ef66730082",
+      "2c9081e67abd67b9017ac1ef66730083",
+      "2c9081e67abd67b9017ac1ef66730084"
+    ]
+  },
+  {
+    "key": "belrose_tc",
+    "name": "Belrose TC",
+    "booking_url": "https://www.tennisvenues.com.au/booking/belrose-tc",
+    "client_id": "belrose-tc",
+    "venue_id": "1543",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ]
+  },
+  {
+    "key": "collaroy_tc",
+    "name": "Collaroy TC",
+    "surface": "Mixed Surfaces",
+    "booking_url": "https://www.tennisvenues.com.au/booking/collaroy-tc",
+    "client_id": "collaroy-tc",
+    "venue_id": "2135",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Hard Court",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 1 CTC": "Synthetic Grass",
+      "Court 2 CTC": "Synthetic Grass",
+      "Court 3 CTC": "Synthetic Grass",
+      "Court 4 CTC": "Hard Court",
+      "Court 5 CTC": "Synthetic Grass",
+      "Court 6 CTC": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "narraweena_tennis_club",
+    "name": "Narraweena Tennis Club",
+    "booking_url": "https://www.tennisvenues.com.au/booking/narraweena-tennis-club",
+    "client_id": "narraweena-tennis-club",
+    "venue_id": "2496",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ]
+  },
+  {
+    "key": "oxford_fall_racquet_club",
+    "name": "Oxford Fall Racquet Club",
+    "booking_url": "https://www.tennisvenues.com.au/booking/oxford-fall-racquet-club",
+    "client_id": "oxford-fall-racquet-club",
+    "venue_id": "3516",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "40287082955e346a01956891861e005e",
+      "40287082955e346a01956891861e005f",
+      "40287082955e346a01956891861e0060",
+      "40287082955e346a01956891861e0061",
+      "40287082955e346a01956891861e0062",
+      "40287082955e346a01956891861e0063",
+      "4028708296180d3001961d55907a0033",
+      "4028708296180d3001961d55907a0034",
+      "4028708296180d3001961d55907a0035",
+      "2c998082968a08e70196fbbe7b8e02ea"
+    ]
+  },
+  {
+    "key": "waitara_tc",
+    "name": "Waitara TC",
+    "booking_url": "https://www.tennisvenues.com.au/booking/waitara-tc",
+    "client_id": "waitara-tc",
+    "venue_id": "1533",
+    "resource_ids": [
+      "efc38fdc37cddd8701383163a4670043",
+      "efc38fdc37cddd870138316491570044",
+      "efc38fdc37cddd870138316491570045",
+      "efc38fdc37cddd870138316491570046",
+      "efc38fdc37cddd870138316491570047",
+      "efc38fdc37cddd870138316491570048"
+    ]
+  },
+  {
+    "key": "kwta",
+    "name": "KWTA",
+    "booking_url": "https://www.tennisvenues.com.au/booking/kwta",
+    "client_id": "kwta",
+    "venue_id": "1530",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ]
+  },
+  {
+    "key": "thornleigh_squash",
+    "name": "Thornleigh Squash",
+    "booking_url": "https://www.tennisvenues.com.au/booking/thornleigh-squash",
+    "client_id": "thornleigh-squash",
+    "venue_id": "2416",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "8a7407824b283376014b29358c3d0131",
+      "8a7407824b283376014b29358c3d0132",
+      "8a7407824b283376014b29358c3d0133"
+    ]
+  },
+  {
+    "key": "hdta_dural_tc",
+    "name": "HDTA Dural TC",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/hdta-dural-tc",
+    "client_id": "hdta-dural-tc",
+    "venue_id": "1542",
+    "resource_ids": [
+      "2c9081b7903f113d0191022e04b10021",
+      "2c9081b7903f113d0191022f4b280022",
+      "2c9081b7903f113d0191022f4b280023",
+      "2c9081b7903f113d0191022f4b280024",
+      "2c9081b7903f113d0191022f4b280025",
+      "2c9081b7903f113d0191022f4b280026",
+      "2c9081b7903f113d0191022f4b280027"
+    ],
+    "court_surfaces": {
+      "DTC 1": "Synthetic Grass",
+      "DTC 2 Vincents": "Synthetic Grass",
+      "DTC 3 Orana": "Synthetic Grass",
+      "DTC 4": "Synthetic Grass",
+      "DTC 5 Blue Gum": "Synthetic Grass",
+      "DTC 6 Merinda": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "mills_park_tc",
+    "name": "Mills Park TC",
+    "booking_url": "https://www.tennisvenues.com.au/booking/mills-park-tc",
+    "client_id": "mills-park-tc",
+    "venue_id": "1532",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "2c9081e68f5536d9018f7a3da3e20007",
+      "2c9081e68f5536d9018f7a3da3e20008",
+      "2c9081e68f5536d9018f7a3da3e20009",
+      "2c9081e68f5536d9018f7a3da3e2000a"
+    ]
+  },
+  {
+    "key": "terry_hills_tc",
+    "name": "Terry Hills TC",
+    "booking_url": "https://www.tennisvenues.com.au/booking/terry-hills-tc",
+    "client_id": "terry-hills-tc",
+    "venue_id": "2266",
+    "resource_ids": [
+      "C3",
+      "C4",
+      "C5"
+    ]
+  },
+  {
+    "key": "kenthurst_tc",
+    "name": "Kenthurst TC",
+    "booking_url": "https://www.tennisvenues.com.au/booking/kenthurst-tc",
+    "client_id": "kenthurst-tc",
+    "venue_id": "1531",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ]
+  }
+]
