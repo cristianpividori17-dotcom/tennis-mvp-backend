@@ -46,13 +46,50 @@ def init_db():
                     success_count INTEGER,
                     error_count INTEGER,
                     available_venue_count INTEGER,
+                    requested_duration_minutes INTEGER,
+                    region TEXT,
+                    verification_failed BOOLEAN DEFAULT FALSE,
+                    preserved_due_to_scrape_errors BOOLEAN DEFAULT FALSE,
                     venue_checks_json TEXT,
                     errors_json TEXT,
                     results_json TEXT,
+                    last_attempt_json TEXT,
                     PRIMARY KEY (play_date, play_time)
                 )
                 """
             )
+
+            cur.execute(
+                """
+                ALTER TABLE availability_slots
+                ADD COLUMN IF NOT EXISTS requested_duration_minutes INTEGER
+                """
+            )
+            cur.execute(
+                """
+                ALTER TABLE availability_slots
+                ADD COLUMN IF NOT EXISTS region TEXT
+                """
+            )
+            cur.execute(
+                """
+                ALTER TABLE availability_slots
+                ADD COLUMN IF NOT EXISTS verification_failed BOOLEAN DEFAULT FALSE
+                """
+            )
+            cur.execute(
+                """
+                ALTER TABLE availability_slots
+                ADD COLUMN IF NOT EXISTS preserved_due_to_scrape_errors BOOLEAN DEFAULT FALSE
+                """
+            )
+            cur.execute(
+                """
+                ALTER TABLE availability_slots
+                ADD COLUMN IF NOT EXISTS last_attempt_json TEXT
+                """
+            )
+
         conn.commit()
 
 
@@ -73,12 +110,17 @@ def upsert_slot(date, time_str, payload):
                     success_count,
                     error_count,
                     available_venue_count,
+                    requested_duration_minutes,
+                    region,
+                    verification_failed,
+                    preserved_due_to_scrape_errors,
                     venue_checks_json,
                     errors_json,
-                    results_json
+                    results_json,
+                    last_attempt_json
                 )
                 VALUES (
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                 )
                 ON CONFLICT (play_date, play_time)
                 DO UPDATE SET
@@ -89,9 +131,14 @@ def upsert_slot(date, time_str, payload):
                     success_count = EXCLUDED.success_count,
                     error_count = EXCLUDED.error_count,
                     available_venue_count = EXCLUDED.available_venue_count,
+                    requested_duration_minutes = EXCLUDED.requested_duration_minutes,
+                    region = EXCLUDED.region,
+                    verification_failed = EXCLUDED.verification_failed,
+                    preserved_due_to_scrape_errors = EXCLUDED.preserved_due_to_scrape_errors,
                     venue_checks_json = EXCLUDED.venue_checks_json,
                     errors_json = EXCLUDED.errors_json,
-                    results_json = EXCLUDED.results_json
+                    results_json = EXCLUDED.results_json,
+                    last_attempt_json = EXCLUDED.last_attempt_json
                 """,
                 (
                     date,
@@ -103,9 +150,16 @@ def upsert_slot(date, time_str, payload):
                     payload.get("success_count"),
                     payload.get("error_count"),
                     payload.get("available_venue_count"),
+                    payload.get("requested_duration_minutes"),
+                    payload.get("region"),
+                    bool(payload.get("verification_failed", False)),
+                    bool(payload.get("preserved_due_to_scrape_errors", False)),
                     json.dumps(payload.get("venue_checks", []), ensure_ascii=False),
                     json.dumps(payload.get("errors", []), ensure_ascii=False),
                     json.dumps(payload.get("results", []), ensure_ascii=False),
+                    json.dumps(payload.get("last_attempt"), ensure_ascii=False)
+                    if payload.get("last_attempt") is not None
+                    else None,
                 ),
             )
         conn.commit()
@@ -128,9 +182,14 @@ def get_slot(date, time_str):
                     success_count,
                     error_count,
                     available_venue_count,
+                    requested_duration_minutes,
+                    region,
+                    verification_failed,
+                    preserved_due_to_scrape_errors,
                     venue_checks_json,
                     errors_json,
-                    results_json
+                    results_json,
+                    last_attempt_json
                 FROM availability_slots
                 WHERE play_date = %s AND play_time = %s
                 """,
@@ -152,7 +211,12 @@ def get_slot(date, time_str):
         "success_count": row[6],
         "error_count": row[7],
         "available_venue_count": row[8],
-        "venue_checks": json.loads(row[9] or "[]"),
-        "errors": json.loads(row[10] or "[]"),
-        "results": json.loads(row[11] or "[]"),
+        "requested_duration_minutes": row[9],
+        "region": row[10],
+        "verification_failed": bool(row[11]) if row[11] is not None else False,
+        "preserved_due_to_scrape_errors": bool(row[12]) if row[12] is not None else False,
+        "venue_checks": json.loads(row[13] or "[]"),
+        "errors": json.loads(row[14] or "[]"),
+        "results": json.loads(row[15] or "[]"),
+        "last_attempt": json.loads(row[16]) if row[16] else None,
     }

@@ -1,5 +1,7 @@
 import math
-import threading
+import re
+import time
+from typing import Dict, List, Optional, Set, Tuple
 
 import pandas as pd
 import requests
@@ -7,8 +9,9 @@ from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-
-REQUEST_TIMEOUT = 20
+REQUEST_TIMEOUT = 25
+RESOURCE_DELAY_SECONDS = 0.45
+HANDSHAKE_DELAY_SECONDS = 0.6
 
 DEFAULT_HEADERS = {
     "User-Agent": (
@@ -23,6 +26,7 @@ DEFAULT_HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
     "Cache-Control": "no-cache",
     "Pragma": "no-cache",
+    "Upgrade-Insecure-Requests": "1",
 }
 
 AJAX_HEADERS = {
@@ -34,34 +38,25 @@ AJAX_HEADERS = {
     "Pragma": "no-cache",
 }
 
-_thread_local = threading.local()
-
 
 def build_session():
     session = requests.Session()
 
     retry = Retry(
-        total=3,
-        connect=3,
-        read=3,
-        backoff_factor=1.0,
+        total=2,
+        connect=2,
+        read=2,
+        backoff_factor=0.8,
         status_forcelist=[429, 500, 502, 503, 504],
         allowed_methods=["GET"],
         raise_on_status=False,
     )
 
-    adapter = HTTPAdapter(max_retries=retry, pool_connections=20, pool_maxsize=20)
+    adapter = HTTPAdapter(max_retries=retry, pool_connections=10, pool_maxsize=10)
     session.mount("http://", adapter)
     session.mount("https://", adapter)
     session.headers.update(DEFAULT_HEADERS)
-
     return session
-
-
-def get_thread_session():
-    if not hasattr(_thread_local, "session"):
-        _thread_local.session = build_session()
-    return _thread_local.session
 
 
 def normalize_time_string(value):
@@ -131,17 +126,38 @@ def time_string_to_minutes(value):
 
 
 def minutes_to_time_string(total_minutes):
-    total_minutes = int(total_minutes)
-    hour_24 = total_minutes // 60
+    hour = total_minutes // 60
     minute = total_minutes % 60
 
-    suffix = "am" if hour_24 < 12 else "pm"
+    suffix = "am"
+    display_hour = hour
 
-    hour_12 = hour_24 % 12
-    if hour_12 == 0:
-        hour_12 = 12
+    if hour == 0:
+        display_hour = 12
+        suffix = "am"
+    elif hour < 12:
+        display_hour = hour
+        suffix = "am"
+    elif hour == 12:
+        display_hour = 12
+        suffix = "pm"
+    else:
+        display_hour = hour - 12
+        suffix = "pm"
 
-    return f"{hour_12}:{minute:02d}{suffix}"
+    if minute == 0:
+        return f"{display_hour}{suffix}"
+
+    return f"{display_hour}:{minute:02d}{suffix}"
+
+
+def build_required_slots(selected_time, duration_minutes):
+    start_minutes = time_string_to_minutes(selected_time)
+    if start_minutes is None:
+        return []
+
+    blocks = int(math.ceil(int(duration_minutes) / 30))
+    return [minutes_to_time_string(start_minutes + 30 * i) for i in range(blocks)]
 
 
 def dedupe_preserve_order(items):
@@ -149,7 +165,7 @@ def dedupe_preserve_order(items):
     output = []
 
     for item in items:
-        key = str(item)
+        key = str(item).strip().lower()
         if key in seen:
             continue
         seen.add(key)
@@ -158,7 +174,66 @@ def dedupe_preserve_order(items):
     return output
 
 
+def normalize_court_name(name):
+    if not name:
+        return ""
+
+    text = str(name).strip()
+    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"\bCourt\s*N(\d+)\b", r"Court \1", text, flags=re.IGNORECASE)
+    return text.strip()
+
+
+def warm_up_session(session, booking_url):
+    try:
+        session.get(
+            "https://www.tennisvenues.com.au/",
+            timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
+            headers=DEFAULT_HEADERS,
+        )
+        time.sleep(HANDSHAKE_DELAY_SECONDS)
+
+        session.get(
+            booking_url,
+            timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
+            headers=DEFAULT_HEADERS,
+        )
+        time.sleep(HANDSHAKE_DELAY_SECONDS)
+    except Exception:
+        pass
+
+
+def fetch_booking_page_html(session, booking_url):
+    response = session.get(
+        booking_url,
+        timeout=REQUEST_TIMEOUT,
+        allow_redirects=True,
+        headers=DEFAULT_HEADERS,
+    )
+
+    if response.status_code == 200:
+        return response.text
+
+    if response.status_code == 403:
+        warm_up_session(session, booking_url)
+
+        response = session.get(
+            booking_url,
+            timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
+            headers=DEFAULT_HEADERS,
+        )
+
+        if response.status_code == 200:
+            return response.text
+
+    raise Exception(f"Error HTTP {response.status_code} para booking page {booking_url}")
+
+
 def fetch_booking_html(
+    session,
     client_id,
     venue_id,
     date_yyyymmdd,
@@ -176,395 +251,305 @@ def fetch_booking_html(
         "page": page,
     }
 
-    session = get_thread_session()
-
     headers = dict(AJAX_HEADERS)
     headers["Referer"] = booking_url
+    headers["Origin"] = "https://www.tennisvenues.com.au"
 
     response = session.get(
         url,
         params=payload,
         headers=headers,
         timeout=REQUEST_TIMEOUT,
+        allow_redirects=True,
     )
 
-    if response.status_code != 200:
-        raise Exception(
-            f"Error HTTP {response.status_code} para fetch-booking-data "
-            f"client_id={client_id} venue_id={venue_id} resource_id={resource_id}"
+    if response.status_code == 200:
+        return response.text
+
+    if response.status_code == 403:
+        warm_up_session(session, booking_url)
+
+        response = session.get(
+            url,
+            params=payload,
+            headers=headers,
+            timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
         )
 
-    return response.text
+        if response.status_code == 200:
+            return response.text
+
+    raise Exception(
+        f"Error HTTP {response.status_code} para fetch-booking-data "
+        f"client_id={client_id} venue_id={venue_id} resource_id={resource_id}"
+    )
 
 
-def parse_booking_table(ajax_html):
-    soup = BeautifulSoup(ajax_html, "html.parser")
-    booking_table = soup.find("table", class_="BookingSheet")
+def is_probable_time_text(text):
+    if not text:
+        return False
 
-    if not booking_table:
-        snippet = ajax_html[:500].replace("\n", " ").replace("\r", " ")
-        raise Exception(f"No encontré la tabla BookingSheet. Snippet: {snippet}")
+    normalized = normalize_time_string(text)
+    return time_string_to_minutes(normalized) is not None
 
-    rows = booking_table.find_all("tr")
+
+def extract_row_time(cells):
+    if not cells:
+        return ""
+
+    first_text = cells[0].get_text(" ", strip=True)
+    if is_probable_time_text(first_text):
+        return normalize_time_string(first_text)
+
+    for cell in cells:
+        classes = cell.get("class", [])
+        text = cell.get_text(" ", strip=True)
+
+        if "BookingSheetTimeLabel" in classes and is_probable_time_text(text):
+            return normalize_time_string(text)
+
+    return ""
+
+
+def looks_available(cell):
+    if cell.find("a"):
+        return True
+
+    classes = " ".join(cell.get("class", [])).lower()
+    if "available" in classes or "vacant" in classes or "free" in classes:
+        return True
+
+    text = cell.get_text(" ", strip=True).strip().lower()
+
+    if not text:
+        return False
+
+    if text in {"book", "available", "vacant", "free"}:
+        return True
+
+    return False
+
+
+def looks_unavailable(cell):
+    if cell.find("a"):
+        return False
+
+    text = cell.get_text(" ", strip=True).strip()
+    if text:
+        return True
+
+    classes = " ".join(cell.get("class", [])).lower()
+    if any(flag in classes for flag in ["booked", "occupied", "unavailable", "disabled"]):
+        return True
+
+    return False
+
+
+def extract_table_court_headers(table):
+    rows = table.find_all("tr")
     if not rows:
-        return pd.DataFrame(columns=["time", "time_norm", "court", "status", "text", "classes"])
+        return []
 
     header_row = rows[0]
     header_cells = header_row.find_all(["th", "td"])
+    if len(header_cells) < 2:
+        return []
 
-    courts = []
-    for cell in header_cells[1:]:
-        label = cell.get_text(" ", strip=True)
-        if label:
-            courts.append(label)
-
-    data = []
-
-    for row in rows[1:]:
-        cells = row.find_all("td")
-        if not cells:
+    headers = []
+    for idx, cell in enumerate(header_cells):
+        if idx == 0:
             continue
 
-        if len(cells) >= len(courts) + 1:
-            court_cells = cells[-len(courts):]
-        elif len(cells) == len(courts):
-            court_cells = cells
-        else:
+        text = cell.get_text(" ", strip=True)
+        text = normalize_court_name(text)
+
+        if not text:
+            text = f"Court {idx}"
+
+        headers.append(text)
+
+    return headers
+
+
+def parse_booking_html_to_slots(html, resource_label=None):
+    soup = BeautifulSoup(html, "html.parser")
+    availability_by_court: Dict[str, Set[str]] = {}
+
+    tables = soup.find_all("table")
+    if not tables:
+        return availability_by_court
+
+    for table in tables:
+        headers = extract_table_court_headers(table)
+        rows = table.find_all("tr")
+        if not rows:
             continue
 
-        for i, cell in enumerate(court_cells):
-            if i >= len(courts):
+        if not headers and resource_label:
+            headers = [resource_label]
+
+        for row in rows[1:]:
+            cells = row.find_all(["td", "th"])
+            if len(cells) < 2:
                 continue
 
-            court_name = courts[i]
-            cell_classes = cell.get("class", [])
-            links = cell.find_all("a")
+            row_time = extract_row_time(cells)
+            if not row_time:
+                continue
 
-            if links:
-                for link in links:
-                    time_text = link.get_text(" ", strip=True)
+            data_cells = cells[1:]
 
-                    if not time_text:
-                        continue
+            if not headers and len(data_cells) == 1 and resource_label:
+                headers = [resource_label]
 
-                    data.append(
-                        {
-                            "time": time_text,
-                            "time_norm": normalize_time_string(time_text),
-                            "court": court_name,
-                            "status": "available",
-                            "text": time_text,
-                            "classes": ", ".join(cell_classes),
-                        }
-                    )
-            else:
-                cell_text = cell.get_text(" ", strip=True)
+            if headers and len(data_cells) != len(headers):
+                if len(headers) == 1:
+                    data_cells = [data_cells[-1]]
+                else:
+                    continue
 
-                if cell_text:
-                    data.append(
-                        {
-                            "time": cell_text,
-                            "time_norm": normalize_time_string(cell_text),
-                            "court": court_name,
-                            "status": "not_available",
-                            "text": cell_text,
-                            "classes": ", ".join(cell_classes),
-                        }
-                    )
+            if not headers:
+                headers = [f"Court {idx + 1}" for idx in range(len(data_cells))]
 
-    return pd.DataFrame(data)
+            for idx, cell in enumerate(data_cells):
+                court_name = headers[idx] if idx < len(headers) else f"Court {idx + 1}"
+                court_name = normalize_court_name(court_name)
+
+                if not court_name:
+                    court_name = f"Court {idx + 1}"
+
+                if looks_available(cell):
+                    availability_by_court.setdefault(court_name, set()).add(row_time)
+                elif looks_unavailable(cell):
+                    availability_by_court.setdefault(court_name, set())
+
+    return availability_by_court
 
 
-def get_booking_dataframe_for_resource(
-    client_id,
-    venue_id,
-    date_yyyymmdd,
-    booking_url,
-    resource_id="",
-    page=0,
-):
-    ajax_html = fetch_booking_html(
-        client_id=client_id,
-        venue_id=venue_id,
-        date_yyyymmdd=date_yyyymmdd,
-        booking_url=booking_url,
-        resource_id=resource_id,
-        page=page,
-    )
-    return parse_booking_table(ajax_html)
+def merge_availability_maps(base_map, incoming_map):
+    for court_name, slots in incoming_map.items():
+        base_map.setdefault(court_name, set()).update(slots)
+
+    return base_map
+
+
+def availability_map_to_dataframe(availability_by_court):
+    rows = []
+
+    for court_name, slots in availability_by_court.items():
+        for slot in sorted(slots, key=lambda x: time_string_to_minutes(x) or 0):
+            rows.append(
+                {
+                    "court": court_name,
+                    "time": slot,
+                    "available": True,
+                }
+            )
+
+    return pd.DataFrame(rows, columns=["court", "time", "available"])
 
 
 def get_booking_dataframe(
-    client_id,
-    venue_id,
-    date_yyyymmdd,
     booking_url,
-    resource_ids=None,
-    page=0,
-):
-    if not resource_ids:
-        resource_ids = [""]
-
-    all_frames = []
-
-    for resource_id in resource_ids:
-        df = get_booking_dataframe_for_resource(
-            client_id=client_id,
-            venue_id=venue_id,
-            date_yyyymmdd=date_yyyymmdd,
-            booking_url=booking_url,
-            resource_id=resource_id,
-            page=page,
-        )
-
-        if not df.empty:
-            all_frames.append(df)
-
-    if not all_frames:
-        return pd.DataFrame(columns=["time", "time_norm", "court", "status", "text", "classes"])
-
-    combined = pd.concat(all_frames, ignore_index=True)
-    combined = combined.drop_duplicates(subset=["time_norm", "court", "status", "text"])
-    return combined
-
-
-def infer_slot_minutes(df):
-    if df.empty or "time_norm" not in df.columns:
-        return 30
-
-    unique_times = dedupe_preserve_order(df["time_norm"].dropna().tolist())
-    minute_values = []
-
-    for time_value in unique_times:
-        minutes = time_string_to_minutes(time_value)
-        if minutes is not None:
-            minute_values.append(minutes)
-
-    minute_values = sorted(set(minute_values))
-
-    if len(minute_values) < 2:
-        return 30
-
-    diffs = []
-    for i in range(1, len(minute_values)):
-        diff = minute_values[i] - minute_values[i - 1]
-        if diff > 0:
-            diffs.append(diff)
-
-    if not diffs:
-        return 30
-
-    return min(diffs)
-
-
-def build_required_time_sequence(selected_time, duration_minutes, slot_minutes):
-    start_minutes = time_string_to_minutes(selected_time)
-    if start_minutes is None:
-        return []
-
-    if slot_minutes <= 0:
-        slot_minutes = 30
-
-    duration_minutes = max(int(duration_minutes), slot_minutes)
-    required_slots = max(1, math.ceil(duration_minutes / slot_minutes))
-
-    sequence = []
-    for i in range(required_slots):
-        sequence.append(minutes_to_time_string(start_minutes + i * slot_minutes))
-
-    return sequence
-
-
-def get_available_courts_for_time(
-    client_id,
-    venue_id,
     date_yyyymmdd,
-    selected_time,
-    booking_url,
+    client_id=None,
+    venue_id=None,
     resource_ids=None,
-    page=0,
+    session=None,
 ):
-    df = get_booking_dataframe(
-        client_id=client_id,
-        venue_id=venue_id,
-        date_yyyymmdd=date_yyyymmdd,
-        booking_url=booking_url,
-        resource_ids=resource_ids,
-        page=page,
-    )
+    own_session = False
 
-    if df.empty:
-        return df
+    if session is None:
+        session = build_session()
+        own_session = True
 
-    selected_time_norm = normalize_time_string(selected_time)
+    try:
+        merged_availability = {}
 
-    df_available = df[
-        (df["time_norm"] == selected_time_norm) & (df["status"] == "available")
-    ].copy()
+        if client_id and venue_id:
+            resource_ids = resource_ids or [""]
+            resource_ids = resource_ids if isinstance(resource_ids, list) else [resource_ids]
 
-    return df_available
+            warm_up_session(session, booking_url)
 
+            for resource_id in resource_ids:
+                html = fetch_booking_html(
+                    session=session,
+                    client_id=client_id,
+                    venue_id=venue_id,
+                    date_yyyymmdd=date_yyyymmdd,
+                    booking_url=booking_url,
+                    resource_id=resource_id,
+                    page=0,
+                )
 
-def get_available_courts_for_duration(
-    client_id,
-    venue_id,
-    date_yyyymmdd,
-    selected_time,
-    duration_minutes,
-    booking_url,
-    resource_ids=None,
-    page=0,
-):
-    df = get_booking_dataframe(
-        client_id=client_id,
-        venue_id=venue_id,
-        date_yyyymmdd=date_yyyymmdd,
-        booking_url=booking_url,
-        resource_ids=resource_ids,
-        page=page,
-    )
+                resource_label = None
+                if resource_id and len(resource_ids) == 1:
+                    resource_label = normalize_court_name(str(resource_id))
 
-    if df.empty:
-        return df
+                parsed = parse_booking_html_to_slots(html, resource_label=resource_label)
+                merge_availability_maps(merged_availability, parsed)
+                time.sleep(RESOURCE_DELAY_SECONDS)
 
-    slot_minutes = infer_slot_minutes(df)
-    required_times = build_required_time_sequence(
-        selected_time=selected_time,
-        duration_minutes=duration_minutes,
-        slot_minutes=slot_minutes,
-    )
+            if merged_availability:
+                return availability_map_to_dataframe(merged_availability)
 
-    if not required_times:
-        return pd.DataFrame(columns=df.columns)
+        page_html = fetch_booking_page_html(session, booking_url)
+        parsed = parse_booking_html_to_slots(page_html)
+        return availability_map_to_dataframe(parsed)
 
-    df_available = df[df["status"] == "available"].copy()
-    if df_available.empty:
-        return pd.DataFrame(columns=df.columns)
-
-    df_required = df_available[df_available["time_norm"].isin(required_times)].copy()
-    if df_required.empty:
-        return pd.DataFrame(columns=df.columns)
-
-    qualifying_courts = []
-    for court_name, group in df_required.groupby("court"):
-        court_times = set(group["time_norm"].tolist())
-        if all(required_time in court_times for required_time in required_times):
-            qualifying_courts.append(court_name)
-
-    if not qualifying_courts:
-        return pd.DataFrame(columns=df.columns)
-
-    result = df_required[df_required["court"].isin(qualifying_courts)].copy()
-    return result
+    finally:
+        if own_session:
+            session.close()
 
 
-def get_available_court_names(
-    client_id,
-    venue_id,
-    date_yyyymmdd,
-    selected_time,
-    booking_url,
-    resource_ids=None,
-    page=0,
-):
-    df_available = get_available_courts_for_time(
-        client_id=client_id,
-        venue_id=venue_id,
-        date_yyyymmdd=date_yyyymmdd,
-        selected_time=selected_time,
-        booking_url=booking_url,
-        resource_ids=resource_ids,
-        page=page,
-    )
+def has_required_consecutive_slots(available_slots, selected_time, duration_minutes):
+    required_slots = build_required_slots(selected_time, duration_minutes)
+    if not required_slots:
+        return False
 
-    if df_available.empty:
-        return []
-
-    return dedupe_preserve_order(df_available["court"].tolist())
-
-
-def get_available_court_names_for_duration(
-    client_id,
-    venue_id,
-    date_yyyymmdd,
-    selected_time,
-    duration_minutes,
-    booking_url,
-    resource_ids=None,
-    page=0,
-):
-    df_available = get_available_courts_for_duration(
-        client_id=client_id,
-        venue_id=venue_id,
-        date_yyyymmdd=date_yyyymmdd,
-        selected_time=selected_time,
-        duration_minutes=duration_minutes,
-        booking_url=booking_url,
-        resource_ids=resource_ids,
-        page=page,
-    )
-
-    if df_available.empty:
-        return []
-
-    qualifying_rows = []
-
-    slot_minutes = infer_slot_minutes(df_available)
-    required_times = build_required_time_sequence(
-        selected_time=selected_time,
-        duration_minutes=duration_minutes,
-        slot_minutes=slot_minutes,
-    )
-
-    for court_name in dedupe_preserve_order(df_available["court"].tolist()):
-        for time_value in required_times:
-            qualifying_rows.append(f"{court_name} | {time_value}")
-
-    return dedupe_preserve_order(qualifying_rows)
+    normalized_set = {normalize_time_string(slot) for slot in available_slots}
+    return all(normalize_time_string(slot) in normalized_set for slot in required_slots)
 
 
 def get_available_courts_from_url(
     booking_url,
     date_yyyymmdd,
     selected_time,
-    page=0,
     client_id=None,
     venue_id=None,
     resource_ids=None,
     duration_minutes=30,
 ):
-    if not client_id or not venue_id:
-        raise Exception(
-            f"Faltan client_id o venue_id para {booking_url}. "
-            f"Primero corré enrich_venues_config.py y subí venues_config.json."
-        )
+    session = build_session()
 
-    duration_minutes = int(duration_minutes)
-
-    if duration_minutes <= 30:
-        return get_available_court_names(
+    try:
+        df = get_booking_dataframe(
+            booking_url=booking_url,
+            date_yyyymmdd=date_yyyymmdd,
             client_id=client_id,
             venue_id=venue_id,
-            date_yyyymmdd=date_yyyymmdd,
-            selected_time=selected_time,
-            booking_url=booking_url,
             resource_ids=resource_ids,
-            page=page,
+            session=session,
         )
 
-    df_available = get_available_courts_for_duration(
-        client_id=client_id,
-        venue_id=venue_id,
-        date_yyyymmdd=date_yyyymmdd,
-        selected_time=selected_time,
-        duration_minutes=duration_minutes,
-        booking_url=booking_url,
-        resource_ids=resource_ids,
-        page=page,
-    )
+        if df.empty:
+            return []
 
-    if df_available.empty:
-        return []
+        available_courts = []
 
-    qualifying_courts = dedupe_preserve_order(df_available["court"].tolist())
-    return qualifying_courts
+        for court_name, group in df.groupby("court"):
+            slots = group.loc[group["available"] == True, "time"].tolist()
+
+            if has_required_consecutive_slots(
+                available_slots=slots,
+                selected_time=selected_time,
+                duration_minutes=duration_minutes,
+            ):
+                available_courts.append(normalize_court_name(court_name))
+
+        return dedupe_preserve_order(available_courts)
+
+    finally:
+        session.close()

@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = os.path.join(BASE_DIR, "venues_config.json")
 STORE_FILE = os.path.join(BASE_DIR, "availability_store.json")
 
-MAX_WORKERS = 2
+MAX_WORKERS = 3
 
 
 def normalize_court_name(court_name):
@@ -22,16 +22,13 @@ def normalize_court_name(court_name):
         return ""
 
     name = str(court_name).strip()
-
     name = re.sub(r"\bCourt\s*N(\d+)\b", r"Court \1", name, flags=re.IGNORECASE)
-
     name = re.sub(
         r"\s*\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass)\)\s*",
         "",
         name,
         flags=re.IGNORECASE,
     )
-
     name = re.sub(r"\s+", " ", name).strip()
     return name
 
@@ -45,7 +42,6 @@ def normalize_surface_label(surface):
         return None
 
     text = str(surface).strip()
-
     if not text:
         return None
 
@@ -79,10 +75,6 @@ def normalize_region(region):
 def load_active_venues(region_filter="All Sydney"):
     region_filter = normalize_region(region_filter)
 
-    print(f"Loading venues config from: {CONFIG_FILE}")
-    print(f"Config file exists: {os.path.exists(CONFIG_FILE)}")
-    print(f"Region filter: {region_filter}")
-
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
 
@@ -94,9 +86,7 @@ def load_active_venues(region_filter="All Sydney"):
         if not isinstance(venue, dict):
             continue
 
-        is_active = venue.get("active", True) is True
-
-        if not is_active:
+        if venue.get("active", True) is not True:
             continue
 
         if not venue.get("key"):
@@ -276,10 +266,46 @@ def get_existing_slot(date, time_key):
     return store.get(date, {}).get(time_key)
 
 
+def persist_slot(date, time_key, payload):
+    if use_db_storage():
+        upsert_slot(date, time_key, payload)
+        return get_db_slot(date, time_key)
+
+    store = load_store()
+
+    if date not in store:
+        store[date] = {}
+
+    store[date][time_key] = payload
+    save_store(store)
+    return store[date][time_key]
+
+
+def existing_slot_is_usable(existing):
+    if not existing:
+        return False
+
+    if existing.get("verification_failed") is True:
+        return False
+
+    existing_results = existing.get("results", [])
+    if isinstance(existing_results, list) and len(existing_results) > 0:
+        return True
+
+    success_count = existing.get("success_count", 0) or 0
+    error_count = existing.get("error_count", 0) or 0
+    total_venues = existing.get("total_venues", 0) or 0
+
+    if total_venues > 0 and success_count > 0 and error_count >= 0:
+        return True
+
+    return False
+
+
 def should_preserve_existing_slot(metadata):
-    success_count = metadata.get("success_count", 0)
-    error_count = metadata.get("error_count", 0)
-    total_venues = metadata.get("total_venues", 0)
+    success_count = metadata.get("success_count", 0) or 0
+    error_count = metadata.get("error_count", 0) or 0
+    total_venues = metadata.get("total_venues", 0) or 0
 
     if total_venues == 0:
         return False
@@ -288,6 +314,37 @@ def should_preserve_existing_slot(metadata):
         return True
 
     return False
+
+
+def build_preserved_payload(existing, attempted_payload):
+    preserved = dict(existing)
+
+    preserved["verification_failed"] = False
+    preserved["preserved_due_to_scrape_errors"] = True
+    preserved["last_attempt"] = attempted_payload
+    preserved["fallback_reason"] = "live_scrape_failed_used_last_good_snapshot"
+
+    if not preserved.get("region"):
+        preserved["region"] = attempted_payload.get("region")
+
+    if not preserved.get("requested_duration_minutes"):
+        preserved["requested_duration_minutes"] = attempted_payload.get(
+            "requested_duration_minutes"
+        )
+
+    if not preserved.get("source"):
+        preserved["source"] = "preserved-existing-slot"
+
+    return preserved
+
+
+def build_failed_payload(attempted_payload):
+    failed = dict(attempted_payload)
+    failed["verification_failed"] = True
+    failed["preserved_due_to_scrape_errors"] = False
+    failed["last_attempt"] = dict(attempted_payload)
+    failed["fallback_reason"] = "live_scrape_failed_no_previous_snapshot"
+    return failed
 
 
 def check_one_venue(venue_key, target, date, time_str, duration_minutes):
@@ -338,7 +395,9 @@ def check_all_venues(date, time_str, duration_minutes, region="All Sydney"):
     venue_results = []
 
     print("")
-    print(f"Starting collection for {date} {time_str} duration={duration_minutes} region={region}")
+    print(
+        f"Starting collection for {date} {time_str} duration={duration_minutes} region={region}"
+    )
     print(f"Active venues: {len(venues)}")
     print(f"Max workers: {MAX_WORKERS}")
     print("")
@@ -515,9 +574,16 @@ def collect_slot(date, time_str, duration_minutes=30, region="All Sydney"):
     return cards, metadata
 
 
-def collect_and_store_slot(date, time_str, duration_minutes=30, region="All Sydney", source="collector"):
+def collect_and_store_slot(
+    date,
+    time_str,
+    duration_minutes=30,
+    region="All Sydney",
+    source="collector",
+):
     region = normalize_region(region)
     time_key = build_cache_time_key(time_str, duration_minutes, region=region)
+    existing = get_existing_slot(date, time_key)
 
     cards, metadata = collect_slot(
         date,
@@ -541,34 +607,20 @@ def collect_and_store_slot(date, time_str, duration_minutes=30, region="All Sydn
         "venue_checks": metadata["venue_checks"],
         "errors": metadata["errors"],
         "results": cards,
+        "verification_failed": False,
+        "preserved_due_to_scrape_errors": False,
+        "last_attempt": None,
     }
 
     if should_preserve_existing_slot(metadata):
-        existing = get_existing_slot(date, time_key)
+        if existing_slot_is_usable(existing):
+            preserved = build_preserved_payload(existing, payload)
+            return persist_slot(date, time_key, preserved)
 
-        if existing:
-            preserved = dict(existing)
-            preserved["preserved_due_to_scrape_errors"] = True
-            preserved["last_attempt"] = payload
-            return preserved
+        failed = build_failed_payload(payload)
+        return persist_slot(date, time_key, failed)
 
-        payload["verification_failed"] = True
-        return payload
-
-    if use_db_storage():
-        upsert_slot(date, time_key, payload)
-        return get_db_slot(date, time_key)
-
-    store = load_store()
-
-    if date not in store:
-        store[date] = {}
-
-    store[date][time_key] = payload
-
-    save_store(store)
-
-    return store[date][time_key]
+    return persist_slot(date, time_key, payload)
 
 
 def get_store_slot(date, time_str, duration_minutes=30, region="All Sydney"):
@@ -611,7 +663,9 @@ def main():
     print(f"Results count: {len(payload.get('results', []))}")
     print(f"Total duration ms: {payload.get('total_duration_ms')}")
     print(f"Verification failed: {payload.get('verification_failed', False)}")
-    print(f"Preserved due to scrape errors: {payload.get('preserved_due_to_scrape_errors', False)}")
+    print(
+        f"Preserved due to scrape errors: {payload.get('preserved_due_to_scrape_errors', False)}"
+    )
 
 
 if __name__ == "__main__":

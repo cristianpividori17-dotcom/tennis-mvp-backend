@@ -121,6 +121,20 @@ def run_background_refresh(date: str, time: str, duration_minutes: int, region: 
         )
 
 
+def build_user_message(slot: dict):
+    verification_failed = bool(slot.get("verification_failed", False))
+    preserved = bool(slot.get("preserved_due_to_scrape_errors", False))
+    results = slot.get("results", []) or []
+
+    if preserved and results:
+        return "Showing last verified results because live verification failed right now."
+
+    if verification_failed and not results:
+        return "Availability could not be verified right now."
+
+    return ""
+
+
 @app.on_event("startup")
 def startup():
     init_db()
@@ -193,33 +207,30 @@ def availability(
             source="availability-missing-sync",
         )
 
-        if slot.get("verification_failed"):
-            return {
-                "date": date,
-                "time": time,
-                "region": region,
-                "duration_minutes": duration_minutes,
-                "exists": False,
-                "fresh": False,
-                "refresh_triggered": False,
-                "results_count": 0,
-                "results": [],
-                "message": "Availability could not be verified right now",
-            }
+    results = slot.get("results", []) or []
+    verification_failed = bool(slot.get("verification_failed", False))
+    preserved_due_to_scrape_errors = bool(
+        slot.get("preserved_due_to_scrape_errors", False)
+    )
 
+    if verification_failed and not results:
         return {
             "date": date,
             "time": time,
             "region": region,
             "duration_minutes": duration_minutes,
-            "exists": True,
-            "fresh": True,
+            "exists": False,
+            "fresh": False,
             "stale": False,
             "refresh_triggered": False,
             "collected_at": slot.get("collected_at"),
             "source": slot.get("source"),
-            "results_count": len(slot.get("results", [])),
-            "results": slot.get("results", []),
+            "results_count": 0,
+            "results": [],
+            "verification_failed": True,
+            "preserved_due_to_scrape_errors": False,
+            "message": build_user_message(slot),
+            "last_attempt": slot.get("last_attempt"),
         }
 
     fresh = slot_is_fresh(slot, date)
@@ -245,8 +256,15 @@ def availability(
         "refresh_triggered": not fresh,
         "collected_at": slot.get("collected_at"),
         "source": slot.get("source"),
-        "results_count": len(slot.get("results", [])),
-        "results": slot.get("results", []),
+        "results_count": len(results),
+        "results": results,
+        "verification_failed": verification_failed,
+        "preserved_due_to_scrape_errors": preserved_due_to_scrape_errors,
+        "message": build_user_message(slot),
+        "last_attempt": slot.get("last_attempt"),
+        "success_count": slot.get("success_count"),
+        "error_count": slot.get("error_count"),
+        "available_venue_count": slot.get("available_venue_count"),
     }
 
 
@@ -300,6 +318,10 @@ def availability_status(
         "error_count": slot.get("error_count"),
         "available_venue_count": slot.get("available_venue_count"),
         "results_count": len(slot.get("results", [])),
+        "verification_failed": slot.get("verification_failed", False),
+        "preserved_due_to_scrape_errors": slot.get(
+            "preserved_due_to_scrape_errors", False
+        ),
     }
 
 
@@ -334,8 +356,13 @@ def refresh(
         "error_count": slot.get("error_count"),
         "available_venue_count": slot.get("available_venue_count"),
         "results_count": len(slot.get("results", [])),
+        "results": slot.get("results", []),
         "verification_failed": slot.get("verification_failed", False),
-        "preserved_due_to_scrape_errors": slot.get("preserved_due_to_scrape_errors", False),
+        "preserved_due_to_scrape_errors": slot.get(
+            "preserved_due_to_scrape_errors", False
+        ),
+        "last_attempt": slot.get("last_attempt"),
+        "message": build_user_message(slot),
     }
 
 
@@ -384,6 +411,9 @@ def store_debug(
         "results_count": len(slot.get("results", [])),
         "results": slot.get("results", []),
         "verification_failed": slot.get("verification_failed", False),
-        "preserved_due_to_scrape_errors": slot.get("preserved_due_to_scrape_errors", False),
+        "preserved_due_to_scrape_errors": slot.get(
+            "preserved_due_to_scrape_errors", False
+        ),
         "last_attempt": slot.get("last_attempt"),
+        "message": build_user_message(slot),
     }
