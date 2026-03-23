@@ -13,12 +13,75 @@ from tennisvenues_scraper import get_available_courts_from_url
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = os.path.join(BASE_DIR, "venues_config.json")
 STORE_FILE = os.path.join(BASE_DIR, "availability_store.json")
-MAX_WORKERS = 5
+
+MAX_WORKERS = 2
 
 
-def load_active_venues():
+def normalize_court_name(court_name):
+    if not court_name:
+        return ""
+
+    name = str(court_name).strip()
+
+    name = re.sub(r"\bCourt\s*N(\d+)\b", r"Court \1", name, flags=re.IGNORECASE)
+
+    name = re.sub(
+        r"\s*\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass)\)\s*",
+        "",
+        name,
+        flags=re.IGNORECASE,
+    )
+
+    name = re.sub(r"\s+", " ", name).strip()
+    return name
+
+
+def normalize_court_lookup_key(court_name):
+    return normalize_court_name(court_name).strip().lower()
+
+
+def normalize_surface_label(surface):
+    if not surface:
+        return None
+
+    text = str(surface).strip()
+
+    if not text:
+        return None
+
+    lowered = text.lower()
+
+    if lowered == "synthetic":
+        return "Synthetic Grass"
+    if lowered == "synthetic grass":
+        return "Synthetic Grass"
+    if lowered == "hard court":
+        return "Hard Court"
+    if lowered == "grass":
+        return "Grass"
+    if lowered == "clay":
+        return "Clay"
+
+    return text
+
+
+def normalize_region(region):
+    if not region:
+        return "All Sydney"
+
+    value = str(region).strip()
+    if not value:
+        return "All Sydney"
+
+    return value
+
+
+def load_active_venues(region_filter="All Sydney"):
+    region_filter = normalize_region(region_filter)
+
     print(f"Loading venues config from: {CONFIG_FILE}")
     print(f"Config file exists: {os.path.exists(CONFIG_FILE)}")
+    print(f"Region filter: {region_filter}")
 
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -42,6 +105,19 @@ def load_active_venues():
         if not venue.get("booking_url"):
             continue
 
+        venue_region = venue.get("region")
+        venue_is_sydney = venue.get("is_sydney", True)
+
+        if region_filter == "All Sydney":
+            if venue_is_sydney is False:
+                continue
+        elif region_filter == "Outside Sydney":
+            if venue_is_sydney is not False:
+                continue
+        else:
+            if venue_region != region_filter:
+                continue
+
         active_venues.append(venue)
 
     venues_by_key = {}
@@ -60,35 +136,27 @@ def load_active_venues():
 
         venue_info[key] = {
             "name": venue.get("name"),
-            "surface": venue.get("surface"),
+            "surface": normalize_surface_label(venue.get("surface")),
             "location": venue.get("location"),
             "region": venue.get("region"),
             "is_sydney": venue.get("is_sydney", False),
             "url": venue.get("url") or venue.get("booking_url"),
         }
 
-        venue_court_surfaces[key] = venue.get("court_surfaces", {})
+        raw_court_surfaces = venue.get("court_surfaces", {}) or {}
+        normalized_court_surfaces = {}
+
+        if isinstance(raw_court_surfaces, dict):
+            for raw_name, raw_surface in raw_court_surfaces.items():
+                lookup_key = normalize_court_lookup_key(raw_name)
+                surface_label = normalize_surface_label(raw_surface)
+
+                if lookup_key and surface_label:
+                    normalized_court_surfaces[lookup_key] = surface_label
+
+        venue_court_surfaces[key] = normalized_court_surfaces
 
     return venues_by_key, venue_info, venue_court_surfaces
-
-
-def normalize_court_name(court_name):
-    if not court_name:
-        return ""
-
-    name = court_name.strip()
-
-    name = re.sub(r"\bCourt\s*N(\d+)\b", r"Court \1", name, flags=re.IGNORECASE)
-
-    name = re.sub(
-        r"\s*\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass)\)\s*",
-        "",
-        name,
-        flags=re.IGNORECASE,
-    )
-
-    name = re.sub(r"\s+", " ", name).strip()
-    return name
 
 
 def extract_surface_from_court_name(court_name):
@@ -97,38 +165,60 @@ def extract_surface_from_court_name(court_name):
 
     match = re.search(
         r"\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass)\)",
-        court_name,
+        str(court_name),
         flags=re.IGNORECASE,
     )
 
     if not match:
         return None
 
-    surface = match.group(1).strip()
-
-    if surface.lower() == "synthetic":
-        return "Synthetic Grass"
-
-    return surface
+    return normalize_surface_label(match.group(1).strip())
 
 
-def get_surface_for_court(venue_key, court_name, venue_court_surfaces):
-    cleaned_name = normalize_court_name(court_name)
-
+def get_surface_for_court(venue_key, court_name, venue_court_surfaces, fallback_surface=None):
     inline_surface = extract_surface_from_court_name(court_name)
     if inline_surface:
         return inline_surface
 
-    venue_surfaces = venue_court_surfaces.get(venue_key, {})
-    return venue_surfaces.get(cleaned_name)
+    venue_surfaces = venue_court_surfaces.get(venue_key, {}) or {}
+    lookup_key = normalize_court_lookup_key(court_name)
+
+    exact_surface = venue_surfaces.get(lookup_key)
+    if exact_surface:
+        return exact_surface
+
+    cleaned_name = normalize_court_name(court_name)
+
+    alias_candidates = [
+        cleaned_name,
+        cleaned_name.replace("Court ", "Ct "),
+        cleaned_name.replace("Ct ", "Court "),
+        cleaned_name.replace("-", " "),
+    ]
+
+    for alias in alias_candidates:
+        alias_key = normalize_court_lookup_key(alias)
+        alias_surface = venue_surfaces.get(alias_key)
+        if alias_surface:
+            return alias_surface
+
+    if fallback_surface:
+        return normalize_surface_label(fallback_surface)
+
+    return None
 
 
-def build_court_objects(venue_key, courts, venue_court_surfaces):
+def build_court_objects(venue_key, courts, venue_court_surfaces, fallback_surface=None):
     court_objects = []
 
     for court_name in courts:
         cleaned_name = normalize_court_name(court_name)
-        surface = get_surface_for_court(venue_key, court_name, venue_court_surfaces)
+        surface = get_surface_for_court(
+            venue_key=venue_key,
+            court_name=court_name,
+            venue_court_surfaces=venue_court_surfaces,
+            fallback_surface=fallback_surface,
+        )
 
         court_objects.append(
             {
@@ -146,7 +236,7 @@ def get_general_surface_label(court_objects, fallback_surface=None):
 
     if len(unique_surfaces) == 0:
         if fallback_surface:
-            return fallback_surface
+            return normalize_surface_label(fallback_surface)
         return "Surface not available"
 
     if len(unique_surfaces) == 1:
@@ -170,9 +260,12 @@ def save_store(store):
         json.dump(store, f, indent=2, ensure_ascii=False)
 
 
-def build_cache_time_key(time_str, duration_minutes):
+def build_cache_time_key(time_str, duration_minutes, region="All Sydney"):
     duration_minutes = int(duration_minutes)
-    return f"{time_str}__dur_{duration_minutes}"
+    region = normalize_region(region)
+    safe_region = region.lower().replace(" ", "_").replace("/", "_")
+    safe_region = re.sub(r"_+", "_", safe_region).strip("_")
+    return f"{time_str}__dur_{duration_minutes}__region_{safe_region}"
 
 
 def get_existing_slot(date, time_key):
@@ -240,12 +333,12 @@ def check_one_venue(venue_key, target, date, time_str, duration_minutes):
         }
 
 
-def check_all_venues(date, time_str, duration_minutes):
-    venues, _, _ = load_active_venues()
+def check_all_venues(date, time_str, duration_minutes, region="All Sydney"):
+    venues, _, _ = load_active_venues(region_filter=region)
     venue_results = []
 
     print("")
-    print(f"Starting collection for {date} {time_str} duration={duration_minutes}")
+    print(f"Starting collection for {date} {time_str} duration={duration_minutes} region={region}")
     print(f"Active venues: {len(venues)}")
     print(f"Max workers: {MAX_WORKERS}")
     print("")
@@ -310,8 +403,8 @@ def format_results_for_frontend(available_results):
     return formatted
 
 
-def build_frontend_cards(results, duration_minutes):
-    _, venue_info, venue_court_surfaces = load_active_venues()
+def build_frontend_cards(results, duration_minutes, region="All Sydney"):
+    _, venue_info, venue_court_surfaces = load_active_venues(region_filter=region)
     cards = []
 
     for item in results:
@@ -319,9 +412,10 @@ def build_frontend_cards(results, duration_minutes):
         info = venue_info.get(venue_key, {})
 
         court_objects = build_court_objects(
-            venue_key,
-            item["courts"],
-            venue_court_surfaces,
+            venue_key=venue_key,
+            courts=item["courts"],
+            venue_court_surfaces=venue_court_surfaces,
+            fallback_surface=info.get("surface"),
         )
 
         general_surface = get_general_surface_label(
@@ -347,7 +441,7 @@ def build_frontend_cards(results, duration_minutes):
     return cards
 
 
-def build_slot_metadata(venue_results, started_at_utc, duration_minutes):
+def build_slot_metadata(venue_results, started_at_utc, duration_minutes, region="All Sydney"):
     total_venues = len(venue_results)
     success_count = sum(1 for item in venue_results if item["status"] == "success")
     error_count = sum(1 for item in venue_results if item["status"] == "error")
@@ -383,8 +477,9 @@ def build_slot_metadata(venue_results, started_at_utc, duration_minutes):
 
     return {
         "collected_at": completed_at_utc.isoformat(),
-        "total_duration_ms": total_duration_ms,
         "requested_duration_minutes": int(duration_minutes),
+        "region": normalize_region(region),
+        "total_duration_ms": total_duration_ms,
         "total_venues": total_venues,
         "success_count": success_count,
         "error_count": error_count,
@@ -394,37 +489,47 @@ def build_slot_metadata(venue_results, started_at_utc, duration_minutes):
     }
 
 
-def collect_slot(date, time_str, duration_minutes=30):
+def collect_slot(date, time_str, duration_minutes=30, region="All Sydney"):
     started_at_utc = datetime.now(timezone.utc)
 
     venue_results = check_all_venues(
         date=date,
         time_str=time_str,
         duration_minutes=duration_minutes,
+        region=region,
     )
     available = filter_only_available(venue_results)
     formatted = format_results_for_frontend(available)
-    cards = build_frontend_cards(formatted, duration_minutes=duration_minutes)
+    cards = build_frontend_cards(
+        formatted,
+        duration_minutes=duration_minutes,
+        region=region,
+    )
     metadata = build_slot_metadata(
         venue_results,
         started_at_utc,
         duration_minutes=duration_minutes,
+        region=region,
     )
 
     return cards, metadata
 
 
-def collect_and_store_slot(date, time_str, duration_minutes=30, source="collector"):
-    time_key = build_cache_time_key(time_str, duration_minutes)
+def collect_and_store_slot(date, time_str, duration_minutes=30, region="All Sydney", source="collector"):
+    region = normalize_region(region)
+    time_key = build_cache_time_key(time_str, duration_minutes, region=region)
+
     cards, metadata = collect_slot(
         date,
         time_str,
         duration_minutes=duration_minutes,
+        region=region,
     )
 
     payload = {
         "requested_time": time_str,
         "requested_duration_minutes": int(duration_minutes),
+        "region": region,
         "cache_time_key": time_key,
         "collected_at": metadata["collected_at"],
         "source": source,
@@ -466,8 +571,9 @@ def collect_and_store_slot(date, time_str, duration_minutes=30, source="collecto
     return store[date][time_key]
 
 
-def get_store_slot(date, time_str, duration_minutes=30):
-    time_key = build_cache_time_key(time_str, duration_minutes)
+def get_store_slot(date, time_str, duration_minutes=30, region="All Sydney"):
+    region = normalize_region(region)
+    time_key = build_cache_time_key(time_str, duration_minutes, region=region)
 
     if use_db_storage():
         return get_db_slot(date, time_key)
@@ -481,6 +587,7 @@ def main():
     parser.add_argument("--date", required=True, help="Formato YYYYMMDD")
     parser.add_argument("--time", required=True, help="Ej: 7pm, 7:30pm, 9am")
     parser.add_argument("--duration", type=int, default=30, help="Duración deseada en minutos")
+    parser.add_argument("--region", default="All Sydney", help="Región a scrapeear")
 
     args = parser.parse_args()
 
@@ -488,11 +595,13 @@ def main():
         date=args.date,
         time_str=args.time,
         duration_minutes=args.duration,
+        region=args.region,
         source="manual-cli",
     )
 
     print("")
     print(f"Stored slot: {args.date} {args.time}")
+    print(f"Region: {payload.get('region')}")
     print(f"Requested duration minutes: {payload.get('requested_duration_minutes')}")
     print(f"Collected at: {payload.get('collected_at')}")
     print(f"Total venues: {payload.get('total_venues')}")

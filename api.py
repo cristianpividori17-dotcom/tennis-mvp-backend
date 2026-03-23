@@ -42,6 +42,17 @@ def parse_collected_at(value: str):
         return None
 
 
+def normalize_region(region: str | None):
+    if not region:
+        return "All Sydney"
+
+    value = str(region).strip()
+    if not value:
+        return "All Sydney"
+
+    return value
+
+
 def get_freshness_window_minutes(date_str: str):
     slot_date = parse_yyyymmdd(date_str)
     if not slot_date:
@@ -89,23 +100,24 @@ def normalize_duration_minutes(duration_minutes: int):
     return value
 
 
-def run_background_refresh(date: str, time: str, duration_minutes: int, source: str):
+def run_background_refresh(date: str, time: str, duration_minutes: int, region: str, source: str):
     try:
         print(
-            f"BACKGROUND REFRESH START -> {date} {time} duration={duration_minutes} source={source}"
+            f"BACKGROUND REFRESH START -> {date} {time} duration={duration_minutes} region={region} source={source}"
         )
         collect_and_store_slot(
             date,
             time,
             duration_minutes=duration_minutes,
+            region=region,
             source=source,
         )
         print(
-            f"BACKGROUND REFRESH DONE -> {date} {time} duration={duration_minutes} source={source}"
+            f"BACKGROUND REFRESH DONE -> {date} {time} duration={duration_minutes} region={region} source={source}"
         )
     except Exception as e:
         print(
-            f"BACKGROUND REFRESH ERROR -> {date} {time} duration={duration_minutes} error={e}"
+            f"BACKGROUND REFRESH ERROR -> {date} {time} duration={duration_minutes} region={region} error={e}"
         )
 
 
@@ -155,15 +167,29 @@ def health():
 
 
 @app.get("/availability")
-def availability(date: str, time: str, background_tasks: BackgroundTasks, duration_minutes: int = 30):
+def availability(
+    date: str,
+    time: str,
+    background_tasks: BackgroundTasks,
+    duration_minutes: int = 30,
+    region: str = "All Sydney",
+):
     duration_minutes = normalize_duration_minutes(duration_minutes)
-    slot = get_store_slot(date, time, duration_minutes=duration_minutes)
+    region = normalize_region(region)
+
+    slot = get_store_slot(
+        date,
+        time,
+        duration_minutes=duration_minutes,
+        region=region,
+    )
 
     if not slot:
         slot = collect_and_store_slot(
             date,
             time,
             duration_minutes=duration_minutes,
+            region=region,
             source="availability-missing-sync",
         )
 
@@ -171,6 +197,7 @@ def availability(date: str, time: str, background_tasks: BackgroundTasks, durati
             return {
                 "date": date,
                 "time": time,
+                "region": region,
                 "duration_minutes": duration_minutes,
                 "exists": False,
                 "fresh": False,
@@ -183,6 +210,7 @@ def availability(date: str, time: str, background_tasks: BackgroundTasks, durati
         return {
             "date": date,
             "time": time,
+            "region": region,
             "duration_minutes": duration_minutes,
             "exists": True,
             "fresh": True,
@@ -202,12 +230,14 @@ def availability(date: str, time: str, background_tasks: BackgroundTasks, durati
             date,
             time,
             duration_minutes,
+            region,
             "availability-stale-background",
         )
 
     return {
         "date": date,
         "time": time,
+        "region": region,
         "duration_minutes": duration_minutes,
         "exists": True,
         "fresh": fresh,
@@ -221,14 +251,27 @@ def availability(date: str, time: str, background_tasks: BackgroundTasks, durati
 
 
 @app.get("/availability-status")
-def availability_status(date: str, time: str, duration_minutes: int = 30):
+def availability_status(
+    date: str,
+    time: str,
+    duration_minutes: int = 30,
+    region: str = "All Sydney",
+):
     duration_minutes = normalize_duration_minutes(duration_minutes)
-    slot = get_store_slot(date, time, duration_minutes=duration_minutes)
+    region = normalize_region(region)
+
+    slot = get_store_slot(
+        date,
+        time,
+        duration_minutes=duration_minutes,
+        region=region,
+    )
 
     if not slot:
         return {
             "date": date,
             "time": time,
+            "region": region,
             "duration_minutes": duration_minutes,
             "exists": False,
             "fresh": False,
@@ -245,6 +288,7 @@ def availability_status(date: str, time: str, duration_minutes: int = 30):
     return {
         "date": date,
         "time": time,
+        "region": region,
         "duration_minutes": duration_minutes,
         "exists": True,
         "fresh": slot_is_fresh(slot, date),
@@ -260,19 +304,27 @@ def availability_status(date: str, time: str, duration_minutes: int = 30):
 
 
 @app.get("/refresh")
-def refresh(date: str, time: str, duration_minutes: int = 30):
+def refresh(
+    date: str,
+    time: str,
+    duration_minutes: int = 30,
+    region: str = "All Sydney",
+):
     duration_minutes = normalize_duration_minutes(duration_minutes)
+    region = normalize_region(region)
 
     slot = collect_and_store_slot(
         date,
         time,
         duration_minutes=duration_minutes,
+        region=region,
         source="manual-refresh",
     )
 
     return {
         "date": date,
         "time": time,
+        "region": region,
         "duration_minutes": duration_minutes,
         "collected_at": slot.get("collected_at"),
         "source": slot.get("source"),
@@ -288,21 +340,35 @@ def refresh(date: str, time: str, duration_minutes: int = 30):
 
 
 @app.get("/store-debug")
-def store_debug(date: str, time: str, duration_minutes: int = 30):
+def store_debug(
+    date: str,
+    time: str,
+    duration_minutes: int = 30,
+    region: str = "All Sydney",
+):
     duration_minutes = normalize_duration_minutes(duration_minutes)
-    slot = get_store_slot(date, time, duration_minutes=duration_minutes)
+    region = normalize_region(region)
+
+    slot = get_store_slot(
+        date,
+        time,
+        duration_minutes=duration_minutes,
+        region=region,
+    )
 
     if not slot:
         slot = collect_and_store_slot(
             date,
             time,
             duration_minutes=duration_minutes,
+            region=region,
             source="debug-endpoint",
         )
 
     return {
         "date": date,
         "time": time,
+        "region": region,
         "duration_minutes": duration_minutes,
         "exists": True,
         "fresh": slot_is_fresh(slot, date),
