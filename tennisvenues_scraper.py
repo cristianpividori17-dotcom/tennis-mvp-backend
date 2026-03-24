@@ -9,8 +9,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 REQUEST_TIMEOUT = 25
-RESOURCE_DELAY_SECONDS = 0.6
-HANDSHAKE_DELAY_SECONDS = 0.8
+RESOURCE_DELAY_SECONDS = 0.45
+HANDSHAKE_DELAY_SECONDS = 0.6
 
 DEFAULT_HEADERS = {
     "User-Agent": (
@@ -57,7 +57,6 @@ def build_session():
     session.mount("http://", adapter)
     session.mount("https://", adapter)
     session.headers.update(DEFAULT_HEADERS)
-
     return session
 
 
@@ -65,37 +64,32 @@ def normalize_time_string(value):
     if value is None:
         return ""
 
-    text = str(value)
-    text = text.replace("\xa0", " ")
-    text = text.strip().lower()
-    text = text.replace(" ", "")
-    text = text.replace(".", ":")
+    text = str(value).replace("\xa0", " ").strip().lower()
+    text = text.replace(" ", "").replace(".", ":")
+
+    suffix = ""
+    core = text
 
     if text.endswith("am") or text.endswith("pm"):
         suffix = text[-2:]
-        time_part = text[:-2]
-    else:
-        suffix = ""
-        time_part = text
+        core = text[:-2]
 
-    if ":" in time_part:
-        hour_str, minute_str = time_part.split(":", 1)
+    if ":" in core:
+        hour_str, minute_str = core.split(":", 1)
     else:
-        hour_str = time_part
-        minute_str = "00"
+        hour_str, minute_str = core, "00"
 
     try:
-        hour_int = int(hour_str)
-        minute_int = int(minute_str)
+        hour = int(hour_str)
+        minute = int(minute_str)
     except ValueError:
         return text
 
-    return f"{hour_int}:{minute_int:02d}{suffix}"
+    return f"{hour}:{minute:02d}{suffix}"
 
 
 def time_string_to_minutes(value):
     normalized = normalize_time_string(value)
-
     if not normalized:
         return None
 
@@ -131,9 +125,6 @@ def minutes_to_time_string(total_minutes):
     hour = total_minutes // 60
     minute = total_minutes % 60
 
-    suffix = "am"
-    display_hour = hour
-
     if hour == 0:
         display_hour = 12
         suffix = "am"
@@ -153,13 +144,40 @@ def minutes_to_time_string(total_minutes):
     return f"{display_hour}:{minute:02d}{suffix}"
 
 
-def build_required_slots(selected_time, duration_minutes):
+def build_required_slots(selected_time, duration_minutes, slot_interval_minutes=30):
     start_minutes = time_string_to_minutes(selected_time)
     if start_minutes is None:
         return []
 
-    blocks = int(math.ceil(int(duration_minutes) / 30))
-    return [minutes_to_time_string(start_minutes + 30 * i) for i in range(blocks)]
+    if slot_interval_minutes <= 0:
+        slot_interval_minutes = 30
+
+    blocks = int(math.ceil(int(duration_minutes) / int(slot_interval_minutes)))
+    return [minutes_to_time_string(start_minutes + slot_interval_minutes * i) for i in range(blocks)]
+
+
+def infer_slot_interval_minutes(available_slots):
+    minutes = sorted(
+        {
+            time_string_to_minutes(slot)
+            for slot in available_slots
+            if time_string_to_minutes(slot) is not None
+        }
+    )
+
+    if len(minutes) < 2:
+        return 30
+
+    diffs = []
+    for i in range(1, len(minutes)):
+        diff = minutes[i] - minutes[i - 1]
+        if diff > 0:
+            diffs.append(diff)
+
+    if not diffs:
+        return 30
+
+    return min(diffs)
 
 
 def dedupe_preserve_order(items):
@@ -220,14 +238,12 @@ def fetch_booking_page_html(session, booking_url):
 
     if response.status_code == 403:
         warm_up_session(session, booking_url)
-
         response = session.get(
             booking_url,
             timeout=REQUEST_TIMEOUT,
             allow_redirects=True,
             headers=DEFAULT_HEADERS,
         )
-
         if response.status_code == 200:
             return response.text
 
@@ -245,7 +261,7 @@ def fetch_booking_html(
 ):
     url = f"https://www.tennisvenues.com.au/booking/{client_id}/fetch-booking-data"
 
-    payload = {
+    params = {
         "client_id": client_id,
         "venue_id": venue_id,
         "resource_id": resource_id,
@@ -259,7 +275,7 @@ def fetch_booking_html(
 
     response = session.get(
         url,
-        params=payload,
+        params=params,
         headers=headers,
         timeout=REQUEST_TIMEOUT,
         allow_redirects=True,
@@ -270,15 +286,13 @@ def fetch_booking_html(
 
     if response.status_code == 403:
         warm_up_session(session, booking_url)
-
         response = session.get(
             url,
-            params=payload,
+            params=params,
             headers=headers,
             timeout=REQUEST_TIMEOUT,
             allow_redirects=True,
         )
-
         if response.status_code == 200:
             return response.text
 
@@ -289,10 +303,7 @@ def fetch_booking_html(
 
 
 def is_probable_time_text(text):
-    if not text:
-        return False
-
-    return time_string_to_minutes(normalize_time_string(text)) is not None
+    return time_string_to_minutes(text) is not None
 
 
 def extract_row_time(cells):
@@ -301,38 +312,35 @@ def extract_row_time(cells):
 
     first_text = cells[0].get_text(" ", strip=True)
     if is_probable_time_text(first_text):
-        return first_text
+        return normalize_time_string(first_text)
 
     for cell in cells:
-        classes = cell.get("class", [])
+        classes = " ".join(cell.get("class", []))
         text = cell.get_text(" ", strip=True)
-
         if "BookingSheetTimeLabel" in classes and is_probable_time_text(text):
-            return text
+            return normalize_time_string(text)
 
     return ""
 
 
 def is_available_standard_cell(cell):
-    classes = set(cell.get("class", []))
-    class_text = " ".join(classes).lower()
-    links = cell.find_all("a")
+    classes = " ".join(cell.get("class", []))
+    classes_lower = classes.lower()
+    text = cell.get_text(" ", strip=True).strip().lower()
 
-    if links:
+    if cell.find("a"):
         return True
 
-    if "available" in class_text and "notavailable" not in class_text:
+    if "available" in classes_lower and "notavailable" not in classes_lower:
         return True
 
-    blocked_markers = [
-        "notavailable",
-        "unavailable",
-        "booked",
-        "disabled",
-        "closed",
-    ]
+    if "notavailable" in classes_lower:
+        return False
 
-    if any(marker in class_text for marker in blocked_markers):
+    if text in {"available", "book", "book now"}:
+        return True
+
+    if text:
         return False
 
     return False
@@ -341,14 +349,14 @@ def is_available_standard_cell(cell):
 def parse_booking_table_standard(booking_table):
     rows = booking_table.find_all("tr")
     if not rows:
-        return pd.DataFrame(columns=["time", "time_norm", "court", "status", "text", "classes"])
+        return pd.DataFrame(columns=["time_norm", "court", "status"])
 
     header_row = rows[0]
     header_cells = header_row.find_all(["th", "td"])
 
     courts = []
     for cell in header_cells[1:]:
-        label = cell.get_text(" ", strip=True)
+        label = normalize_court_name(cell.get_text(" ", strip=True))
         if label:
             courts.append(label)
 
@@ -374,20 +382,13 @@ def parse_booking_table_standard(booking_table):
             if i >= len(courts):
                 continue
 
-            court_name = courts[i]
-            cell_classes = cell.get("class", [])
-            cell_text = cell.get_text(" ", strip=True)
-
             status = "available" if is_available_standard_cell(cell) else "not_available"
 
             data.append(
                 {
-                    "time": row_time,
-                    "time_norm": normalize_time_string(row_time),
-                    "court": normalize_court_name(court_name),
+                    "time_norm": row_time,
+                    "court": courts[i],
                     "status": status,
-                    "text": cell_text,
-                    "classes": ", ".join(cell_classes),
                 }
             )
 
@@ -397,7 +398,7 @@ def parse_booking_table_standard(booking_table):
 def parse_booking_table_vertical(booking_table):
     rows = booking_table.find_all("tr")
     if not rows:
-        return pd.DataFrame(columns=["time", "time_norm", "court", "status", "text", "classes"])
+        return pd.DataFrame(columns=["time_norm", "court", "status"])
 
     data = []
     current_court = None
@@ -410,36 +411,30 @@ def parse_booking_table_vertical(booking_table):
         left = cells[0]
         right = cells[1]
 
-        left_classes = left.get("class", [])
-        right_classes = right.get("class", [])
-
+        left_classes = " ".join(left.get("class", []))
+        right_classes = " ".join(right.get("class", []))
         left_text = left.get_text(" ", strip=True)
         right_text = right.get_text(" ", strip=True)
-        right_class_text = " ".join(right_classes).lower()
 
         if "BookingSheetCategoryLabel" in right_classes:
             current_court = normalize_court_name(right_text)
             continue
 
         if "BookingSheetTimeLabel" in left_classes and current_court:
-            time_text = left_text
-
-            if "TimeCell" in right_classes or "timecell" in right_class_text:
-                if "notavailable" in right_class_text:
-                    status = "not_available"
-                elif "available" in right_class_text:
+            if "TimeCell" in right_classes:
+                status = "not_available"
+                if right.find("a"):
                     status = "available"
-                else:
+                elif "available" in right_classes.lower() and "notavailable" not in right_classes.lower():
+                    status = "available"
+                elif right_text.strip() == "":
                     status = "available"
 
                 data.append(
                     {
-                        "time": time_text,
-                        "time_norm": normalize_time_string(time_text),
+                        "time_norm": normalize_time_string(left_text),
                         "court": current_court,
                         "status": status,
-                        "text": right_text,
-                        "classes": ", ".join(right_classes),
                     }
                 )
 
@@ -455,11 +450,14 @@ def parse_booking_table(html):
         raise Exception(f"No encontré la tabla BookingSheet. Snippet: {snippet}")
 
     df_standard = parse_booking_table_standard(booking_table)
-    if not df_standard.empty:
+    if not df_standard.empty and (df_standard["status"] == "available").any():
         return df_standard
 
     df_vertical = parse_booking_table_vertical(booking_table)
-    return df_vertical
+    if not df_vertical.empty:
+        return df_vertical
+
+    return df_standard
 
 
 def get_booking_dataframe_for_resource(
@@ -471,7 +469,7 @@ def get_booking_dataframe_for_resource(
     resource_id="",
     page=0,
 ):
-    ajax_html = fetch_booking_html(
+    html = fetch_booking_html(
         session=session,
         client_id=client_id,
         venue_id=venue_id,
@@ -480,8 +478,7 @@ def get_booking_dataframe_for_resource(
         resource_id=resource_id,
         page=page,
     )
-
-    return parse_booking_table(ajax_html)
+    return parse_booking_table(html)
 
 
 def get_booking_dataframe(
@@ -493,27 +490,25 @@ def get_booking_dataframe(
     session=None,
 ):
     own_session = False
-
     if session is None:
         session = build_session()
         own_session = True
 
     try:
-        # Caso especial ya descubierto: Vince funciona mejor por HTML de booking page
         if client_id == VINCE_CLIENT_ID:
             page_html = fetch_booking_page_html(session, booking_url)
             df_page = parse_booking_table(page_html)
-            if not df_page.empty:
+            if not df_page.empty and (df_page["status"] == "available").any():
                 return df_page
 
         if client_id and venue_id:
             resource_ids = resource_ids or [""]
-            resource_ids = resource_ids if isinstance(resource_ids, list) else [resource_ids]
+            if not isinstance(resource_ids, list):
+                resource_ids = [resource_ids]
 
             warm_up_session(session, booking_url)
 
-            all_frames = []
-
+            frames = []
             for resource_id in resource_ids:
                 try:
                     df_resource = get_booking_dataframe_for_resource(
@@ -525,18 +520,15 @@ def get_booking_dataframe(
                         resource_id=resource_id,
                         page=0,
                     )
-
                     if not df_resource.empty:
-                        all_frames.append(df_resource)
-
+                        frames.append(df_resource)
                 except Exception:
-                    # seguimos con otros resource_ids
                     pass
 
                 time.sleep(RESOURCE_DELAY_SECONDS)
 
-            if all_frames:
-                df_all = pd.concat(all_frames, ignore_index=True)
+            if frames:
+                df_all = pd.concat(frames, ignore_index=True)
                 if not df_all.empty:
                     return df_all
 
@@ -549,11 +541,18 @@ def get_booking_dataframe(
 
 
 def has_required_consecutive_slots(available_slots, selected_time, duration_minutes):
-    required_slots = build_required_slots(selected_time, duration_minutes)
+    normalized_slots = [normalize_time_string(slot) for slot in available_slots]
+    slot_interval_minutes = infer_slot_interval_minutes(normalized_slots)
+    required_slots = build_required_slots(
+        selected_time=selected_time,
+        duration_minutes=duration_minutes,
+        slot_interval_minutes=slot_interval_minutes,
+    )
+
     if not required_slots:
         return False
 
-    normalized_set = {normalize_time_string(slot) for slot in available_slots}
+    normalized_set = set(normalized_slots)
     return all(normalize_time_string(slot) in normalized_set for slot in required_slots)
 
 
@@ -588,12 +587,7 @@ def get_available_courts_from_url(
         available_courts = []
 
         for court_name, group in df_available.groupby("court"):
-            slots = (
-                group["time_norm"]
-                .dropna()
-                .astype(str)
-                .tolist()
-            )
+            slots = group["time_norm"].dropna().astype(str).tolist()
 
             if has_required_consecutive_slots(
                 available_slots=slots,
