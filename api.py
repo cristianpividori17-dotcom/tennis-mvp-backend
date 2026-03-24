@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from fastapi import BackgroundTasks, FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from collector import collect_and_store_slot, get_store_slot
@@ -100,27 +100,6 @@ def normalize_duration_minutes(duration_minutes: int):
     return value
 
 
-def run_background_refresh(date: str, time: str, duration_minutes: int, region: str, source: str):
-    try:
-        print(
-            f"BACKGROUND REFRESH START -> {date} {time} duration={duration_minutes} region={region} source={source}"
-        )
-        collect_and_store_slot(
-            date,
-            time,
-            duration_minutes=duration_minutes,
-            region=region,
-            source=source,
-        )
-        print(
-            f"BACKGROUND REFRESH DONE -> {date} {time} duration={duration_minutes} region={region} source={source}"
-        )
-    except Exception as e:
-        print(
-            f"BACKGROUND REFRESH ERROR -> {date} {time} duration={duration_minutes} region={region} error={e}"
-        )
-
-
 def build_user_message(slot: dict):
     verification_failed = bool(slot.get("verification_failed", False))
     preserved = bool(slot.get("preserved_due_to_scrape_errors", False))
@@ -133,6 +112,31 @@ def build_user_message(slot: dict):
         return "Availability could not be verified right now."
 
     return ""
+
+
+def build_missing_slot_response(date: str, time: str, region: str, duration_minutes: int):
+    return {
+        "date": date,
+        "time": time,
+        "region": region,
+        "duration_minutes": duration_minutes,
+        "exists": False,
+        "fresh": False,
+        "stale": False,
+        "refresh_triggered": False,
+        "pending": True,
+        "collected_at": None,
+        "source": None,
+        "results_count": 0,
+        "results": [],
+        "verification_failed": False,
+        "preserved_due_to_scrape_errors": False,
+        "message": "Availability for this slot is not loaded yet. Please try again shortly.",
+        "last_attempt": None,
+        "success_count": 0,
+        "error_count": 0,
+        "available_venue_count": 0,
+    }
 
 
 @app.on_event("startup")
@@ -169,6 +173,7 @@ def root():
     return {
         "status": "ok",
         "service": "tennis availability api",
+        "mode": "cache-first",
     }
 
 
@@ -177,6 +182,7 @@ def health():
     return {
         "status": "healthy",
         "storage": "postgres" if use_db_storage() else "json",
+        "mode": "cache-first",
     }
 
 
@@ -184,7 +190,6 @@ def health():
 def availability(
     date: str,
     time: str,
-    background_tasks: BackgroundTasks,
     duration_minutes: int = 30,
     region: str = "All Sydney",
 ):
@@ -199,12 +204,11 @@ def availability(
     )
 
     if not slot:
-        slot = collect_and_store_slot(
-            date,
-            time,
-            duration_minutes=duration_minutes,
+        return build_missing_slot_response(
+            date=date,
+            time=time,
             region=region,
-            source="availability-missing-sync",
+            duration_minutes=duration_minutes,
         )
 
     results = slot.get("results", []) or []
@@ -212,6 +216,7 @@ def availability(
     preserved_due_to_scrape_errors = bool(
         slot.get("preserved_due_to_scrape_errors", False)
     )
+    fresh = slot_is_fresh(slot, date)
 
     if verification_failed and not results:
         return {
@@ -219,10 +224,11 @@ def availability(
             "time": time,
             "region": region,
             "duration_minutes": duration_minutes,
-            "exists": False,
-            "fresh": False,
-            "stale": False,
+            "exists": True,
+            "fresh": fresh,
+            "stale": not fresh,
             "refresh_triggered": False,
+            "pending": False,
             "collected_at": slot.get("collected_at"),
             "source": slot.get("source"),
             "results_count": 0,
@@ -231,19 +237,10 @@ def availability(
             "preserved_due_to_scrape_errors": False,
             "message": build_user_message(slot),
             "last_attempt": slot.get("last_attempt"),
+            "success_count": slot.get("success_count"),
+            "error_count": slot.get("error_count"),
+            "available_venue_count": slot.get("available_venue_count"),
         }
-
-    fresh = slot_is_fresh(slot, date)
-
-    if not fresh:
-        background_tasks.add_task(
-            run_background_refresh,
-            date,
-            time,
-            duration_minutes,
-            region,
-            "availability-stale-background",
-        )
 
     return {
         "date": date,
@@ -253,7 +250,8 @@ def availability(
         "exists": True,
         "fresh": fresh,
         "stale": not fresh,
-        "refresh_triggered": not fresh,
+        "refresh_triggered": False,
+        "pending": False,
         "collected_at": slot.get("collected_at"),
         "source": slot.get("source"),
         "results_count": len(results),
@@ -301,6 +299,7 @@ def availability_status(
             "error_count": 0,
             "available_venue_count": 0,
             "results_count": 0,
+            "pending": True,
         }
 
     return {
@@ -322,6 +321,7 @@ def availability_status(
         "preserved_due_to_scrape_errors": slot.get(
             "preserved_due_to_scrape_errors", False
         ),
+        "pending": False,
     }
 
 
@@ -384,13 +384,30 @@ def store_debug(
     )
 
     if not slot:
-        slot = collect_and_store_slot(
-            date,
-            time,
-            duration_minutes=duration_minutes,
-            region=region,
-            source="debug-endpoint",
-        )
+        return {
+            "date": date,
+            "time": time,
+            "region": region,
+            "duration_minutes": duration_minutes,
+            "exists": False,
+            "fresh": False,
+            "collected_at": None,
+            "source": None,
+            "total_duration_ms": None,
+            "total_venues": 0,
+            "success_count": 0,
+            "error_count": 0,
+            "available_venue_count": 0,
+            "venue_checks": [],
+            "errors": [],
+            "results_count": 0,
+            "results": [],
+            "verification_failed": False,
+            "preserved_due_to_scrape_errors": False,
+            "last_attempt": None,
+            "message": "Availability for this slot is not loaded yet.",
+            "pending": True,
+        }
 
     return {
         "date": date,
@@ -416,4 +433,5 @@ def store_debug(
         ),
         "last_attempt": slot.get("last_attempt"),
         "message": build_user_message(slot),
+        "pending": False,
     }
