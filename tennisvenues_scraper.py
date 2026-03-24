@@ -1,7 +1,6 @@
 import math
 import re
 import time
-from typing import Dict, List, Optional, Set, Tuple
 
 import pandas as pd
 import requests
@@ -10,8 +9,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 REQUEST_TIMEOUT = 25
-RESOURCE_DELAY_SECONDS = 0.45
-HANDSHAKE_DELAY_SECONDS = 0.6
+RESOURCE_DELAY_SECONDS = 0.6
+HANDSHAKE_DELAY_SECONDS = 0.8
 
 DEFAULT_HEADERS = {
     "User-Agent": (
@@ -38,6 +37,8 @@ AJAX_HEADERS = {
     "Pragma": "no-cache",
 }
 
+VINCE_CLIENT_ID = "vince-barclay-coaching-academy"
+
 
 def build_session():
     session = requests.Session()
@@ -56,6 +57,7 @@ def build_session():
     session.mount("http://", adapter)
     session.mount("https://", adapter)
     session.headers.update(DEFAULT_HEADERS)
+
     return session
 
 
@@ -290,8 +292,7 @@ def is_probable_time_text(text):
     if not text:
         return False
 
-    normalized = normalize_time_string(text)
-    return time_string_to_minutes(normalized) is not None
+    return time_string_to_minutes(normalize_time_string(text)) is not None
 
 
 def extract_row_time(cells):
@@ -300,154 +301,187 @@ def extract_row_time(cells):
 
     first_text = cells[0].get_text(" ", strip=True)
     if is_probable_time_text(first_text):
-        return normalize_time_string(first_text)
+        return first_text
 
     for cell in cells:
         classes = cell.get("class", [])
         text = cell.get_text(" ", strip=True)
 
         if "BookingSheetTimeLabel" in classes and is_probable_time_text(text):
-            return normalize_time_string(text)
+            return text
 
     return ""
 
 
-def looks_available(cell):
-    if cell.find("a"):
+def is_available_standard_cell(cell):
+    classes = set(cell.get("class", []))
+    class_text = " ".join(classes).lower()
+    links = cell.find_all("a")
+
+    if links:
         return True
 
-    classes = " ".join(cell.get("class", [])).lower()
-    if "available" in classes or "vacant" in classes or "free" in classes:
+    if "available" in class_text and "notavailable" not in class_text:
         return True
 
-    text = cell.get_text(" ", strip=True).strip().lower()
+    blocked_markers = [
+        "notavailable",
+        "unavailable",
+        "booked",
+        "disabled",
+        "closed",
+    ]
 
-    if not text:
+    if any(marker in class_text for marker in blocked_markers):
         return False
-
-    if text in {"book", "available", "vacant", "free"}:
-        return True
 
     return False
 
 
-def looks_unavailable(cell):
-    if cell.find("a"):
-        return False
-
-    text = cell.get_text(" ", strip=True).strip()
-    if text:
-        return True
-
-    classes = " ".join(cell.get("class", [])).lower()
-    if any(flag in classes for flag in ["booked", "occupied", "unavailable", "disabled"]):
-        return True
-
-    return False
-
-
-def extract_table_court_headers(table):
-    rows = table.find_all("tr")
+def parse_booking_table_standard(booking_table):
+    rows = booking_table.find_all("tr")
     if not rows:
-        return []
+        return pd.DataFrame(columns=["time", "time_norm", "court", "status", "text", "classes"])
 
     header_row = rows[0]
     header_cells = header_row.find_all(["th", "td"])
-    if len(header_cells) < 2:
-        return []
 
-    headers = []
-    for idx, cell in enumerate(header_cells):
-        if idx == 0:
+    courts = []
+    for cell in header_cells[1:]:
+        label = cell.get_text(" ", strip=True)
+        if label:
+            courts.append(label)
+
+    data = []
+
+    for row in rows[1:]:
+        cells = row.find_all("td")
+        if not cells:
             continue
 
-        text = cell.get_text(" ", strip=True)
-        text = normalize_court_name(text)
-
-        if not text:
-            text = f"Court {idx}"
-
-        headers.append(text)
-
-    return headers
-
-
-def parse_booking_html_to_slots(html, resource_label=None):
-    soup = BeautifulSoup(html, "html.parser")
-    availability_by_court: Dict[str, Set[str]] = {}
-
-    tables = soup.find_all("table")
-    if not tables:
-        return availability_by_court
-
-    for table in tables:
-        headers = extract_table_court_headers(table)
-        rows = table.find_all("tr")
-        if not rows:
+        row_time = extract_row_time(cells)
+        if not row_time:
             continue
 
-        if not headers and resource_label:
-            headers = [resource_label]
+        if len(cells) >= len(courts) + 1:
+            court_cells = cells[1:1 + len(courts)]
+        elif len(cells) == len(courts):
+            court_cells = cells
+        else:
+            continue
 
-        for row in rows[1:]:
-            cells = row.find_all(["td", "th"])
-            if len(cells) < 2:
+        for i, cell in enumerate(court_cells):
+            if i >= len(courts):
                 continue
 
-            row_time = extract_row_time(cells)
-            if not row_time:
-                continue
+            court_name = courts[i]
+            cell_classes = cell.get("class", [])
+            cell_text = cell.get_text(" ", strip=True)
 
-            data_cells = cells[1:]
+            status = "available" if is_available_standard_cell(cell) else "not_available"
 
-            if not headers and len(data_cells) == 1 and resource_label:
-                headers = [resource_label]
-
-            if headers and len(data_cells) != len(headers):
-                if len(headers) == 1:
-                    data_cells = [data_cells[-1]]
-                else:
-                    continue
-
-            if not headers:
-                headers = [f"Court {idx + 1}" for idx in range(len(data_cells))]
-
-            for idx, cell in enumerate(data_cells):
-                court_name = headers[idx] if idx < len(headers) else f"Court {idx + 1}"
-                court_name = normalize_court_name(court_name)
-
-                if not court_name:
-                    court_name = f"Court {idx + 1}"
-
-                if looks_available(cell):
-                    availability_by_court.setdefault(court_name, set()).add(row_time)
-                elif looks_unavailable(cell):
-                    availability_by_court.setdefault(court_name, set())
-
-    return availability_by_court
-
-
-def merge_availability_maps(base_map, incoming_map):
-    for court_name, slots in incoming_map.items():
-        base_map.setdefault(court_name, set()).update(slots)
-
-    return base_map
-
-
-def availability_map_to_dataframe(availability_by_court):
-    rows = []
-
-    for court_name, slots in availability_by_court.items():
-        for slot in sorted(slots, key=lambda x: time_string_to_minutes(x) or 0):
-            rows.append(
+            data.append(
                 {
-                    "court": court_name,
-                    "time": slot,
-                    "available": True,
+                    "time": row_time,
+                    "time_norm": normalize_time_string(row_time),
+                    "court": normalize_court_name(court_name),
+                    "status": status,
+                    "text": cell_text,
+                    "classes": ", ".join(cell_classes),
                 }
             )
 
-    return pd.DataFrame(rows, columns=["court", "time", "available"])
+    return pd.DataFrame(data)
+
+
+def parse_booking_table_vertical(booking_table):
+    rows = booking_table.find_all("tr")
+    if not rows:
+        return pd.DataFrame(columns=["time", "time_norm", "court", "status", "text", "classes"])
+
+    data = []
+    current_court = None
+
+    for row in rows:
+        cells = row.find_all("td")
+        if len(cells) < 2:
+            continue
+
+        left = cells[0]
+        right = cells[1]
+
+        left_classes = left.get("class", [])
+        right_classes = right.get("class", [])
+
+        left_text = left.get_text(" ", strip=True)
+        right_text = right.get_text(" ", strip=True)
+        right_class_text = " ".join(right_classes).lower()
+
+        if "BookingSheetCategoryLabel" in right_classes:
+            current_court = normalize_court_name(right_text)
+            continue
+
+        if "BookingSheetTimeLabel" in left_classes and current_court:
+            time_text = left_text
+
+            if "TimeCell" in right_classes or "timecell" in right_class_text:
+                if "notavailable" in right_class_text:
+                    status = "not_available"
+                elif "available" in right_class_text:
+                    status = "available"
+                else:
+                    status = "available"
+
+                data.append(
+                    {
+                        "time": time_text,
+                        "time_norm": normalize_time_string(time_text),
+                        "court": current_court,
+                        "status": status,
+                        "text": right_text,
+                        "classes": ", ".join(right_classes),
+                    }
+                )
+
+    return pd.DataFrame(data)
+
+
+def parse_booking_table(html):
+    soup = BeautifulSoup(html, "html.parser")
+    booking_table = soup.find("table", class_="BookingSheet")
+
+    if not booking_table:
+        snippet = html[:500].replace("\n", " ").replace("\r", " ")
+        raise Exception(f"No encontré la tabla BookingSheet. Snippet: {snippet}")
+
+    df_standard = parse_booking_table_standard(booking_table)
+    if not df_standard.empty:
+        return df_standard
+
+    df_vertical = parse_booking_table_vertical(booking_table)
+    return df_vertical
+
+
+def get_booking_dataframe_for_resource(
+    session,
+    client_id,
+    venue_id,
+    date_yyyymmdd,
+    booking_url,
+    resource_id="",
+    page=0,
+):
+    ajax_html = fetch_booking_html(
+        session=session,
+        client_id=client_id,
+        venue_id=venue_id,
+        date_yyyymmdd=date_yyyymmdd,
+        booking_url=booking_url,
+        resource_id=resource_id,
+        page=page,
+    )
+
+    return parse_booking_table(ajax_html)
 
 
 def get_booking_dataframe(
@@ -465,7 +499,12 @@ def get_booking_dataframe(
         own_session = True
 
     try:
-        merged_availability = {}
+        # Caso especial ya descubierto: Vince funciona mejor por HTML de booking page
+        if client_id == VINCE_CLIENT_ID:
+            page_html = fetch_booking_page_html(session, booking_url)
+            df_page = parse_booking_table(page_html)
+            if not df_page.empty:
+                return df_page
 
         if client_id and venue_id:
             resource_ids = resource_ids or [""]
@@ -473,31 +512,36 @@ def get_booking_dataframe(
 
             warm_up_session(session, booking_url)
 
+            all_frames = []
+
             for resource_id in resource_ids:
-                html = fetch_booking_html(
-                    session=session,
-                    client_id=client_id,
-                    venue_id=venue_id,
-                    date_yyyymmdd=date_yyyymmdd,
-                    booking_url=booking_url,
-                    resource_id=resource_id,
-                    page=0,
-                )
+                try:
+                    df_resource = get_booking_dataframe_for_resource(
+                        session=session,
+                        client_id=client_id,
+                        venue_id=venue_id,
+                        date_yyyymmdd=date_yyyymmdd,
+                        booking_url=booking_url,
+                        resource_id=resource_id,
+                        page=0,
+                    )
 
-                resource_label = None
-                if resource_id and len(resource_ids) == 1:
-                    resource_label = normalize_court_name(str(resource_id))
+                    if not df_resource.empty:
+                        all_frames.append(df_resource)
 
-                parsed = parse_booking_html_to_slots(html, resource_label=resource_label)
-                merge_availability_maps(merged_availability, parsed)
+                except Exception:
+                    # seguimos con otros resource_ids
+                    pass
+
                 time.sleep(RESOURCE_DELAY_SECONDS)
 
-            if merged_availability:
-                return availability_map_to_dataframe(merged_availability)
+            if all_frames:
+                df_all = pd.concat(all_frames, ignore_index=True)
+                if not df_all.empty:
+                    return df_all
 
         page_html = fetch_booking_page_html(session, booking_url)
-        parsed = parse_booking_html_to_slots(page_html)
-        return availability_map_to_dataframe(parsed)
+        return parse_booking_table(page_html)
 
     finally:
         if own_session:
@@ -537,10 +581,19 @@ def get_available_courts_from_url(
         if df.empty:
             return []
 
+        df_available = df[df["status"] == "available"].copy()
+        if df_available.empty:
+            return []
+
         available_courts = []
 
-        for court_name, group in df.groupby("court"):
-            slots = group.loc[group["available"] == True, "time"].tolist()
+        for court_name, group in df_available.groupby("court"):
+            slots = (
+                group["time_norm"]
+                .dropna()
+                .astype(str)
+                .tolist()
+            )
 
             if has_required_consecutive_slots(
                 available_slots=slots,
