@@ -431,5 +431,152 @@
       "C5",
       "C6"
     ]
+  },
+  {
+    "key": "mosman_pickleball",
+    "name": "Mosman Pickleball",
+    "region": "North Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/mosman-pickleball",
+    "client_id": "mosman-pickleball",
+    "venue_id": "3529",
+    "resource_ids": [
+      "4028d0829a700bc3019c2642998e2026",
+      "4028d0829a700bc3019c2644215a2027",
+      "4028d0829a700bc3019c2644215a2028",
+      "4028d0829a700bc3019c2644215a2029",
+      "4028d0829a700bc3019c2644215a202a",
+      "4028d0829a700bc3019c2644215a202b",
+      "4028d0829a700bc3019c2644215a202c",
+      "4028d0829a700bc3019c2644215a202d",
+      "4028d0829a700bc3019c2644215a202e"
+    ]
+  },
+  {
+    "key": "moxon_sports_club",
+    "name": "Moxon Sports Club",
+    "region": "West Sydney",
+    "surface": "Mixed Surfaces",
+    "booking_url": "https://www.tennisvenues.com.au/booking/moxon-sports-club",
+    "client_id": "moxon-sports-club",
+    "venue_id": "3485",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ],
+    "court_surfaces": {
+      "Court 1": "Hard Court",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass"
+    }
+  },
+  {
+    "key": "panania_tennis_centre",
+    "name": "Panania Tennis Centre",
+    "region": "West Sydney",
+    "surface": "Mixed Surfaces",
+    "booking_url": "https://www.tennisvenues.com.au/booking/panania-tennis-centre",
+    "client_id": "panania-tennis-centre",
+    "venue_id": "3501",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "C7",
+      "C8",
+      "C9"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 7": "Synthetic Grass",
+      "Court 8": "Synthetic Grass",
+      "Court 9": "Hard Court"
+    }
+  },
+  {
+    "key": "southend_tc",
+    "name": "Southend TC",
+    "region": "Outside Sydney",
+    "booking_url": "https://www.tennisvenues.com.au/booking/southend-tc",
+    "client_id": "southend-tc",
+    "venue_id": "2322",
+    "resource_ids": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "000000004fb4fb4b014ff28e7b3d0007",
+      "0000000053dfdaa501540f7bcc61002a",
+      "0000000053dfdaa501540f7bcc61002b",
+      "0000000053dfdaa501540f7bcc61002c",
+      "000000004fb4fb4b014ff28e7b3d0004",
+      "000000004fb4fb4b014ff28e7b3d0005",
+      "000000004fb4fb4b014ff28e7b3d0006"
+    ]
+  },
+  {
+    "key": "rockdale_tc",
+    "name": "Rockdale TC",
+    "region": "South Sydney",
+    "surface": "Synthetic Grass",
+    "booking_url": "https://www.tennisvenues.com.au/booking/rockdale-tc",
+    "client_id": "rockdale-tc",
+    "venue_id": "2137",
+    "resource_ids": [
+      "2c90817c850295860185050f3a3f002e",
+      "2c90817c850295860185050f3a3f002f",
+      "2c90817c850295860185050f3a3f0030",
+      "2c90817c850295860185050f3a3f0031",
+      "2c90817c850295860185050f3a3f0032",
+      "2c90817c850295860185050f3a3f0033",
+      "2c90817c850295860185050f3a3f0034",
+      "2c90817c850295860185050f3a3f0035",
+      "2c90817c850295860185050f3a3f0036",
+      "2c90817c8502958601850507eba80025",
+      "2c90817c850295860185050f3a3e0026",
+      "2c90817c850295860185050f3a3e0027",
+      "2c90817c850295860185050f3a3e0028",
+      "2c90817c850295860185050f3a3e0029",
+      "2c90817c850295860185050f3a3f002a",
+      "2c90817c850295860185050f3a3f002b",
+      "2c90817c850295860185050f3a3f002c",
+      "2c90817c850295860185050f3a3f002d"
+    ],
+    "court_surfaces": {
+      "Court 1": "Synthetic Grass",
+      "Court 2": "Synthetic Grass",
+      "Court 3": "Synthetic Grass",
+      "Court 4": "Synthetic Grass",
+      "Court 5": "Synthetic Grass",
+      "Court 6": "Synthetic Grass",
+      "Court 7": "Synthetic Grass",
+      "Court 8": "Synthetic Grass",
+      "Court 9": "Synthetic Grass",
+      "Court 10": "Synthetic Grass",
+      "Court 11": "Synthetic Grass",
+      "Court 12": "Synthetic Grass",
+      "Court 13": "Synthetic Grass",
+      "Court 14": "Synthetic Grass",
+      "Court 15": "Synthetic Grass",
+      "Court 16": "Synthetic Grass",
+      "Court 17": "Synthetic Grass",
+      "Court 18": "Synthetic Grass"
+    }
   }
 ]

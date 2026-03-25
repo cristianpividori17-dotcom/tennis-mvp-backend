@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import re
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
@@ -15,9 +16,13 @@ from tennisvenues_scraper_fallback import (
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = os.path.join(BASE_DIR, "venues_config.json")
+FALLBACK_CONFIG_FILE = os.path.join(BASE_DIR, "venues_config_fallback.json")
 STORE_FILE = os.path.join(BASE_DIR, "availability_store.json")
 
-MAX_WORKERS = 3
+MAX_WORKERS = 2
+
+FALLBACK_SERIAL_DELAY_SECONDS = 0.6
+_FALLBACK_LOCK = threading.Lock()
 
 
 def normalize_court_name(court_name):
@@ -27,7 +32,7 @@ def normalize_court_name(court_name):
     name = str(court_name).strip()
     name = re.sub(r"\bCourt\s*N(\d+)\b", r"Court \1", name, flags=re.IGNORECASE)
     name = re.sub(
-        r"\s*\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass)\)\s*",
+        r"\s*\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass|Plexicushion)\)\s*",
         "",
         name,
         flags=re.IGNORECASE,
@@ -50,16 +55,18 @@ def normalize_surface_label(surface):
 
     lowered = text.lower()
 
-    if lowered == "synthetic":
+    if lowered in {"synthetic", "synthetic grass", "syngrass", "syn grass"}:
         return "Synthetic Grass"
-    if lowered == "synthetic grass":
-        return "Synthetic Grass"
-    if lowered == "hard court":
+    if lowered in {"hard", "hardcourt", "hard court", "plexicushion"}:
         return "Hard Court"
     if lowered == "grass":
         return "Grass"
     if lowered == "clay":
         return "Clay"
+    if lowered == "green clay":
+        return "Clay"
+    if lowered == "ctc":
+        return "Synthetic Grass"
 
     return text
 
@@ -75,41 +82,46 @@ def normalize_region(region):
     return value
 
 
-def load_active_venues(region_filter="All Sydney"):
-    region_filter = normalize_region(region_filter)
+def load_json_list(path):
+    if not os.path.exists(path):
+        return []
 
-    with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+    with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     if not isinstance(data, list):
-        raise ValueError(f"{CONFIG_FILE} debe contener una lista JSON de venues")
+        raise ValueError(f"{path} debe contener una lista JSON de venues")
 
+    return data
+
+
+def should_include_venue_for_region(venue, region_filter):
+    venue_region = venue.get("region")
+    venue_is_sydney = venue.get("is_sydney", True)
+
+    if region_filter == "All Sydney":
+        return venue_is_sydney is not False
+
+    if region_filter == "Outside Sydney":
+        return venue_is_sydney is False
+
+    return venue_region == region_filter
+
+
+def build_venue_maps(data, region_filter="All Sydney"):
     active_venues = []
+
     for venue in data:
         if not isinstance(venue, dict):
             continue
-
         if venue.get("active", True) is not True:
             continue
-
         if not venue.get("key"):
             continue
-
         if not venue.get("booking_url"):
             continue
-
-        venue_region = venue.get("region")
-        venue_is_sydney = venue.get("is_sydney", True)
-
-        if region_filter == "All Sydney":
-            if venue_is_sydney is False:
-                continue
-        elif region_filter == "Outside Sydney":
-            if venue_is_sydney is not False:
-                continue
-        else:
-            if venue_region != region_filter:
-                continue
+        if not should_include_venue_for_region(venue, region_filter):
+            continue
 
         active_venues.append(venue)
 
@@ -152,20 +164,36 @@ def load_active_venues(region_filter="All Sydney"):
     return venues_by_key, venue_info, venue_court_surfaces
 
 
+def load_active_venues(region_filter="All Sydney"):
+    region_filter = normalize_region(region_filter)
+    data = load_json_list(CONFIG_FILE)
+    return build_venue_maps(data, region_filter=region_filter)
+
+
+def load_fallback_overrides(region_filter="All Sydney"):
+    region_filter = normalize_region(region_filter)
+    data = load_json_list(FALLBACK_CONFIG_FILE)
+    return build_venue_maps(data, region_filter=region_filter)
+
+
 def extract_surface_from_court_name(court_name):
     if not court_name:
         return None
 
-    match = re.search(
-        r"\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass)\)",
-        str(court_name),
-        flags=re.IGNORECASE,
-    )
+    text = str(court_name)
 
-    if not match:
-        return None
+    patterns = [
+        r"\((Hard Court|Synthetic Grass|Synthetic|Clay|Grass|Plexicushion)\)",
+        r"\b(Hard|Hardcourt|SynGrass|Synthetic|Clay|Grass|Plexicushion)\b",
+        r"\b(Green Clay)\b",
+    ]
 
-    return normalize_surface_label(match.group(1).strip())
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match:
+            return normalize_surface_label(match.group(1).strip())
+
+    return None
 
 
 def get_surface_for_court(venue_key, court_name, venue_court_surfaces, fallback_surface=None):
@@ -313,10 +341,7 @@ def should_preserve_existing_slot(metadata):
     if total_venues == 0:
         return False
 
-    if success_count == 0 and error_count > 0:
-        return True
-
-    return False
+    return success_count == 0 and error_count > 0
 
 
 def build_preserved_payload(existing, attempted_payload):
@@ -374,63 +399,107 @@ def run_fallback_scraper(target, date, time_str, duration_minutes):
     )
 
 
-def check_one_venue(venue_key, target, date, time_str, duration_minutes):
-    started_at = time.perf_counter()
+def run_fallback_scraper_serialized(target, date, time_str, duration_minutes):
+    with _FALLBACK_LOCK:
+        if FALLBACK_SERIAL_DELAY_SECONDS > 0:
+            time.sleep(FALLBACK_SERIAL_DELAY_SECONDS)
 
-    primary_error = None
-    fallback_error = None
-
-    try:
-        courts = run_primary_scraper(
+        return run_fallback_scraper(
             target=target,
             date=date,
             time_str=time_str,
             duration_minutes=duration_minutes,
         )
 
+
+def check_one_venue(venue_key, primary_target, fallback_target, date, time_str, duration_minutes):
+    started_at = time.perf_counter()
+
+    primary_error = None
+    fallback_error = None
+    fallback_applicable = fallback_target is not None
+
+    try:
+        primary_courts = run_primary_scraper(
+            target=primary_target,
+            date=date,
+            time_str=time_str,
+            duration_minutes=duration_minutes,
+        )
+        if not isinstance(primary_courts, list):
+            primary_courts = []
+    except Exception as e:
+        primary_courts = None
+        primary_error = str(e)
+
+    if not fallback_applicable:
         duration_ms = round((time.perf_counter() - started_at) * 1000, 2)
 
-        if not isinstance(courts, list):
-            courts = []
+        if primary_courts is not None:
+            return {
+                "venue_key": venue_key,
+                "status": "success",
+                "strategy": "primary",
+                "fallback_used": False,
+                "courts": primary_courts,
+                "available": len(primary_courts) > 0,
+                "available_courts": len(primary_courts),
+                "duration_ms": duration_ms,
+                "error": None,
+                "primary_error": None,
+                "fallback_error": None,
+            }
 
+        return {
+            "venue_key": venue_key,
+            "status": "error",
+            "strategy": "primary_failed",
+            "fallback_used": False,
+            "courts": [],
+            "available": False,
+            "available_courts": 0,
+            "duration_ms": duration_ms,
+            "error": primary_error,
+            "primary_error": primary_error,
+            "fallback_error": None,
+        }
+
+    if primary_courts is not None and len(primary_courts) > 0:
+        duration_ms = round((time.perf_counter() - started_at) * 1000, 2)
         return {
             "venue_key": venue_key,
             "status": "success",
             "strategy": "primary",
             "fallback_used": False,
-            "courts": courts,
-            "available": len(courts) > 0,
-            "available_courts": len(courts),
+            "courts": primary_courts,
+            "available": True,
+            "available_courts": len(primary_courts),
             "duration_ms": duration_ms,
             "error": None,
             "primary_error": None,
             "fallback_error": None,
         }
 
-    except Exception as e:
-        primary_error = str(e)
-
     try:
-        courts = run_fallback_scraper(
-            target=target,
+        fallback_courts = run_fallback_scraper_serialized(
+            target=fallback_target,
             date=date,
             time_str=time_str,
             duration_minutes=duration_minutes,
         )
+        if not isinstance(fallback_courts, list):
+            fallback_courts = []
 
         duration_ms = round((time.perf_counter() - started_at) * 1000, 2)
-
-        if not isinstance(courts, list):
-            courts = []
 
         return {
             "venue_key": venue_key,
             "status": "success",
             "strategy": "fallback",
             "fallback_used": True,
-            "courts": courts,
-            "available": len(courts) > 0,
-            "available_courts": len(courts),
+            "courts": fallback_courts,
+            "available": len(fallback_courts) > 0,
+            "available_courts": len(fallback_courts),
             "duration_ms": duration_ms,
             "error": None,
             "primary_error": primary_error,
@@ -441,45 +510,68 @@ def check_one_venue(venue_key, target, date, time_str, duration_minutes):
         fallback_error = str(e)
         duration_ms = round((time.perf_counter() - started_at) * 1000, 2)
 
+        strategy = "failed_both"
+        if primary_courts is not None and len(primary_courts) == 0 and not primary_error:
+            strategy = "fallback_failed_after_primary_empty"
+
         return {
             "venue_key": venue_key,
             "status": "error",
-            "strategy": "failed_both",
+            "strategy": strategy,
             "fallback_used": True,
             "courts": [],
             "available": False,
             "available_courts": 0,
             "duration_ms": duration_ms,
-            "error": fallback_error,
+            "error": fallback_error or primary_error or "unknown error",
             "primary_error": primary_error,
             "fallback_error": fallback_error,
         }
 
 
 def check_all_venues(date, time_str, duration_minutes, region="All Sydney"):
-    venues, _, _ = load_active_venues(region_filter=region)
+    primary_venues, _, _ = load_active_venues(region_filter=region)
+    fallback_venues, _, _ = load_fallback_overrides(region_filter=region)
+
+    venue_keys = sorted(set(primary_venues.keys()) | set(fallback_venues.keys()))
     venue_results = []
 
     print("")
     print(
         f"Starting collection for {date} {time_str} duration={duration_minutes} region={region}"
     )
-    print(f"Active venues: {len(venues)}")
+    print(f"Primary venues in region: {len(primary_venues)}")
+    print(f"Fallback override venues in region: {len(fallback_venues)}")
+    print(f"Combined venues: {len(venue_keys)}")
     print(f"Max workers: {MAX_WORKERS}")
+    print("Fallback serialized: True")
+    print(f"Fallback delay seconds: {FALLBACK_SERIAL_DELAY_SECONDS}")
     print("")
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = {
-            executor.submit(
-                check_one_venue,
-                venue_key,
-                target,
-                date,
-                time_str,
-                duration_minutes,
-            ): venue_key
-            for venue_key, target in venues.items()
-        }
+        futures = {}
+
+        for venue_key in venue_keys:
+            primary_target = primary_venues.get(venue_key)
+            fallback_target = fallback_venues.get(venue_key)
+
+            if primary_target is None and fallback_target is None:
+                continue
+
+            if primary_target is None:
+                primary_target = fallback_target
+
+            futures[
+                executor.submit(
+                    check_one_venue,
+                    venue_key,
+                    primary_target,
+                    fallback_target,
+                    date,
+                    time_str,
+                    duration_minutes,
+                )
+            ] = venue_key
 
         for future in as_completed(futures):
             result = future.result()
@@ -532,8 +624,32 @@ def format_results_for_frontend(available_results):
     return formatted
 
 
+def merge_venue_info(region="All Sydney"):
+    primary_venues, primary_info, primary_surfaces = load_active_venues(region_filter=region)
+    fallback_venues, fallback_info, fallback_surfaces = load_fallback_overrides(region_filter=region)
+
+    merged_info = dict(primary_info)
+    merged_surfaces = dict(primary_surfaces)
+
+    for key, info in fallback_info.items():
+        if key not in merged_info:
+            merged_info[key] = info
+        else:
+            for field, value in info.items():
+                if value not in [None, "", []]:
+                    merged_info[key][field] = value
+
+    for key, surfaces in fallback_surfaces.items():
+        if key not in merged_surfaces:
+            merged_surfaces[key] = surfaces
+        else:
+            merged_surfaces[key].update(surfaces)
+
+    return merged_info, merged_surfaces
+
+
 def build_frontend_cards(results, duration_minutes, region="All Sydney"):
-    _, venue_info, venue_court_surfaces = load_active_venues(region_filter=region)
+    venue_info, venue_court_surfaces = merge_venue_info(region=region)
     cards = []
 
     for item in results:
@@ -578,10 +694,14 @@ def build_slot_metadata(venue_results, started_at_utc, duration_minutes, region=
     error_count = sum(1 for item in venue_results if item["status"] == "error")
     available_venue_count = sum(1 for item in venue_results if item["available"] is True)
     fallback_success_count = sum(
-        1 for item in venue_results if item["status"] == "success" and item.get("strategy") == "fallback"
+        1
+        for item in venue_results
+        if item["status"] == "success" and item.get("strategy") == "fallback"
     )
     primary_success_count = sum(
-        1 for item in venue_results if item["status"] == "success" and item.get("strategy") == "primary"
+        1
+        for item in venue_results
+        if item["status"] == "success" and item.get("strategy") == "primary"
     )
 
     completed_at_utc = datetime.now(timezone.utc)
