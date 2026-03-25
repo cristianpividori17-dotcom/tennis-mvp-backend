@@ -2,12 +2,12 @@ services:
   - type: web
     name: tennis-availability-api
     runtime: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && python -m playwright install chromium
     startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
 
   - type: cron
     name: tennis-availability-scheduler
     runtime: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && python -m playwright install chromium
     startCommand: python collector_scheduler.py
     schedule: "0 */6 * * *"
